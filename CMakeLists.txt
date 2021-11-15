@@ -9,6 +9,7 @@ enable_testing()
 set(
     SOURCES
         src/main.cpp
+        src/Trade.cpp
 )
 add_executable(Ayanami ${SOURCES})
 
@@ -23,8 +24,7 @@ add_subdirectory(googletest)
 
 set(
     AYANAMI_TESTS
-        test/Test.cpp
-        test/Test2.cpp
+        test/TradeTests.cpp
 )
 add_executable(Ayanami_Tests ${AYANAMI_TESTS})
 
