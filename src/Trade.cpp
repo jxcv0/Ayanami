@@ -1,25 +1,26 @@
 #include "Trade.hpp"
 
-Trade::Trade(int t, double p, int q, string s, string sym) {
+using namespace std;
+
+Trade::Trade(int t, double p, int q, string sym) {
     time = t;
     price = p;
     qty = q;
-    side = s;
     symbol = sym;
 }
 
-int Trade::time() {
+int Trade::getTime() {
     return time;
 }
 
-double Trade::price() {
-    return price
+double Trade::getPrice() {
+    return price;
 }
 
-int Trade::qty() {
+int Trade::getQty() {
     return qty;
 }
 
-string Trade::symbol() {
+string Trade::getSymbol() {
     return symbol;
 }

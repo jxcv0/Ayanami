@@ -26,19 +26,19 @@ class Trade {
     public:
 
         // The constructor
-        Trade(int t, double p, int q, string s, string sym);
+        Trade(int t, double p, int q, string sym);
 
         // Get the time
-        int time;
+        int getTime();
 
         // Get the trade price
-        double price;
+        double getPrice();
 
         // Get the trade volume
-        int qty;
+        int getQty();
 
         // get the symbol of the traded asset
-        string symbol;
+        string getSymbol();
 };
 
 #endif

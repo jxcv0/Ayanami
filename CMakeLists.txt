@@ -21,11 +21,4 @@ target_include_directories(
 )
 
 add_subdirectory(googletest)
-
-set(
-    AYANAMI_TESTS
-        test/TradeTests.cpp
-)
-add_executable(Ayanami_Tests ${AYANAMI_TESTS})
-
-target_link_libraries(Ayanami_Tests gtest_main)
+add_subdirectory(test)
