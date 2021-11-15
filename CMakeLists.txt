@@ -11,7 +11,13 @@ set(
         src/main.cpp
         src/Trade.cpp
 )
-add_executable(Ayanami ${SOURCES})
+
+set(
+    HEADERS
+        include/Trade.hpp
+)
+
+add_executable(Ayanami ${SOURCES} ${HEADERS})
 
 target_include_directories(
     Ayanami
