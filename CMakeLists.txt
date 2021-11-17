@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0.0)
+cmake_minimum_required(VERSION 3.18.0)
 project(Ayanami VERSION 0.1.0)
 
 # GoogleTest requires at least C++11
@@ -22,22 +22,23 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest websocketpp)
 
 set(
-    SOURCES
-        src/Trade.cpp
+  SOURCES
+    src/Trade.cpp
+    src/Websocket.cpp
 )
 
 set(
-    HEADERS
-        include/Trade.hpp
+  HEADERS
+    include/Trade.hpp
+    include/Websocket.hpp
 )
 
 add_library(Ayanami ${SOURCES} ${HEADERS})
 
 target_include_directories(
-    Ayanami
-        PRIVATE
-            ${PROJECT_SOURCE_DIR}/include
-
+  Ayanami
+    PUBLIC
+      ${PROJECT_SOURCE_DIR}/include
 )
 
 add_subdirectory(test)
