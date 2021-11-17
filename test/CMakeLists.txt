@@ -9,6 +9,8 @@ set(
     SOURCES
         TradeTests.cpp
         ${PROJECT_SOURCE_DIR}/src/Trade.cpp
+        WebsocketTests.cpp
+        ${PROJECT_SOURCE_DIR}/src/Websocket.cpp
 )
 
 add_executable(Tests ${SOURCES})
