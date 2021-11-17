@@ -10,34 +10,66 @@ class Trade {
 
     private:
 
-        // The time (Unix time)
+        /**
+         * @brief The unix at which the trade occured
+         */
         int time;
 
-        // The trade price
+        /**
+         * @brief the price at which the trade occured
+         */
         double price;
 
-        // The signed trade volume
-        int qty;
+        /**
+         * @brief The signed trade volume
+         * sell orders have a negative sign
+         */
+        double qty;
 
-        // The symbol of the traded asset
-        // TODO could be enum
+        /**
+         * @brief the traded symbol/pair
+         *  i.e "BTCUSD"
+         */
         string symbol;
         
     public:
 
-        // The constructor
-        Trade(int t, double p, int q, string sym);
+        /**
+         * @brief Construct a new Trade object
+         * 
+         * @param t The unix time
+         * @param p The price
+         * @param q The quantity
+         * @param sym The trades symbol
+         */
+        Trade(int t, double p, double q, string sym);
 
-        // Get the time
+        /**
+         * @brief Get the time
+         * 
+         * @return The unix time as int
+         */
         int getTime();
 
-        // Get the trade price
+        /**
+         * @brief Get the price
+         * 
+         * @return The price as double
+         */
         double getPrice();
 
-        // Get the trade volume
-        int getQty();
+        /**
+         * @brief Get the quantity
+         * 
+         * @return The quantity as double
+         */
+        double getQty();
 
-        // get the symbol of the traded asset
+        /**
+         * @brief Get the Symbol
+         * 
+         * @return The symbol as string
+         */
         string getSymbol();
 };
 

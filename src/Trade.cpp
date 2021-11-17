@@ -2,7 +2,7 @@
 
 using namespace std;
 
-Trade::Trade(int t, double p, int q, string sym) {
+Trade::Trade(int t, double p, double q, string sym) {
     time = t;
     price = p;
     qty = q;
@@ -17,7 +17,7 @@ double Trade::getPrice() {
     return price;
 }
 
-int Trade::getQty() {
+double Trade::getQty() {
     return qty;
 }
 
