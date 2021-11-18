@@ -11,24 +11,23 @@ class Trade {
     private:
 
         /**
-         * @brief The unix at which the trade occured
+         * The unix at which the trade occured
          */
         int time;
 
         /**
-         * @brief the price at which the trade occured
+         * the price at which the trade occured
          */
         double price;
 
         /**
-         * @brief The signed trade volume
+         * The signed trade volume
          * sell orders have a negative sign
          */
         double qty;
 
         /**
-         * @brief the traded symbol/pair
-         *  i.e "BTCUSD"
+         * The traded symbol/pair, i.e, "BTCUSD"
          */
         string symbol;
         
