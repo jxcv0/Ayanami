@@ -43,15 +43,18 @@ namespace Ayanami {
              * 
              * @param port The port number, 0 for OS delegation
              */
-            void bindSocket(uint16_t port);
+            bool bindSocket(uint16_t port);
 
             /**
              * @brief Establish connection with server
+             * 
+             * @param svr The host name of the server
+             * @param port The port number
              */
-            void connect(char hostName, char hostAliases, int hostAddressType, int addressLength, char hostAddressList);
+            bool connectToServer(string svr, uint16_t port);
 
             /**
-             * @brief Send a message
+             * @brief Send a message to the server
              * 
              * @param message The message
              */
@@ -60,7 +63,7 @@ namespace Ayanami {
             /**
              * @brief Get the File Descriptor 
              * 
-             * @return the integer socket file descriptor
+             * @return The integer socket file descriptor
              */
             int getFileDescriptor();
     };
