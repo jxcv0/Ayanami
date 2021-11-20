@@ -9,7 +9,6 @@ set(
     SOURCES
         TradeTests.cpp
         WebsocketTests.cpp
-        SocketTests.cpp
 )
 
 add_executable(Tests ${SOURCES})
