@@ -1,7 +1,6 @@
 Ayanami
 =======
-A personal project to impliment a trading algorithm in C++ without external libraries
+A personal project to impliment a trading algorithm in C++ using minimal external libraries. In the future, i hope to write out any external dependancies.
 
 Usage
 -----
-* Class `ClientSocket` represents a socket used to connect a client to a remote server.

@@ -8,11 +8,8 @@ enable_testing()
 set(
     SOURCES
         TradeTests.cpp
-        ${PROJECT_SOURCE_DIR}/src/Trade.cpp
         WebsocketTests.cpp
-        ${PROJECT_SOURCE_DIR}/src/Websocket.cpp
         SocketTests.cpp
-        ${PROJECT_SOURCE_DIR}/src/Socket.cpp
 )
 
 add_executable(Tests ${SOURCES})
@@ -20,13 +17,8 @@ add_executable(Tests ${SOURCES})
 target_link_libraries(
     Tests 
         PUBLIC
+            Ayanami
             gtest_main
-)
-
-target_include_directories(
-    Tests
-        PRIVATE
-            ${PROJECT_SOURCE_DIR}/include
 )
 
 add_test(
