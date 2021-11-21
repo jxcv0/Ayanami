@@ -15,6 +15,8 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 
+find_package(cpprestsdk REQUIRED)
+
 set(
   SOURCES
     src/Trade.cpp
@@ -39,7 +41,7 @@ target_include_directories(
 target_link_libraries(
   Ayanami
     PUBLIC
-      cpprestsdk
+      cpprestsdk::cpprest
 )
 
 add_subdirectory(test)
