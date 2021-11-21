@@ -20,7 +20,6 @@ find_package(cpprestsdk REQUIRED)
 set(
   SOURCES
     src/Trade.cpp
-    src/Websocket.cpp
 )
 
 set(
