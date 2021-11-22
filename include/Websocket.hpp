@@ -12,27 +12,15 @@ using namespace web::websockets::client;
 namespace Ayanami{  
 
     /**
-     * @brief An abstract class that represents an Exchange API
+     * @brief An abstract class that represents an Exchange websocket API
      * 
      */
     class Websocket {
 
         protected:
-
-            // the account api key
-            string key;
-
-            // The account api secret
-            string secret;
-
-            // The base endpoint of the websocket
-            string wsEndpoint;
-
+        
             // The websocket client
             websocket_callback_client wsClient;
-
-            // The number of milliseconds until rate limit is reset
-            int rateLimitResetms;
 
         public:
 
@@ -46,17 +34,11 @@ namespace Ayanami{
             Websocket(string key, string secret, string wsEndpoint);
 
             /**
-             * @brief Destroy the Websocket object
-             * 
-             */
-            ~Websocket();
-
-            /**
              * @brief Subscribe to a topic
              * 
              * @param topics The topic
              */
-            void subscribeToTopic(string topics);
+            virtual void subscribeToTopic(string topics);
     };
 }
 

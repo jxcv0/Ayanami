@@ -20,12 +20,15 @@ find_package(cpprestsdk REQUIRED)
 set(
   SOURCES
     src/Trade.cpp
+    src/BybitWebsocket.cpp
 )
 
 set(
   HEADERS
     include/Trade.hpp
     include/Websocket.hpp
+    include/WebsocketMessageHandler.hpp
+    include/APIKeys.hpp
 )
 
 add_library(Ayanami STATIC ${SOURCES} ${HEADERS})

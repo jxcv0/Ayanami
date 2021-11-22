@@ -6,3 +6,6 @@ build/
 
 # googletest
 googletest/
+
+# API keys
+APIKeys.hpp
