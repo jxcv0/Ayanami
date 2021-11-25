@@ -30,6 +30,7 @@ set(
     include/Websocket.hpp
     include/APIKeys.hpp
     include/BybitWSHandler.hpp
+    include/BybitWebsocket.hpp
 )
 
 add_library(Ayanami STATIC ${SOURCES} ${HEADERS})

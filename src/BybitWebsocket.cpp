@@ -1,5 +1,1 @@
-#include "Websocket.hpp"
-
-class BybitWebsocket : Ayanami::Websocket {
-
-};
+#include "BybitWebsocket.hpp"
