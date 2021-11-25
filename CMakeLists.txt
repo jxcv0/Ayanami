@@ -21,14 +21,15 @@ set(
   SOURCES
     src/Trade.cpp
     src/BybitWebsocket.cpp
+    src/BybitWSHandler.cpp
 )
 
 set(
   HEADERS
     include/Trade.hpp
     include/Websocket.hpp
-    include/WebsocketMessageHandler.hpp
     include/APIKeys.hpp
+    include/BybitWSHandler.hpp
 )
 
 add_library(Ayanami STATIC ${SOURCES} ${HEADERS})

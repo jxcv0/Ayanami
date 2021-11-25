@@ -38,7 +38,7 @@ namespace Ayanami{
              * 
              * @param topics The topic
              */
-            virtual void subscribeToTopic(string topics);
+            virtual void generateSubscriptionMessage(string topics);
     };
 }
 
