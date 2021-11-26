@@ -4,9 +4,11 @@
 #include "Websocket.hpp"
 #include <iostream>
 
-class BybitWebsocket : Ayanami::Websocket {
-    public:
-        BybitWebsocket(std::string key, std::string secret);
-};
+namespace Ayanami {
+    class BybitWebsocket : websocket_callback_client {
+        public:
+            BybitWebsocket();
+    };
+}
 
 #endif

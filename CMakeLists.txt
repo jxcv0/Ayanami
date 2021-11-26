@@ -26,7 +26,6 @@ set(
 set(
   HEADERS
     include/Trade.hpp
-    include/Websocket.hpp
     include/APIKeys.hpp
     include/BybitWebsocket.hpp
 )
