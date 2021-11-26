@@ -21,7 +21,6 @@ set(
   SOURCES
     src/Trade.cpp
     src/BybitWebsocket.cpp
-    src/BybitWSHandler.cpp
 )
 
 set(
@@ -29,7 +28,6 @@ set(
     include/Trade.hpp
     include/Websocket.hpp
     include/APIKeys.hpp
-    include/BybitWSHandler.hpp
     include/BybitWebsocket.hpp
 )
 

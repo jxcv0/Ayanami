@@ -8,7 +8,7 @@ enable_testing()
 set(
     SOURCES
         TradeTests.cpp
-        BybitWSHandlerTests.cpp
+        BybitWebsocketTests.cpp
 )
 
 add_executable(Tests ${SOURCES})

@@ -12,14 +12,18 @@ using namespace web::websockets::client;
 namespace Ayanami{  
 
     /**
-     * @brief An abstract class that represents an Exchange websocket API
+     * @brief An abstract class that represents an Exchange websocket API.
+     * Classes implimenting this interface manage subscriptions to Websocket topics.
+     * Each topic has its own function for parsing JSON responses into HashMaps. 
      * 
      */
     class Websocket {
 
         protected:
         
-            // The websocket client
+            /**
+             * The websocket 
+             */
             websocket_callback_client wsClient;
 
         public:
@@ -31,7 +35,7 @@ namespace Ayanami{
              * @param secret api secret
              * @param wsEndpoint The base url of the endpoint 
              */
-            Websocket(string key, string secret, string wsEndpoint);
+            Websocket(string wsEndpoint);
 
             /**
              * @brief Subscribe to a topic
