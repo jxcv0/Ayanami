@@ -21,6 +21,7 @@ set(
   SOURCES
     src/Trade.cpp
     src/BybitWebsocket.cpp
+    src/CoinbaseWebsocket.cpp
 )
 
 set(
@@ -28,6 +29,7 @@ set(
     include/Trade.hpp
     include/APIKeys.hpp
     include/BybitWebsocket.hpp
+    include/CoinbaseWebsocket.hpp
 )
 
 add_library(Ayanami STATIC ${SOURCES} ${HEADERS})

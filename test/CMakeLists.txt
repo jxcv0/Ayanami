@@ -8,6 +8,7 @@ enable_testing()
 set(
     SOURCES
         TradeTests.cpp
+        CoinbaseWebsocketTests.cpp
         BybitWebsocketTests.cpp
 )
 
