@@ -1,7 +1,10 @@
 #include "CoinbaseWebsocket.hpp"
-#include <algorithm>
 
 Ayanami::CoinbaseWebsocket::CoinbaseWebsocket() {};
+
+void Ayanami::CoinbaseWebsocket::connect() {
+    client.connect(web::uri::encode_uri("wss://ws-feed.exchange.coinbase.com"));
+}
 
 web::json::value Ayanami::CoinbaseWebsocket::generateSubscriptionMessage(
     std::vector<std::string> &productIds,

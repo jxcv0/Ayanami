@@ -36,6 +36,12 @@ namespace Ayanami {
             void setAPIKeys(std::string key, std::string secret);
 
             /**
+             * @brief Connect to Websocket
+             * 
+             */
+            void connect();
+
+            /**
              * @brief Generate a JSON subscription message.
              * Each product id will have every declared subscription generated for it.
              * 
