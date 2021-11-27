@@ -1,12 +1,17 @@
-#include "CoinbaseWebsocket.hpp"
+#include "CoinbaseProExchange.hpp"
 
-Ayanami::CoinbaseWebsocket::CoinbaseWebsocket() {};
+Ayanami::CoinbaseProExchange::CoinbaseProExchange() {};
 
-void Ayanami::CoinbaseWebsocket::connect() {
+void Ayanami::CoinbaseProExchange::connectToWebsocket() {
     client.connect(web::uri::encode_uri("wss://ws-feed.exchange.coinbase.com"));
 }
 
-web::json::value Ayanami::CoinbaseWebsocket::generateSubscriptionMessage(
+void Ayanami::CoinbaseProExchange::setAPIKeys(std::string key, std::string secret) {
+    apiKey = key;
+    apiSecret = secret;
+}
+
+web::json::value Ayanami::CoinbaseProExchange::generateSubscriptionMessage(
     std::vector<std::string> &productIds,
     std::vector<std::string> &channels) {
 
@@ -24,4 +29,4 @@ web::json::value Ayanami::CoinbaseWebsocket::generateSubscriptionMessage(
     }
 
     return message;
-};
+}

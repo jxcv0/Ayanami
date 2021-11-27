@@ -1,11 +1,12 @@
 #include <gtest/gtest.h>
 #include <vector>
 #include <cpprest/json.h>
-#include "CoinbaseWebsocket.hpp"
+#include "CoinbaseProExchange.hpp"
 
+// Test that generateSubscriptionMessage() generates correct JSON subscription message.
 TEST(CoinbaseWebsocketTests, generateSubscriptionMessageTest) {
 
-    Ayanami::CoinbaseWebsocket ws;
+    Ayanami::CoinbaseProExchange ws;
 
     std::vector<std::string> productIds;
     productIds.push_back("BTC-USD");
@@ -27,4 +28,9 @@ TEST(CoinbaseWebsocketTests, generateSubscriptionMessageTest) {
     auto actualJSON = ws.generateSubscriptionMessage(productIds, channels);
 
     ASSERT_EQ(expectedJSON.serialize(), actualJSON.serialize());
+}
+
+// Test that Coinbase websocket can successfully open a connection.
+TEST(CoinbaseWebsocketTests, connectionTest) {
+    // TODO
 }

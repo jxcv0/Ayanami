@@ -20,16 +20,16 @@ find_package(cpprestsdk REQUIRED)
 set(
   SOURCES
     src/Trade.cpp
-    src/BybitWebsocket.cpp
-    src/CoinbaseWebsocket.cpp
+    src/CoinbaseProExchange.cpp
+    src/LimitOrderBook.cpp
 )
 
 set(
   HEADERS
     include/Trade.hpp
     include/APIKeys.hpp
-    include/BybitWebsocket.hpp
-    include/CoinbaseWebsocket.hpp
+    include/CoinbaseProExchange.hpp
+    include/LimitOrderBook.hpp
 )
 
 add_library(Ayanami STATIC ${SOURCES} ${HEADERS})

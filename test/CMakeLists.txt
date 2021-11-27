@@ -8,8 +8,8 @@ enable_testing()
 set(
     SOURCES
         TradeTests.cpp
-        CoinbaseWebsocketTests.cpp
-        BybitWebsocketTests.cpp
+        CoinbaseProExchangeTests.cpp
+        LimitOrderBookTests.cpp
 )
 
 add_executable(Tests ${SOURCES})
