@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.18.0)
+cmake_minimum_required(VERSION 3.16.0)
 project(Ayanami VERSION 0.1.0)
 
 # GoogleTest requires at least C++11
@@ -27,7 +27,6 @@ set(
 set(
   HEADERS
     include/Trade.hpp
-    include/APIKeys.hpp
     include/CoinbaseProExchange.hpp
     include/LimitOrderBook.hpp
 )
