@@ -40,6 +40,12 @@ namespace Ayanami {
             LimitOrderBook();
 
             /**
+             * @brief Construct a new Limit Order Book object from a map.
+             * 
+             */
+            LimitOrderBook(std::map<double, double>& map);
+
+            /**
              * @brief Insert a signed value at a price into the orderbook.
              * If the value is 0 then the entry is removed from the orderbook.
              * 

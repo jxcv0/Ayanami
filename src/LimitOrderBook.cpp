@@ -7,6 +7,11 @@ Ayanami::LimitOrderBook::LimitOrderBook() {
     populated = false;
 }
 
+Ayanami::LimitOrderBook::LimitOrderBook(std::map<double, double>& map) {
+    values.insert(map.begin(), map.end());
+    populated = true;
+}
+
 void Ayanami::LimitOrderBook::insert(const double& price, const double& size) {
     if (size != 0) {
         values[price] = size;
@@ -37,26 +42,20 @@ double Ayanami::LimitOrderBook::bestBid() {
 double Ayanami::LimitOrderBook::depth() {
     return std::accumulate(
         std::begin(values), std::end(values), 0,
-        [](double value, const std::map<double, double>::value_type& n)
-            {return value + std::abs(n.second);}
+        [](double i, const std::map<double, double>::value_type& j)
+            {return i + std::abs(j.second);}
     );
 }
 
 double Ayanami::LimitOrderBook::depth(const double &range) {
     std::map<double, double> result;
 
-    // // Copy asks in range -- getAsks().find(bestAsk() * (1 + range)
-    std::copy(getAsks().begin(), getAsks().end(), std::inserter(result, std::begin(result)));
+    // TODO
 
-    // // Copy bids in range
-    // std::copy(getBids().begin() , getBids().find(bestBid() * (1 - range)),
-    //     std::inserter(result, result.end()));
-    
-    // Return depth
     return std::accumulate(
         std::begin(result), std::end(result), 0,
-        [](double value, const std::map<double, double>::value_type& n)
-            {return value + std::abs(n.second);}
+        [](double i, const std::map<double, double>::value_type& j)
+            {return i + std::abs(j.second);}
     );
 }
 
