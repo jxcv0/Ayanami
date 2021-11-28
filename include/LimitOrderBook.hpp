@@ -43,8 +43,8 @@ namespace Ayanami {
              * @brief Insert a signed value at a price into the orderbook.
              * If the value is 0 then the entry is removed from the orderbook.
              * 
-             * @param price the price to insert at.
-             * @param size the value to enter.
+             * @param price the price.
+             * @param size the size.
              */
             void insert(const double &price, const double &size);
 
