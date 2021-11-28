@@ -46,14 +46,14 @@ namespace Ayanami {
              * @param price the price.
              * @param size the size.
              */
-            void insert(const double &price, const double &size);
+            void insert(const double& price, const double& size);
 
             /**
              * @brief Remove an entry from the orderbook.
              * 
              * @param price the price of the entry to remove.
              */
-            void remove(const double &price);
+            void remove(const double& price);
 
             /**
              * @brief Get signed volume of all orders at a price.
@@ -61,7 +61,7 @@ namespace Ayanami {
              * @param price the price level.
              * @return the order volume. 
              */
-            double atPrice(const double &price);
+            double atPrice(const double& price);
 
             /**
              * @brief Set the populated flag.
@@ -69,6 +69,20 @@ namespace Ayanami {
              * @param flag the flag
              */
             void setPopulated(bool flag);
+
+            /**
+             * @brief Get the lowest asking price from the orderbook
+             * 
+             * @return the lowest asking price
+             */
+            double bestAsk();
+
+            /**
+             * @brief Get the highes bidding price from the orderbook.
+             * 
+             * @return double 
+             */
+            double bestBid();
 
             /**
              * @brief Calculate the total (unsigned) volume of the orderbook.
@@ -83,7 +97,23 @@ namespace Ayanami {
              * 
              * @param range the percentage range to include.
              */
-            double depth(const double &range);
+            double depth(const double& range);
+            
+            /**
+             * @brief Get the all asks from the orderbook.
+             * Returns all orders with size < 0;
+             * 
+             * @return the asks
+             */
+            std::map<double, double> getAsks();
+
+            /**
+             * @brief Get the all bids from the orderbook.
+             * Returns all orders with size > 0;
+             * 
+             * @return the bids
+             */
+            std::map<double, double> getBids();
     };
 }
 
