@@ -104,5 +104,6 @@ TEST(LimitOrderBookTests, partialdepthTest) {
     lob.insert(98, 100);
     lob.insert(97, 100);
 
-    ASSERT_EQ(200, lob.depth(0.01));
+    ASSERT_EQ(400, lob.depth(1));
+    ASSERT_EQ(600, lob.depth(2));
 }

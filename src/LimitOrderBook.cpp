@@ -50,7 +50,19 @@ double Ayanami::LimitOrderBook::depth() {
 double Ayanami::LimitOrderBook::depth(const double &range) {
     std::map<double, double> result;
 
-    // TODO
+    // This works, but needs to be faster. Why doesnt std::copy_if() work???
+    for (std::map<double, double>::value_type& i : getAsks()) {
+        if (i.first <= (bestAsk() + range)) {
+            result.insert(i);
+        }
+    }
+
+    // See above
+    for (std::map<double, double>::value_type& i : getBids()) {
+        if (i.first >= (bestBid() - range)) {
+            result.insert(i);
+        }
+    }
 
     return std::accumulate(
         std::begin(result), std::end(result), 0,

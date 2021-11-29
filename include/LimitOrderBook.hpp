@@ -98,10 +98,10 @@ namespace Ayanami {
             double depth();
 
             /**
-             * @brief Calculate the (unsigned) volume of the orderbook within a percentage
+             * @brief Calculate the (unsigned) volume of the orderbook within a price
              * range of the best bid and ask prices.
              * 
-             * @param range the percentage range to include.
+             * @param range the price range.
              */
             double depth(const double& range);
             
