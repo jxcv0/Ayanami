@@ -8,7 +8,6 @@ enable_testing()
 set(
     SOURCES
         TradeTests.cpp
-        CoinbaseProExchangeTests.cpp
         LimitOrderBookTests.cpp
 )
 
