@@ -31,6 +31,7 @@ double Ayanami::LimitOrderBook::atPrice(const double& price) {
 void Ayanami::LimitOrderBook::setPopulated(bool flag) {
     populated = flag;
 }
+
 double Ayanami::LimitOrderBook::bestAsk() {
     return getAsks().begin()->first;
 }
@@ -66,8 +67,8 @@ double Ayanami::LimitOrderBook::depth(const double &range) {
 
     return std::accumulate(
         std::begin(result), std::end(result), 0,
-        [](double i, const std::map<double, double>::value_type& j)
-            {return i + std::abs(j.second);}
+        [](double d, const std::map<double, double>::value_type& i)
+            {return d + std::abs(i.second);}
     );
 }
 
@@ -85,4 +86,35 @@ std::map<double, double> Ayanami::LimitOrderBook::getBids() {
         [](const std::map<double, double>::value_type& n){return (n.second > 0);}
     );
     return bids;
+}
+
+double Ayanami::LimitOrderBook::delta() {
+    return std::accumulate(values.begin(), values.end(), 0,
+        [](double d, const std::map<double, double>::value_type& i)
+            {return d + i.second;}
+    );
+}
+
+double Ayanami::LimitOrderBook::delta(const double& range) {
+    std::map<double, double> result;
+
+    // This works, but needs to be faster. Why doesnt std::copy_if() work???
+    for (std::map<double, double>::value_type& i : getAsks()) {
+        if (i.first <= (bestAsk() + range)) {
+            result.insert(i);
+        }
+    }
+
+    // See above
+    for (std::map<double, double>::value_type& i : getBids()) {
+        if (i.first >= (bestBid() - range)) {
+            result.insert(i);
+        }
+    }
+
+    return std::accumulate(
+        std::begin(result), std::end(result), 0,
+        [](double d, const std::map<double, double>::value_type& i)
+            {return d + i.second;}
+    );
 }

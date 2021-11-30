@@ -107,3 +107,28 @@ TEST(LimitOrderBookTests, partialdepthTest) {
     ASSERT_EQ(400, lob.depth(1));
     ASSERT_EQ(600, lob.depth(2));
 }
+
+TEST(LimitOrderBookTests, deltaTest) {
+    Ayanami::LimitOrderBook lob;
+    lob.insert(102, -100);
+    lob.insert(101, -100);
+    lob.insert(100, 100);
+    lob.insert(99, 100);
+    lob.insert(98, 100);
+    lob.insert(97, 100);
+
+    ASSERT_EQ(200, lob.delta());
+}
+
+TEST(LimitOrderBookTests, partialDeltaTest) {
+    Ayanami::LimitOrderBook lob;
+    lob.insert(103, -100);
+    lob.insert(102, -100);
+    lob.insert(101, -50);
+    lob.insert(100, 70);
+    lob.insert(99, 100);
+    lob.insert(98, 100);
+    lob.insert(97, 100);
+
+    ASSERT_EQ(20, lob.delta(1));
+}
