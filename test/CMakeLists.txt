@@ -9,6 +9,7 @@ set(
     SOURCES
         TradeTests.cpp
         LimitOrderBookTests.cpp
+        TradeSeriesTests.cpp
 )
 
 add_executable(Tests ${SOURCES})

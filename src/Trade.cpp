@@ -1,26 +1,24 @@
 #include "Trade.hpp"
 
-using namespace std;
-
-Ayanami::Trade::Trade(int t, double p, double q, string sym) {
-    time = t;
-    price = p;
-    qty = q;
-    symbol = sym;
+Ayanami::Trade::Trade(const int& time, const double& price, const double& qty, const std::string& symbol) {
+    _time = time;
+    _price = price;
+    _qty = qty;
+    _symbol = symbol;
 }
 
 int Ayanami::Trade::getTime() {
-    return time;
+    return _time;
 }
 
 double Ayanami::Trade::getPrice() {
-    return price;
+    return _price;
 }
 
 double Ayanami::Trade::getQty() {
-    return qty;
+    return _qty;
 }
 
-string Ayanami::Trade::getSymbol() {
-    return symbol;
+std::string Ayanami::Trade::getSymbol() {
+    return _symbol;
 }

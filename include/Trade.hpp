@@ -3,8 +3,6 @@
 
 #include <iostream>
 
-using namespace std;
-
 namespace Ayanami {
     // Represents a trade event
    class Trade {
@@ -14,35 +12,35 @@ namespace Ayanami {
             /**
              * The unix at which the trade occured
              */
-            int time;
+            int _time;
 
             /**
              * the price at which the trade occured
              */
-            double price;
+            double _price;
 
             /**
              * The signed trade volume
              * sell orders have a negative sign
              */
-            double qty;
+            double _qty;
 
             /**
              * The traded symbol/pair, i.e, "BTCUSD"
              */
-            string symbol;
+            std::string _symbol;
             
         public:
 
             /**
              * @brief Construct a new Trade object
              * 
-             * @param t The unix time
-             * @param p The price
-             * @param q The quantity
-             * @param sym The trades symbol
+             * @param time the unix time
+             * @param price the price
+             * @param qty the quantity
+             * @param symbol the trade symbol
              */
-            Trade(int t, double p, double q, string sym);
+            Trade(const int& time, const double& price, const double& qty, const std::string& symbol);
 
             /**
              * @brief Get the time
@@ -70,7 +68,7 @@ namespace Ayanami {
              * 
              * @return The symbol as string
              */
-            string getSymbol();
+            std::string getSymbol();
     };
 }
 
