@@ -7,21 +7,20 @@ enable_testing()
 
 set(
     SOURCES
-        TradeTests.cpp
         LimitOrderBookTests.cpp
         TradeSeriesTests.cpp
 )
 
-add_executable(Tests ${SOURCES})
+add_executable(AyanamiTests ${SOURCES})
 
 target_link_libraries(
-    Tests 
+    AyanamiTests 
         PUBLIC
             Ayanami
             gtest_main
 )
 
 add_test(
-    NAME Tests
-    COMMAND Tests
+    NAME AyanamiTests
+    COMMAND AyanamiTests
 )
