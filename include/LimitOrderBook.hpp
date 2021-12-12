@@ -15,6 +15,9 @@ namespace Ayanami {
      */
     class LimitOrderBook {
         private:
+
+            std::string _symbol;
+            
             /**
              * @brief A map containing the values of the orderbook.
              * Used to get the total volume of orders at price levels.
@@ -37,13 +40,13 @@ namespace Ayanami {
              * Populated flag defaults to false;
              * 
              */
-            LimitOrderBook();
+            LimitOrderBook(std::string symbol);
 
             /**
              * @brief Construct a new Limit Order Book object from a map.
              * 
              */
-            LimitOrderBook(std::map<double, double>& map);
+            LimitOrderBook(std::string symbol, std::map<double, double>& map);
 
             /**
              * @brief Insert a signed value at a price into the orderbook.

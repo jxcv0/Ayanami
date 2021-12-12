@@ -3,7 +3,7 @@
 
 // Test that insert() can add, overwrite, and remove values.
 TEST(LimitOrderBookTests, insertTest) {
-    Ayanami::LimitOrderBook lob;
+    Ayanami::LimitOrderBook lob("test");
 
     // Insert
     double price = 1000.45;
@@ -23,7 +23,7 @@ TEST(LimitOrderBookTests, insertTest) {
 }
 
 TEST(LimitOrderBookTests, getAsksTest) {
-    Ayanami::LimitOrderBook lob;
+    Ayanami::LimitOrderBook lob("test");
     lob.insert(104, -100);
     lob.insert(103, -100);
     lob.insert(102, -100);
@@ -44,7 +44,7 @@ TEST(LimitOrderBookTests, getAsksTest) {
 }
 
 TEST(LimitOrderBookTests, getBidsTest) {
-    Ayanami::LimitOrderBook lob;
+    Ayanami::LimitOrderBook lob("test");
     lob.insert(104, -100);
     lob.insert(103, -100);
     lob.insert(102, -100);
@@ -65,7 +65,7 @@ TEST(LimitOrderBookTests, getBidsTest) {
 }
 
 TEST(LimitOrderBookTests, bestBidAskTest) {
-    Ayanami::LimitOrderBook lob;
+    Ayanami::LimitOrderBook lob("test");
     lob.insert(104, -100);
     lob.insert(103, -100);
     lob.insert(102, -100);
@@ -80,7 +80,7 @@ TEST(LimitOrderBookTests, bestBidAskTest) {
 }
 
 TEST(LimitOrderBookTests, totaldepthTest) {
-    Ayanami::LimitOrderBook lob;
+    Ayanami::LimitOrderBook lob("test");
     lob.insert(104, -100);
     lob.insert(103, -100);
     lob.insert(102, -100);
@@ -94,7 +94,7 @@ TEST(LimitOrderBookTests, totaldepthTest) {
 }
 
 TEST(LimitOrderBookTests, partialdepthTest) {
-    Ayanami::LimitOrderBook lob;
+    Ayanami::LimitOrderBook lob("test");
     lob.insert(104, -100);
     lob.insert(103, -100);
     lob.insert(102, -100);
@@ -109,7 +109,7 @@ TEST(LimitOrderBookTests, partialdepthTest) {
 }
 
 TEST(LimitOrderBookTests, deltaTest) {
-    Ayanami::LimitOrderBook lob;
+    Ayanami::LimitOrderBook lob("test");
     lob.insert(102, -100);
     lob.insert(101, -100);
     lob.insert(100, 100);
@@ -121,7 +121,7 @@ TEST(LimitOrderBookTests, deltaTest) {
 }
 
 TEST(LimitOrderBookTests, partialDeltaTest) {
-    Ayanami::LimitOrderBook lob;
+    Ayanami::LimitOrderBook lob("test");
     lob.insert(103, -100);
     lob.insert(102, -100);
     lob.insert(101, -50);

@@ -3,11 +3,12 @@
 #include <algorithm>
 #include <vector>
 
-Ayanami::LimitOrderBook::LimitOrderBook() {
+Ayanami::LimitOrderBook::LimitOrderBook(std::string symbol) {
+    _symbol = symbol;
     populated = false;
 }
 
-Ayanami::LimitOrderBook::LimitOrderBook(std::map<double, double>& map) {
+Ayanami::LimitOrderBook::LimitOrderBook(std::string symbol, std::map<double, double>& map) {
     values.insert(map.begin(), map.end());
     populated = true;
 }
