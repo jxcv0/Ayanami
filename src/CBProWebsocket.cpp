@@ -19,6 +19,10 @@ Ayanami::LimitOrderBook Ayanami::CBProWebsocket::addLOB(const std::string& produ
     return lob;
 };
 
+void Ayanami::CBProWebsocket::proccessSnapshotMsg(web::websockets::client::websocket_incoming_message msg) {
+    
+}
+
 int Ayanami::CBProWebsocket::getLOBCount() {
     return lobs.size();
 };

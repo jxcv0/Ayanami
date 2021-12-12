@@ -141,6 +141,13 @@ namespace Ayanami {
              * @return the order imbalance.
              */
             double delta(const double& range);
+
+            /**
+             * @brief Get the Symbol of the LOB
+             * 
+             * @return the symbol 
+             */
+            std::string getSymbol();
     };
 }
 

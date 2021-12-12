@@ -119,3 +119,7 @@ double Ayanami::LimitOrderBook::delta(const double& range) {
             {return d + i.second;}
     );
 }
+
+std::string Ayanami::LimitOrderBook::getSymbol() {
+    return _symbol;
+};
