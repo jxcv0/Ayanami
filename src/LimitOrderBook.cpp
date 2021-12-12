@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <vector>
 
-Ayanami::LimitOrderBook::LimitOrderBook(std::string symbol) {
+Ayanami::LimitOrderBook::LimitOrderBook(const std::string& symbol) {
     _symbol = symbol;
     populated = false;
 }

@@ -39,8 +39,9 @@ namespace Ayanami {
              * @brief Construct a new Limit Order Book object
              * Populated flag defaults to false;
              * 
+             * @param symbol the symbol of the asset
              */
-            LimitOrderBook(std::string symbol);
+            LimitOrderBook(const std::string& symbol);
 
             /**
              * @brief Construct a new Limit Order Book object from a map.

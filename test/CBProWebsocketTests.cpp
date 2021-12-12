@@ -2,6 +2,12 @@
 #include "CBProWebsocket.hpp"
 #include <cpprest/json.h>
 
+TEST(CBProWebsocketTests, addLOBTest) {
+    Ayanami::CBProWebsocket ws;
+    Ayanami::LimitOrderBook btcusdLOB = ws.addLOB("BTC-USD");
+    ASSERT_EQ(ws.getLOBCount(), 1);
+}
+
 TEST(CBProWebsocketTests, parseSnapshotMessageTest) {
 
     // Create snapshot message

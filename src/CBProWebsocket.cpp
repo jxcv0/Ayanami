@@ -14,5 +14,11 @@ std::string Ayanami::CBProWebsocket::createSubscribeMsg(const std::string& produ
 };
 
 Ayanami::LimitOrderBook Ayanami::CBProWebsocket::addLOB(const std::string& productId) {
-    
+    Ayanami::LimitOrderBook lob(productId);
+    lobs.push_back(lob);
+    return lob;
+};
+
+int Ayanami::CBProWebsocket::getLOBCount() {
+    return lobs.size();
 };

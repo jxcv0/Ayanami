@@ -20,7 +20,6 @@ namespace Ayanami {
 
             std::string baseURI;
 
-            // TODO
             std::vector<LimitOrderBook> lobs;
 
             std::vector<TradeSeries::Series> series;
@@ -60,7 +59,13 @@ namespace Ayanami {
              * @param msg the message to proccess
              */
             void proccessSnapshotMsg(web::websockets::client::websocket_incoming_message msg);
-            
+
+            /**
+             * @brief Get the number of LOBs added to this websocket
+             * 
+             * @return the number of LimitOrderBooks
+             */
+            int getLOBCount();
     };
 } // namespace Ayanami
 
