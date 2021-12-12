@@ -21,12 +21,14 @@ set(
   SOURCES
     src/LimitOrderBook.cpp
     src/TradeSeries.cpp
+    src/CBProWebsocket.cpp
 )
 
 set(
   HEADERS
     include/LimitOrderBook.hpp
     include/TradeSeries.hpp
+    include/CBProWebsocket.hpp
 )
 
 add_library(Ayanami STATIC ${SOURCES} ${HEADERS})
