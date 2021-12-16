@@ -25,20 +25,20 @@ void Ayanami::LimitOrderBook::remove(const double& price) {
     values.erase(price);
 }   
 
-double Ayanami::LimitOrderBook::atPrice(const double& price) {
+double Ayanami::LimitOrderBook::at_price(const double& price) {
     return values.at(price);
 }
 
-void Ayanami::LimitOrderBook::setPopulated(bool flag) {
+void Ayanami::LimitOrderBook::set_populated(bool flag) {
     populated = flag;
 }
 
-double Ayanami::LimitOrderBook::bestAsk() {
-    return getAsks().begin()->first;
+double Ayanami::LimitOrderBook::best_ask() {
+    return get_asks().begin()->first;
 }
 
-double Ayanami::LimitOrderBook::bestBid() {
-    return getBids().crbegin()->first;
+double Ayanami::LimitOrderBook::best_bid() {
+    return get_bids().crbegin()->first;
 }
 
 double Ayanami::LimitOrderBook::depth() {
@@ -53,15 +53,15 @@ double Ayanami::LimitOrderBook::depth(const double &range) {
     std::map<double, double> result;
 
     // This works, but needs to be faster. Why doesnt std::copy_if() work???
-    for (std::map<double, double>::value_type& i : getAsks()) {
-        if (i.first <= (bestAsk() + range)) {
+    for (std::map<double, double>::value_type& i : get_asks()) {
+        if (i.first <= (best_ask() + range)) {
             result.insert(i);
         }
     }
 
     // See above
-    for (std::map<double, double>::value_type& i : getBids()) {
-        if (i.first >= (bestBid() - range)) {
+    for (std::map<double, double>::value_type& i : get_bids()) {
+        if (i.first >= (best_bid() - range)) {
             result.insert(i);
         }
     }
@@ -73,7 +73,7 @@ double Ayanami::LimitOrderBook::depth(const double &range) {
     );
 }
 
-std::map<double, double> Ayanami::LimitOrderBook::getAsks() {
+std::map<double, double> Ayanami::LimitOrderBook::get_asks() {
     std::map<double, double> asks;
     std::copy_if(values.begin(), values.end(), std::inserter(asks, std::begin(asks)),
         [](const std::map<double, double>::value_type& n){return (n.second < 0);}
@@ -81,7 +81,7 @@ std::map<double, double> Ayanami::LimitOrderBook::getAsks() {
     return asks;
 }
 
-std::map<double, double> Ayanami::LimitOrderBook::getBids() {
+std::map<double, double> Ayanami::LimitOrderBook::get_bids() {
     std::map<double, double> bids;
     std::copy_if(values.begin(), values.end(), std::inserter(bids, std::begin(bids)),
         [](const std::map<double, double>::value_type& n){return (n.second > 0);}
@@ -99,16 +99,16 @@ double Ayanami::LimitOrderBook::delta() {
 double Ayanami::LimitOrderBook::delta(const double& range) {
     std::map<double, double> result;
 
-    // This works, but needs to be faster. Why doesnt std::copy_if() work???
-    for (std::map<double, double>::value_type& i : getAsks()) {
-        if (i.first <= (bestAsk() + range)) {
+    // This works, but needs to be faster. Why doesnt std::copy_if() work here
+    for (std::map<double, double>::value_type& i : get_asks()) {
+        if (i.first <= (best_ask() + range)) {
             result.insert(i);
         }
     }
 
     // See above
-    for (std::map<double, double>::value_type& i : getBids()) {
-        if (i.first >= (bestBid() - range)) {
+    for (std::map<double, double>::value_type& i : get_bids()) {
+        if (i.first >= (best_bid() - range)) {
             result.insert(i);
         }
     }
@@ -120,6 +120,6 @@ double Ayanami::LimitOrderBook::delta(const double& range) {
     );
 }
 
-std::string Ayanami::LimitOrderBook::getSymbol() {
+std::string Ayanami::LimitOrderBook::symbol() const {
     return _symbol;
 };

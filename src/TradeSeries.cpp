@@ -10,7 +10,7 @@ int Ayanami::TradeSeries::Series::size() {
     return series.size();
 }
 
-void Ayanami::TradeSeries::Series::addTrade(const long& time, const double& price, const double& qty) {
+void Ayanami::TradeSeries::Series::add_trade(const long& time, const double& price, const double& qty) {
     series.insert(std::make_pair(time, Trade(price, qty)));
     trim();
 };

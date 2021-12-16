@@ -3,8 +3,10 @@ project(Ayanami VERSION 0.1.0)
 
 # GoogleTest requires at least C++11
 set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_BUILD_TYPE Debug)
 
 enable_testing()
+
 
 include(FetchContent)
 
@@ -16,6 +18,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 
 find_package(cpprestsdk REQUIRED)
+# boost?
 
 set(
   SOURCES
