@@ -9,17 +9,17 @@ TEST(LimitOrderBookTests, insertTest) {
     double price = 1000.45;
     double size = 100.0;
     lob.insert(price, size);
-    ASSERT_EQ(100.0, lob.atPrice(1000.45));
+    ASSERT_EQ(100.0, lob.at_price(1000.45));
 
     // Overwrite
     double newSize = 99.85;
     lob.insert(price, newSize);
-    ASSERT_EQ(99.85, lob.atPrice(price));
+    ASSERT_EQ(99.85, lob.at_price(price));
 
     // Remove
     double removeWithZero = 0;
     lob.insert(price, removeWithZero);
-    EXPECT_ANY_THROW(lob.atPrice(price));
+    EXPECT_ANY_THROW(lob.at_price(price));
 }
 
 TEST(LimitOrderBookTests, getAsksTest) {
@@ -40,7 +40,7 @@ TEST(LimitOrderBookTests, getAsksTest) {
         {101, -100},
     };
 
-    ASSERT_EQ(asks, lob.getAsks());
+    ASSERT_EQ(asks, lob.get_asks());
 }
 
 TEST(LimitOrderBookTests, getBidsTest) {
@@ -61,7 +61,7 @@ TEST(LimitOrderBookTests, getBidsTest) {
         {97, 100},
     };
 
-    ASSERT_EQ(bids, lob.getBids());
+    ASSERT_EQ(bids, lob.get_bids());
 }
 
 TEST(LimitOrderBookTests, bestBidAskTest) {
@@ -75,8 +75,8 @@ TEST(LimitOrderBookTests, bestBidAskTest) {
     lob.insert(98, 100);
     lob.insert(97, 100);
 
-    ASSERT_EQ(100, lob.bestBid());
-    ASSERT_EQ(101, lob.bestAsk());
+    ASSERT_EQ(100, lob.best_bid());
+    ASSERT_EQ(101, lob.best_ask());
 }
 
 TEST(LimitOrderBookTests, totaldepthTest) {
