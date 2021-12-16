@@ -9,7 +9,6 @@ set(
     SOURCES
         LimitOrderBookTests.cpp
         TradeSeriesTests.cpp
-        CBProWebsocketTests.cpp
 )
 
 add_executable(Tests ${SOURCES})
