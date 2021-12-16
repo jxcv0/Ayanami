@@ -39,8 +39,9 @@ namespace Ayanami {
              * @brief Construct a new Limit Order Book object
              * Populated flag defaults to false;
              * 
+             * @param symbol the symbol of the asset
              */
-            LimitOrderBook(std::string symbol);
+            LimitOrderBook(const std::string& symbol);
 
             /**
              * @brief Construct a new Limit Order Book object from a map.
@@ -70,28 +71,28 @@ namespace Ayanami {
              * @param price the price level.
              * @return the order volume. 
              */
-            double atPrice(const double& price);
+            double at_price(const double& price);
 
             /**
              * @brief Set the populated flag.
              * 
              * @param flag the flag
              */
-            void setPopulated(bool flag);
+            void set_populated(bool flag);
 
             /**
              * @brief Get the lowest asking price from the orderbook
              * 
              * @return the lowest asking price
              */
-            double bestAsk();
+            double best_ask();
 
             /**
              * @brief Get the highes bidding price from the orderbook.
              * 
              * @return double 
              */
-            double bestBid();
+            double best_bid();
 
             /**
              * @brief Calculate the total (unsigned) volume of the orderbook.
@@ -114,7 +115,7 @@ namespace Ayanami {
              * 
              * @return the asks.
              */
-            std::map<double, double> getAsks();
+            std::map<double, double> get_asks();
 
             /**
              * @brief Get the all bids from the orderbook.
@@ -122,7 +123,7 @@ namespace Ayanami {
              * 
              * @return the bids.
              */
-            std::map<double, double> getBids();
+            std::map<double, double> get_bids();
 
             /**
              * @brief Calculate the order imbalance of the orderbooks.
@@ -140,6 +141,13 @@ namespace Ayanami {
              * @return the order imbalance.
              */
             double delta(const double& range);
+
+            /**
+             * @brief Get the Symbol of the LOB
+             * 
+             * @return the symbol 
+             */
+            std::string symbol() const;
     };
 }
 

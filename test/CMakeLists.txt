@@ -9,18 +9,19 @@ set(
     SOURCES
         LimitOrderBookTests.cpp
         TradeSeriesTests.cpp
+        CBProWebsocketTests.cpp
 )
 
-add_executable(AyanamiTests ${SOURCES})
+add_executable(Tests ${SOURCES})
 
 target_link_libraries(
-    AyanamiTests 
+    Tests 
         PUBLIC
             Ayanami
             gtest_main
 )
 
 add_test(
-    NAME AyanamiTests
-    COMMAND AyanamiTests
+    NAME Tests
+    COMMAND Tests
 )

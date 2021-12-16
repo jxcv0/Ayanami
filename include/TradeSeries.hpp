@@ -65,7 +65,7 @@ namespace Ayanami {
                  * @param price the executed price of the trade
                  * @param qty the signed volume of the trade
                  */
-                void addTrade(const long& time, const double& price, const double& qty);
+                void add_trade(const long& time, const double& price, const double& qty);
 
                 /**
                  * @brief Manages the size of the series
