@@ -7,7 +7,7 @@ enable_testing()
 
 set(
     SOURCES
-        LimitOrderBookTests.cpp
+        ExchangeTests.cpp
         TradeSeriesTests.cpp
 )
 

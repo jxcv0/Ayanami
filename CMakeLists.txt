@@ -22,13 +22,13 @@ find_package(cpprestsdk REQUIRED)
 
 set(
   SOURCES
-    src/LimitOrderBook.cpp
+    src/Exchange.cpp
     src/TradeSeries.cpp
 )
 
 set(
   HEADERS
-    include/LimitOrderBook.hpp
+    include/Exchange.hpp
     include/TradeSeries.hpp
 )
 
