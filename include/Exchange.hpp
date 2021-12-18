@@ -10,40 +10,32 @@
 namespace Ayanami {
 
     /**
-     * @brief Represents an exchange orderbook
+     * @brief Connections to and data from exchanges
      * 
      */
-    class Exchange {
-        
+    namespace Exchange {
+
         /**
-         * @brief The symbol enums of the Bybit API
+         * @brief Represents an exchange
          * 
          */
-        enum class BybitSymbol {
-            BTCUSD,
-            ETHUSD,
-            EOSUSD,
-            XRPUSD,
-            DOTUSD
-        };
-
-        private:
+        class Exchange {
 
             /**
              * Orderbooks of all connected markets on exchange
              * 
              */
             std::map<std::string, std::map<double, double>> limitOrderBooks;
-        
+            
         public:
-
             /**
              * @brief Connect to all symbols on bybit exchange via websocket
              * 
              */
             void connect_to_ws();
 
-    };
+        };
+    }
 }
 
 #endif

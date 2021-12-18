@@ -18,16 +18,18 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 
 find_package(cpprestsdk REQUIRED)
-# boost?
+find_package(Boost 1.71.0 REQUIRED)
 
 set(
   SOURCES
+    src/BybitWS.cpp
     src/Exchange.cpp
     src/TradeSeries.cpp
 )
 
 set(
   HEADERS
+    include/BybitWS.hpp
     include/Exchange.hpp
     include/TradeSeries.hpp
 )
@@ -39,12 +41,14 @@ target_include_directories(
     PUBLIC
       ${PROJECT_SOURCE_DIR}/include
       ${PROJECT_SOURCE_DIR}/build/_deps/cpprestsdk-src/Release/include/cpprest
+      ${Boost_INCLUDE_DIRS}
 )
 
 target_link_libraries(
   Ayanami
     PUBLIC
       cpprestsdk::cpprest
+      ${Boost_LIBRARIES}
 )
 
 add_subdirectory(test)
