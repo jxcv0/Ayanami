@@ -33,6 +33,7 @@ namespace Ayanami {
             tcp::resolver resolver_;
             websocket::stream<beast::tcp_stream> ws_;
             beast::flat_buffer buffer_;
+            std::string host_;
 
         public:
 
@@ -44,18 +45,56 @@ namespace Ayanami {
             explicit BybitWS(net::io_context& ioc);
 
             /**
-             * @brief Find domain name and start async operation
+             * @brief start async operation
              * 
              */
             void run();
 
             /**
-             * @brief 
+             * @brief Actions on resolve
              * 
-             * @param ec the boost/beast error code
-             * @param results the endpoints
+             * @param ec boost/beast error code
+             * @param results results of on_resolve
              */
             void on_resolve(beast::error_code ec, tcp::resolver::results_type results);
+
+            /**
+             * @brief Actions on connect
+             * 
+             * @param ec boost/beast error code
+             * @param ep endpoints
+             */
+            void on_connect(beast::error_code ec, tcp::resolver::endpoint_type ep);
+
+            /**
+             * @brief Actions on handshake
+             * 
+             * @param ec boost/beast error code
+             */
+            void on_handshake(beast::error_code ec);
+
+            /**
+             * @brief Actions on write
+             * 
+             * @param ec boost/beast error code
+             * @param bytes_transferred bytes transferred
+             */
+            void on_write(beast::error_code ec, std::size_t bytes_transferred);
+
+            /**
+             * @brief Actions on read
+             * 
+             * @param ec boost/beast error code
+             * @param bytes_transferred bytes transferred
+             */
+            void on_read(beast::error_code ec, std::size_t bytes_transferred);
+
+            /**
+             * @brief Acions on close
+             * 
+             * @param ec boost/beast error code
+             */
+            void on_close(beast::error_code ec);
         };
     } // namespace Exchange
 } // namespace Ayanami
