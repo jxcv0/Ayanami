@@ -2,16 +2,18 @@
 #define BYBITWS_HPP
 
 #include <boost/beast/core.hpp>
+#include <boost/beast/ssl.hpp>
 #include <boost/beast/http.hpp>
 #include <boost/beast/websocket.hpp>
 
 #include <memory>
 
-namespace beast = boost::beast;
-namespace http = beast::http;
-namespace websocket = beast::websocket;
-namespace net = boost::asio;
-using tcp = boost::asio::ip::tcp;
+namespace beast = boost::beast;         
+namespace http = beast::http;           
+namespace websocket = beast::websocket; 
+namespace net = boost::asio;            
+namespace ssl = boost::asio::ssl;       
+using tcp = boost::asio::ip::tcp;       
 
 /**
  * @brief Cryprocurrency trading library
@@ -31,7 +33,7 @@ namespace Ayanami {
          */
         class BybitWS : public std::enable_shared_from_this<BybitWS> {
             tcp::resolver resolver_;
-            websocket::stream<beast::tcp_stream> ws_;
+            websocket::stream<beast::ssl_stream<beast::tcp_stream>> ws_;
             beast::flat_buffer buffer_;
             std::string host_;
 
@@ -65,6 +67,13 @@ namespace Ayanami {
              * @param ep endpoints
              */
             void on_connect(beast::error_code ec, tcp::resolver::endpoint_type ep);
+
+            /**
+             * @brief Actions on ssl handshake
+             * 
+             * @param ec boost/beast error code
+             */
+            void on_ssl_handshake(beast::error_code ec);
 
             /**
              * @brief Actions on handshake

@@ -1,6 +1,8 @@
 #include "BybitWS.hpp"
 
 #include <boost/asio/strand.hpp>
+#include <boost/beast/websocket/ssl.hpp>
+#include <boost/beast/ssl.hpp>
 
 #include <iostream>
 #include <memory>
@@ -10,8 +12,8 @@ Ayanami::Exchange::BybitWS::BybitWS(net::io_context& ioc)
     , ws_(net::make_strand(ioc)){};
 
 void Ayanami::Exchange::BybitWS::run() {
-
-    auto const host = "wss://stream.bybit.com/realtime";
+    //"wss://stream.bybit.com/realtime"
+    auto const host = "stream.bybit.com";
     auto const port = "80";
     host_ = host;
 
@@ -40,21 +42,45 @@ void Ayanami::Exchange::BybitWS::on_connect(beast::error_code ec, tcp::resolver:
         std::cerr << "On Connect: " << ec.message() << "\n"; 
     }
 
-    beast::get_lowest_layer(ws_).expires_never();
+    beast::get_lowest_layer(ws_).expires_after(std::chrono::seconds(30));
 
-    ws_.set_option(websocket::stream_base::timeout::suggested(beast::role_type::client));
-    
-    ws_.set_option(websocket::stream_base::decorator(
-        [](websocket::request_type& req){
-            req.set(http::field::user_agent, std::string(BOOST_BEAST_VERSION_STRING)
-                + "websocket-client-async");
-        }
-    ));
+    if (!SSL_set_tlsext_host_name(ws_.next_layer().native_handle(), host_.c_str())) {
+        ec = beast::error_code(
+            static_cast<int>(::ERR_get_error()),
+            net::error::get_ssl_category()
+        );
+        std::cerr << "On Connect: " << ec.message() << "\n"; 
+    }
 
     host_ += ':' + std::to_string(ep.port());
 
-    ws_.async_handshake(
-        host_, "/", 
+    ws_.next_layer().async_handshake(
+        ssl::stream_base::client,
+        beast::bind_front_handler(&BybitWS::on_ssl_handshake, shared_from_this())
+    );
+};
+
+void Ayanami::Exchange::BybitWS::on_ssl_handshake(beast::error_code ec) {
+    if (ec) {
+        std::cerr << "On Handshake: " << ec.message() << "\n"; 
+    }
+
+    beast::get_lowest_layer(ws_).expires_never();
+
+    ws_.set_option(
+        websocket::stream_base::timeout::suggested(beast::role_type::client))
+    );
+
+    ws_.set_option(
+        websocket::stream_base::decorator(
+            [](websocket::request_type& req) {
+                req.set(http::field::user_agent,
+                std::string(BOOST_BEAST_VERSION_STRING) + 
+                " websocket-client-async-ssl");
+            })
+    );
+
+    ws_.async_handshake(host_, "/",
         beast::bind_front_handler(&BybitWS::on_handshake, shared_from_this())
     );
 };
@@ -66,7 +92,7 @@ void Ayanami::Exchange::BybitWS::on_handshake(beast::error_code ec) {
 
     // TODO Subscribe here
     ws_.async_write(
-        net::buffer("ping"),
+        net::buffer("/realtime"),
         beast::bind_front_handler(&BybitWS::on_write, shared_from_this())
     );
 };
@@ -99,7 +125,7 @@ void Ayanami::Exchange::BybitWS::on_read(beast::error_code ec, std::size_t bytes
 
 void Ayanami::Exchange::BybitWS::on_close(beast::error_code ec) {
     if (ec) {
-        std::cerr << "On Read: " << ec.message() << "\n"; 
+        std::cerr << "On Close: " << ec.message() << "\n"; 
     }
 
     // Parse here?
