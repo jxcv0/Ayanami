@@ -22,14 +22,14 @@ find_package(Boost 1.71.0 REQUIRED)
 
 set(
   SOURCES
-    src/BybitWS.cpp
+    src/BybitWSSession.cpp
     src/Exchange.cpp
     src/TradeSeries.cpp
 )
 
 set(
   HEADERS
-    include/BybitWS.hpp
+    include/BybitWSSession.hpp
     include/Exchange.hpp
     include/TradeSeries.hpp
 )
