@@ -5,6 +5,7 @@
 #include <boost/beast/ssl.hpp>
 #include <boost/beast/http.hpp>
 #include <boost/beast/websocket.hpp>
+#include <boost/beast/websocket/ssl.hpp>
 
 #include <memory>
 
@@ -44,7 +45,7 @@ namespace Ayanami {
              * 
              * @param ioc resolver and socket require an io_context
              */
-            explicit BybitWS(net::io_context& ioc);
+            explicit BybitWS(net::io_context& ioc, ssl::context& ctx);
 
             /**
              * @brief start async operation

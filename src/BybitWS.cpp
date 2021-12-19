@@ -7,14 +7,14 @@
 #include <iostream>
 #include <memory>
 
-Ayanami::Exchange::BybitWS::BybitWS(net::io_context& ioc) 
+Ayanami::Exchange::BybitWS::BybitWS(net::io_context& ioc, ssl::context& ctx) 
     : resolver_(net::make_strand(ioc))
-    , ws_(net::make_strand(ioc)){};
+    , ws_(net::make_strand(ioc), ctx){};
 
 void Ayanami::Exchange::BybitWS::run() {
-    //"wss://stream.bybit.com/realtime"
+    // auto const host = "wss://stream.bybit.com/realtime";
     auto const host = "stream.bybit.com";
-    auto const port = "80";
+    auto const port = "443";
     host_ = host;
 
     resolver_.async_resolve(
@@ -67,20 +67,17 @@ void Ayanami::Exchange::BybitWS::on_ssl_handshake(beast::error_code ec) {
 
     beast::get_lowest_layer(ws_).expires_never();
 
-    ws_.set_option(
-        websocket::stream_base::timeout::suggested(beast::role_type::client))
-    );
+    ws_.set_option(websocket::stream_base::timeout::suggested(beast::role_type::client));
 
     ws_.set_option(
         websocket::stream_base::decorator(
             [](websocket::request_type& req) {
                 req.set(http::field::user_agent,
-                std::string(BOOST_BEAST_VERSION_STRING) + 
-                " websocket-client-async-ssl");
+                std::string(BOOST_BEAST_VERSION_STRING) + " websocket-client-async-ssl");
             })
     );
 
-    ws_.async_handshake(host_, "/",
+    ws_.async_handshake(host_, "/realtime",
         beast::bind_front_handler(&BybitWS::on_handshake, shared_from_this())
     );
 };
@@ -92,7 +89,7 @@ void Ayanami::Exchange::BybitWS::on_handshake(beast::error_code ec) {
 
     // TODO Subscribe here
     ws_.async_write(
-        net::buffer("/realtime"),
+        net::buffer("{\"op\": \"subscribe\", \"args\": [\"trade.BTCUSD\"]}"),
         beast::bind_front_handler(&BybitWS::on_write, shared_from_this())
     );
 };

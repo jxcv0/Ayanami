@@ -5,6 +5,8 @@
 
 TEST(ExchangeTests, connect_to_ws_test) {
     boost::asio::io_context ioc;
-    std::make_shared<Ayanami::Exchange::BybitWS>(ioc)->run();
+    ssl::context ctx{ssl::context::tlsv12_client};
+    
+    std::make_shared<Ayanami::Exchange::BybitWS>(ioc, ctx)->run();
     ioc.run();
 }
