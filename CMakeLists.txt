@@ -7,7 +7,6 @@ set(CMAKE_BUILD_TYPE Debug)
 
 enable_testing()
 
-
 include(FetchContent)
 
 FetchContent_Declare(
@@ -52,3 +51,4 @@ target_link_libraries(
 )
 
 add_subdirectory(test)
+add_subdirectory(strategies)
