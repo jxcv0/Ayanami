@@ -114,17 +114,24 @@ void Ayanami::Exchange::BybitWSSession::on_read(beast::error_code ec, std::size_
         std::cerr << "On Read: " << ec.message() << "\n"; 
     }
 
-    ws_.async_close(
-            websocket::close_code::normal,
-            beast::bind_front_handler(&BybitWSSession::on_close, shared_from_this())
+    std::cout << beast::make_printable(buffer_.data()) << std::endl;
+
+    buffer_.consume(buffer_.size());
+
+    ws_.async_read(
+            buffer_,
+            beast::bind_front_handler(&BybitWSSession::on_read, shared_from_this())
     );
+
+    // TODO add close flag
+    // ws_.async_read(
+    //         websocket::close_code::normal,
+    //         beast::bind_front_handler(&BybitWSSession::on_read, shared_from_this())
+    // );
 }
 
 void Ayanami::Exchange::BybitWSSession::on_close(beast::error_code ec) {
     if (ec) {
         std::cerr << "On Close: " << ec.message() << "\n"; 
     }
-
-    // Parse here?
-    std::cout << beast::make_printable(buffer_.data()) << std::endl;
 };
