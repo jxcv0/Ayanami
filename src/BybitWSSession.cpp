@@ -22,7 +22,7 @@ void Ayanami::Exchange::BybitWSSession::run() {
         port,
         beast::bind_front_handler(&BybitWSSession::on_resolve, shared_from_this())
     );
-};
+}
 
 void Ayanami::Exchange::BybitWSSession::on_resolve(beast::error_code ec, tcp::resolver::results_type results) {
     if (ec) {
@@ -35,7 +35,7 @@ void Ayanami::Exchange::BybitWSSession::on_resolve(beast::error_code ec, tcp::re
         results,
         beast::bind_front_handler(&BybitWSSession::on_connect, shared_from_this())
     );
-};
+}
 
 void Ayanami::Exchange::BybitWSSession::on_connect(beast::error_code ec, tcp::resolver::endpoint_type ep) {
     if (ec) {
@@ -58,7 +58,7 @@ void Ayanami::Exchange::BybitWSSession::on_connect(beast::error_code ec, tcp::re
         ssl::stream_base::client,
         beast::bind_front_handler(&BybitWSSession::on_ssl_handshake, shared_from_this())
     );
-};
+}
 
 void Ayanami::Exchange::BybitWSSession::on_ssl_handshake(beast::error_code ec) {
     if (ec) {
@@ -80,19 +80,18 @@ void Ayanami::Exchange::BybitWSSession::on_ssl_handshake(beast::error_code ec) {
     ws_.async_handshake(host_, "/realtime",
         beast::bind_front_handler(&BybitWSSession::on_handshake, shared_from_this())
     );
-};
+}
 
 void Ayanami::Exchange::BybitWSSession::on_handshake(beast::error_code ec) {
     if (ec) {
         std::cerr << "On Handshake: " << ec.message() << "\n"; 
     }
 
-    // TODO Subscribe here
     ws_.async_write(
         net::buffer("{\"op\": \"subscribe\", \"args\": [\"trade.BTCUSD\"]}"),
         beast::bind_front_handler(&BybitWSSession::on_write, shared_from_this())
     );
-};
+}
 
 void Ayanami::Exchange::BybitWSSession::on_write(beast::error_code ec, std::size_t bytes_transferred) {
     boost::ignore_unused(bytes_transferred);
@@ -105,7 +104,7 @@ void Ayanami::Exchange::BybitWSSession::on_write(beast::error_code ec, std::size
             buffer_,
             beast::bind_front_handler(&BybitWSSession::on_read, shared_from_this())
     );
-};
+}
 
 void Ayanami::Exchange::BybitWSSession::on_read(beast::error_code ec, std::size_t bytes_transferred) {
     boost::ignore_unused(bytes_transferred);
@@ -134,4 +133,4 @@ void Ayanami::Exchange::BybitWSSession::on_close(beast::error_code ec) {
     if (ec) {
         std::cerr << "On Close: " << ec.message() << "\n"; 
     }
-};
+}

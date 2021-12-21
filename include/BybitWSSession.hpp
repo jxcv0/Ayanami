@@ -40,6 +40,8 @@ namespace Ayanami {
 
         public:
 
+            // TODO handle_error()
+
             /**
              * @brief Construct a new BybitWSSession object
              * 

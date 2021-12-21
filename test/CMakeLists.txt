@@ -7,7 +7,6 @@ enable_testing()
 
 set(
     SOURCES
-        ExchangeTests.cpp
         TradeSeriesTests.cpp
 )
 
