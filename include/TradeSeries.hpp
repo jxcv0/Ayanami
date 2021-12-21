@@ -36,42 +36,40 @@ namespace Ayanami {
          */
         class Series {
 
-            private:
+            std::map<long, Trade> series;
 
-                std::map<long, Trade> series;
-
-                int _maxSize;
+            int maxSize_;
             
-            public:
+        public:
 
-                /**
-                 * @brief Construct a new Series object with a maximum size.
-                 * 
-                 * @param lag the maximum lookback period in seconds
-                 */
-                Series(const int& maxSize);
+            /**
+             * @brief Construct a new Series object with a maximum size.
+             * 
+             * @param lag the maximum lookback period in seconds
+             */
+            Series(const int& maxSize);
 
-                /**
-                 * @brief Get the size of the series
-                 * 
-                 * @return the size
-                 */
-                int size();
+            /**
+             * @brief Get the size of the series
+             * 
+             * @return the size
+             */
+            int size();
 
-                /**
-                 * @brief Add a trade to the series
-                 * 
-                 * @param time the time of the trade (unix)
-                 * @param price the executed price of the trade
-                 * @param qty the signed volume of the trade
-                 */
-                void add_trade(const long& time, const double& price, const double& qty);
+            /**
+             * @brief Add a trade to the series
+             * 
+             * @param time the time of the trade (unix)
+             * @param price the executed price of the trade
+             * @param qty the signed volume of the trade
+             */
+            void add_trade(const long& time, const double& price, const double& qty);
 
-                /**
-                 * @brief Manages the size of the series
-                 * 
-                 */
-                void trim();
+            /**
+             * @brief Manages the size of the series
+             * 
+             */
+            void trim();
         };
     } // TradeSeries
 } // Ayanami
