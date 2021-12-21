@@ -1,4 +1,4 @@
-#include "BybitWSSession.hpp"
+#include "BybitWS.hpp"
 
 #include <boost/asio/strand.hpp>
 #include <boost/beast/websocket/ssl.hpp>
@@ -7,24 +7,24 @@
 #include <iostream>
 #include <memory>
 
-Ayanami::Exchange::BybitWSSession::BybitWSSession(net::io_context& ioc, ssl::context& ctx) 
+ayanami::exchange::BybitWS::BybitWS(net::io_context& ioc, ssl::context& ctx) 
     : resolver_(net::make_strand(ioc))
     , ws_(net::make_strand(ioc), ctx){};
 
-void Ayanami::Exchange::BybitWSSession::run() {
-    // auto const host = "wss://stream.bybit.com/realtime";
+void ayanami::exchange::BybitWS::run(char const* text) {
     auto const host = "stream.bybit.com";
     auto const port = "443";
     host_ = host;
+    text_ = text;
 
     resolver_.async_resolve(
         host,
         port,
-        beast::bind_front_handler(&BybitWSSession::on_resolve, shared_from_this())
+        beast::bind_front_handler(&BybitWS::on_resolve, shared_from_this())
     );
 }
 
-void Ayanami::Exchange::BybitWSSession::on_resolve(beast::error_code ec, tcp::resolver::results_type results) {
+void ayanami::exchange::BybitWS::on_resolve(beast::error_code ec, tcp::resolver::results_type results) {
     if (ec) {
         std::cerr << "On Resolve: " << ec.message() << "\n"; 
     }
@@ -33,11 +33,11 @@ void Ayanami::Exchange::BybitWSSession::on_resolve(beast::error_code ec, tcp::re
 
     beast::get_lowest_layer(ws_).async_connect(
         results,
-        beast::bind_front_handler(&BybitWSSession::on_connect, shared_from_this())
+        beast::bind_front_handler(&BybitWS::on_connect, shared_from_this())
     );
 }
 
-void Ayanami::Exchange::BybitWSSession::on_connect(beast::error_code ec, tcp::resolver::endpoint_type ep) {
+void ayanami::exchange::BybitWS::on_connect(beast::error_code ec, tcp::resolver::endpoint_type ep) {
     if (ec) {
         std::cerr << "On Connect: " << ec.message() << "\n"; 
     }
@@ -56,11 +56,11 @@ void Ayanami::Exchange::BybitWSSession::on_connect(beast::error_code ec, tcp::re
 
     ws_.next_layer().async_handshake(
         ssl::stream_base::client,
-        beast::bind_front_handler(&BybitWSSession::on_ssl_handshake, shared_from_this())
+        beast::bind_front_handler(&BybitWS::on_ssl_handshake, shared_from_this())
     );
 }
 
-void Ayanami::Exchange::BybitWSSession::on_ssl_handshake(beast::error_code ec) {
+void ayanami::exchange::BybitWS::on_ssl_handshake(beast::error_code ec) {
     if (ec) {
         std::cerr << "On Handshake: " << ec.message() << "\n"; 
     }
@@ -78,22 +78,22 @@ void Ayanami::Exchange::BybitWSSession::on_ssl_handshake(beast::error_code ec) {
     );
 
     ws_.async_handshake(host_, "/realtime",
-        beast::bind_front_handler(&BybitWSSession::on_handshake, shared_from_this())
+        beast::bind_front_handler(&BybitWS::on_handshake, shared_from_this())
     );
 }
 
-void Ayanami::Exchange::BybitWSSession::on_handshake(beast::error_code ec) {
+void ayanami::exchange::BybitWS::on_handshake(beast::error_code ec) {
     if (ec) {
         std::cerr << "On Handshake: " << ec.message() << "\n"; 
     }
 
     ws_.async_write(
-        net::buffer("{\"op\": \"subscribe\", \"args\": [\"trade.BTCUSD\"]}"),
-        beast::bind_front_handler(&BybitWSSession::on_write, shared_from_this())
+        net::buffer(text_),
+        beast::bind_front_handler(&BybitWS::on_write, shared_from_this())
     );
 }
 
-void Ayanami::Exchange::BybitWSSession::on_write(beast::error_code ec, std::size_t bytes_transferred) {
+void ayanami::exchange::BybitWS::on_write(beast::error_code ec, std::size_t bytes_transferred) {
     boost::ignore_unused(bytes_transferred);
 
     if (ec) {
@@ -102,11 +102,11 @@ void Ayanami::Exchange::BybitWSSession::on_write(beast::error_code ec, std::size
 
     ws_.async_read(
             buffer_,
-            beast::bind_front_handler(&BybitWSSession::on_read, shared_from_this())
+            beast::bind_front_handler(&BybitWS::on_read, shared_from_this())
     );
 }
 
-void Ayanami::Exchange::BybitWSSession::on_read(beast::error_code ec, std::size_t bytes_transferred) {
+void ayanami::exchange::BybitWS::on_read(beast::error_code ec, std::size_t bytes_transferred) {
     boost::ignore_unused(bytes_transferred);
 
     if (ec) {
@@ -119,17 +119,17 @@ void Ayanami::Exchange::BybitWSSession::on_read(beast::error_code ec, std::size_
 
     ws_.async_read(
             buffer_,
-            beast::bind_front_handler(&BybitWSSession::on_read, shared_from_this())
+            beast::bind_front_handler(&BybitWS::on_read, shared_from_this())
     );
 
     // TODO add close flag
     // ws_.async_read(
     //         websocket::close_code::normal,
-    //         beast::bind_front_handler(&BybitWSSession::on_read, shared_from_this())
+    //         beast::bind_front_handler(&BybitWS::on_read, shared_from_this())
     // );
 }
 
-void Ayanami::Exchange::BybitWSSession::on_close(beast::error_code ec) {
+void ayanami::exchange::BybitWS::on_close(beast::error_code ec) {
     if (ec) {
         std::cerr << "On Close: " << ec.message() << "\n"; 
     }

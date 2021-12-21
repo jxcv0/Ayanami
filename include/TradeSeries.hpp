@@ -7,9 +7,9 @@
  * @brief Cryprocurrency trading library
  * 
  */
-namespace Ayanami {
+namespace ayanami {
 
-    namespace TradeSeries {
+    namespace tradeseries {
 
         /**
          * @brief Represents a trade with price and quantity
@@ -36,7 +36,7 @@ namespace Ayanami {
          */
         class Series {
 
-            std::map<long, Trade> series;
+            std::map<long, Trade> s;
 
             int maxSize_;
             

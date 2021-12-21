@@ -21,20 +21,20 @@ find_package(Boost 1.71.0 REQUIRED)
 
 set(
   SOURCES
-    src/BybitWSSession.cpp
+    src/BybitWS.cpp
     src/TradeSeries.cpp
 )
 
 set(
   HEADERS
-    include/BybitWSSession.hpp
+    include/BybitWS.hpp
     include/TradeSeries.hpp
 )
 
-add_library(Ayanami STATIC ${SOURCES} ${HEADERS})
+add_library(ayanami STATIC ${SOURCES} ${HEADERS})
 
 target_include_directories(
-  Ayanami
+  ayanami
     PUBLIC
       ${PROJECT_SOURCE_DIR}/include
       ${PROJECT_SOURCE_DIR}/build/_deps/cpprestsdk-src/Release/include/cpprest
@@ -42,7 +42,7 @@ target_include_directories(
 )
 
 target_link_libraries(
-  Ayanami
+  ayanami
     PUBLIC
       cpprestsdk::cpprest
       ${Boost_LIBRARIES}

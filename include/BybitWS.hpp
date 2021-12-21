@@ -20,23 +20,24 @@ using tcp = boost::asio::ip::tcp;
  * @brief Cryprocurrency trading library
  * 
  */
-namespace Ayanami {
+namespace ayanami {
 
     /**
      * @brief Connections to and data from exchanges
      * 
      */
-    namespace Exchange {
+    namespace exchange {
 
         /**
          * @brief The bybit websocket
          * https://www.boost.org/doc/libs/develop/libs/beast/example/websocket/client/async/websocket_client_async.cpp
          */
-        class BybitWSSession : public std::enable_shared_from_this<BybitWSSession> {
+        class BybitWS : public std::enable_shared_from_this<BybitWS> {
             tcp::resolver resolver_;
             websocket::stream<beast::ssl_stream<beast::tcp_stream>> ws_;
             beast::flat_buffer buffer_;
             std::string host_;
+            std::string text_;
 
         public:
 
@@ -47,13 +48,14 @@ namespace Ayanami {
              * 
              * @param ioc resolver and socket require an io_context
              */
-            explicit BybitWSSession(net::io_context& ioc, ssl::context& ctx);
+            explicit BybitWS(net::io_context& ioc, ssl::context& ctx);
 
             /**
              * @brief start async operation
              * 
+             * @param text the message to send to the websocket on handshake
              */
-            void run();
+            void run(char const* text);
 
             /**
              * @brief Actions on resolve

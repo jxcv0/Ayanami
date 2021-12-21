@@ -10,16 +10,16 @@ set(
         TradeSeriesTests.cpp
 )
 
-add_executable(Tests ${SOURCES})
+add_executable(all_tests ${SOURCES})
 
 target_link_libraries(
-    Tests 
+    all_tests 
         PUBLIC
-            Ayanami
+            ayanami
             gtest_main
 )
 
 add_test(
-    NAME Tests
-    COMMAND Tests
+    NAME all_tests
+    COMMAND all_tests
 )
