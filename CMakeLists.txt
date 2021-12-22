@@ -23,12 +23,14 @@ set(
   SOURCES
     src/BybitWS.cpp
     src/TradeSeries.cpp
+    src/TimeSeries.cpp
 )
 
 set(
   HEADERS
     include/BybitWS.hpp
     include/TradeSeries.hpp
+    include/TimeSeries.hpp
 )
 
 add_library(ayanami STATIC ${SOURCES} ${HEADERS})

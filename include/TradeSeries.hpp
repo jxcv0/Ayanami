@@ -23,7 +23,7 @@ namespace ayanami {
              * @param price the price
              * @param qty the signed trade volume
              */
-            Trade(const double& price, const double& qty);
+            Trade(double price, double qty);
 
             double price;
 
@@ -39,6 +39,12 @@ namespace ayanami {
             std::map<long, Trade> s;
 
             int maxSize_;
+
+            /**
+             * @brief Manages the size of the series
+             * 
+             */
+            void trim();
             
         public:
 
@@ -47,7 +53,7 @@ namespace ayanami {
              * 
              * @param lag the maximum lookback period in seconds
              */
-            Series(const int& maxSize);
+            Series(int maxSize);
 
             /**
              * @brief Get the size of the series
@@ -63,13 +69,7 @@ namespace ayanami {
              * @param price the executed price of the trade
              * @param qty the signed volume of the trade
              */
-            void add_trade(const long& time, const double& price, const double& qty);
-
-            /**
-             * @brief Manages the size of the series
-             * 
-             */
-            void trim();
+            void add_trade(long time, double price, double qty);
         };
     } // TradeSeries
 } // Ayanami

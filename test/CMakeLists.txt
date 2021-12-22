@@ -8,6 +8,7 @@ enable_testing()
 set(
     SOURCES
         TradeSeriesTests.cpp
+        TimeSeriesTests.cpp
 )
 
 add_executable(all_tests ${SOURCES})
