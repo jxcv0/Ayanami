@@ -7,11 +7,11 @@
 #include <iostream>
 #include <memory>
 
-ayanami::exchange::Websocket::Websocket(net::io_context& ioc, ssl::context& ctx) 
+ayanami::connections::Websocket::Websocket(net::io_context& ioc, ssl::context& ctx) 
     : resolver_(net::make_strand(ioc))
     , ws_(net::make_strand(ioc), ctx){};
 
-void ayanami::exchange::Websocket::run(char const* host, char const* path, char const* text) {
+void ayanami::connections::Websocket::run(char const* host, char const* path, char const* text) {
     auto const port = "443";
     host_ = host;
     path_ = path;
@@ -24,7 +24,7 @@ void ayanami::exchange::Websocket::run(char const* host, char const* path, char 
     );
 }
 
-void ayanami::exchange::Websocket::on_resolve(beast::error_code ec, tcp::resolver::results_type results) {
+void ayanami::connections::Websocket::on_resolve(beast::error_code ec, tcp::resolver::results_type results) {
     if (ec) {
         std::cerr << "On Resolve: " << ec.message() << "\n"; 
     }
@@ -37,7 +37,7 @@ void ayanami::exchange::Websocket::on_resolve(beast::error_code ec, tcp::resolve
     );
 }
 
-void ayanami::exchange::Websocket::on_connect(beast::error_code ec, tcp::resolver::endpoint_type ep) {
+void ayanami::connections::Websocket::on_connect(beast::error_code ec, tcp::resolver::endpoint_type ep) {
     if (ec) {
         std::cerr << "On Connect: " << ec.message() << "\n"; 
     }
@@ -60,7 +60,7 @@ void ayanami::exchange::Websocket::on_connect(beast::error_code ec, tcp::resolve
     );
 }
 
-void ayanami::exchange::Websocket::on_ssl_handshake(beast::error_code ec) {
+void ayanami::connections::Websocket::on_ssl_handshake(beast::error_code ec) {
     if (ec) {
         std::cerr << "On Handshake: " << ec.message() << "\n"; 
     }
@@ -82,7 +82,7 @@ void ayanami::exchange::Websocket::on_ssl_handshake(beast::error_code ec) {
     );
 }
 
-void ayanami::exchange::Websocket::on_handshake(beast::error_code ec) {
+void ayanami::connections::Websocket::on_handshake(beast::error_code ec) {
     if (ec) {
         std::cerr << "On Handshake: " << ec.message() << "\n"; 
     }
@@ -93,7 +93,7 @@ void ayanami::exchange::Websocket::on_handshake(beast::error_code ec) {
     );
 }
 
-void ayanami::exchange::Websocket::on_write(beast::error_code ec, std::size_t bytes_transferred) {
+void ayanami::connections::Websocket::on_write(beast::error_code ec, std::size_t bytes_transferred) {
     boost::ignore_unused(bytes_transferred);
 
     if (ec) {
@@ -106,7 +106,7 @@ void ayanami::exchange::Websocket::on_write(beast::error_code ec, std::size_t by
     );
 }
 
-void ayanami::exchange::Websocket::on_read(beast::error_code ec, std::size_t bytes_transferred) {
+void ayanami::connections::Websocket::on_read(beast::error_code ec, std::size_t bytes_transferred) {
     boost::ignore_unused(bytes_transferred);
 
     if (ec) {
@@ -129,7 +129,7 @@ void ayanami::exchange::Websocket::on_read(beast::error_code ec, std::size_t byt
     // );
 }
 
-void ayanami::exchange::Websocket::on_close(beast::error_code ec) {
+void ayanami::connections::Websocket::on_close(beast::error_code ec) {
     if (ec) {
         std::cerr << "On Close: " << ec.message() << "\n"; 
     }

@@ -26,7 +26,7 @@ namespace ayanami {
      * @brief Connections to and data from exchanges
      * 
      */
-    namespace exchange {
+    namespace connections {
 
         /**
          * @brief The bybit websocket
