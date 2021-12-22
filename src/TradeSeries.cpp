@@ -1,22 +1,20 @@
 #include "TradeSeries.hpp"
 
-ayanami::tradeseries::Trade::Trade(double price, double qty) : price(price), qty(qty) {};
-
-ayanami::tradeseries::Series::Series(int maxSize) {
+ayanami::Series::Series(int maxSize) {
     maxSize_ = maxSize;
 };
 
-void ayanami::tradeseries::Series::trim() {
-    if (s.size() > maxSize_) {
-        s.erase(s.begin());
+void ayanami::Series::trim() {
+    if (series_.size() > maxSize_) {
+        series_.erase(series_.begin());
     }
 }
 
-int ayanami::tradeseries::Series::size() {
-    return s.size();
+int ayanami::Series::size() {
+    return series_.size();
 }
 
-void ayanami::tradeseries::Series::add_trade(long time, double price, double qty) {
-    s.insert(std::make_pair(time, Trade(price, qty)));
+void ayanami::Series::add_trade(long time, double price, double qty) {
+    series_.insert(std::make_pair(time, std::make_pair(price, qty)));
     trim();
 };

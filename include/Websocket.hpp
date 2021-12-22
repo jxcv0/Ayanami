@@ -23,14 +23,14 @@ using tcp = boost::asio::ip::tcp;
 namespace ayanami {
 
     /**
-     * @brief Connections to and data from exchanges
+     * @brief Exchange connections and data handling
      * 
      */
     namespace connections {
 
         /**
          * @brief The bybit websocket
-         * https://www.boost.org/doc/libs/develop/libs/beast/example/websocket/client/async/websocket_client_async.cpp
+         * 
          */
         class Websocket : public std::enable_shared_from_this<Websocket> {
             tcp::resolver resolver_;

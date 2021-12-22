@@ -24,6 +24,7 @@ set(
     src/Websocket.cpp
     src/TradeSeries.cpp
     src/TimeSeries.cpp
+    src/MessageParsing.cpp
 )
 
 set(
@@ -31,6 +32,7 @@ set(
     include/Websocket.hpp
     include/TradeSeries.hpp
     include/TimeSeries.hpp
+    include/MessageParsing.hpp
 )
 
 add_library(ayanami STATIC ${SOURCES} ${HEADERS})
