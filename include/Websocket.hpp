@@ -1,5 +1,5 @@
-#ifndef BYBITWSSESSION_HPP
-#define BYBITWSSESSION_HPP
+#ifndef WebsocketSESSION_HPP
+#define WebsocketSESSION_HPP
 
 #include <boost/beast/core.hpp>
 #include <boost/beast/ssl.hpp>
@@ -32,30 +32,31 @@ namespace ayanami {
          * @brief The bybit websocket
          * https://www.boost.org/doc/libs/develop/libs/beast/example/websocket/client/async/websocket_client_async.cpp
          */
-        class BybitWS : public std::enable_shared_from_this<BybitWS> {
+        class Websocket : public std::enable_shared_from_this<Websocket> {
             tcp::resolver resolver_;
             websocket::stream<beast::ssl_stream<beast::tcp_stream>> ws_;
             beast::flat_buffer buffer_;
             std::string host_;
             std::string text_;
+            std::string path_;
 
         public:
 
             // TODO handle_error()
 
             /**
-             * @brief Construct a new BybitWSSession object
+             * @brief Construct a new Websocket object
              * 
              * @param ioc resolver and socket require an io_context
              */
-            explicit BybitWS(net::io_context& ioc, ssl::context& ctx);
+            explicit Websocket(net::io_context& ioc, ssl::context& ctx);
 
             /**
              * @brief start async operation
              * 
              * @param text the message to send to the websocket on handshake
              */
-            void run(char const* text);
+            void run(char const* host, char const* path, char const* text);
 
             /**
              * @brief Actions on resolve

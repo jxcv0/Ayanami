@@ -1,12 +1,11 @@
 #include "TimeSeries.hpp"
 
-ayanami::timeseries::Candle::Candle(double o, double h, double l, double c,double v){
-    open = o;
-    high = h;
-    low = l;
-    close = c;
-    vol = v;
-};
+ayanami::timeseries::Candle::Candle(double o, double h, double l, double c,double v)
+    : open(o)
+    , high(h)
+    , low(l)
+    , close(c)
+    , vol(v){}
 
 ayanami::timeseries::TimeSeries::TimeSeries(int maxSize) : maxSize_(maxSize){}
 

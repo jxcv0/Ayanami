@@ -21,14 +21,14 @@ find_package(Boost 1.71.0 REQUIRED)
 
 set(
   SOURCES
-    src/BybitWS.cpp
+    src/Websocket.cpp
     src/TradeSeries.cpp
     src/TimeSeries.cpp
 )
 
 set(
   HEADERS
-    include/BybitWS.hpp
+    include/Websocket.hpp
     include/TradeSeries.hpp
     include/TimeSeries.hpp
 )
