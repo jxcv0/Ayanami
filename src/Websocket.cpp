@@ -11,11 +11,12 @@ ayanami::connections::Websocket::Websocket(net::io_context& ioc, ssl::context& c
     : resolver_(net::make_strand(ioc))
     , ws_(net::make_strand(ioc), ctx){};
 
-void ayanami::connections::Websocket::run(char const* host, char const* path, char const* text) {
+void ayanami::connections::Websocket::run(char const* host, char const* path, char const* text, std::function<void(std::string)> on_msg) {
     auto const port = "443";
     host_ = host;
     path_ = path;
     text_ = text;
+    on_msg_ = on_msg;
 
     resolver_.async_resolve(
         host,
@@ -113,17 +114,17 @@ void ayanami::connections::Websocket::on_read(beast::error_code ec, std::size_t 
         std::cerr << "On Read: " << ec.message() << "\n"; 
     }
 
-    std::cout << beast::make_printable(buffer_.data()) << std::endl;
+    on_msg_(beast::buffers_to_string(buffer_.data()));
 
     buffer_.consume(buffer_.size());
 
-    ws_.async_read(
+    ws_.async_read( 
             buffer_,
             beast::bind_front_handler(&Websocket::on_read, shared_from_this())
     );
 
     // TODO add close flag
-    // ws_.async_read(
+    // ws_.async_close(
     //         websocket::close_code::normal,
     //         beast::bind_front_handler(&Websocket::on_read, shared_from_this())
     // );

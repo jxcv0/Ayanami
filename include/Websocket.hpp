@@ -8,6 +8,7 @@
 #include <boost/beast/websocket/ssl.hpp>
 
 #include <memory>
+#include <functional>
 
 namespace beast = boost::beast;         
 namespace http = beast::http;           
@@ -39,6 +40,7 @@ namespace ayanami {
             std::string host_;
             std::string text_;
             std::string path_;
+            std::function<void(std::string)> on_msg_;
 
         public:
 
@@ -52,11 +54,14 @@ namespace ayanami {
             explicit Websocket(net::io_context& ioc, ssl::context& ctx);
 
             /**
-             * @brief start async operation
+             * @brief Start operation
              * 
-             * @param text the message to send to the websocket on handshake
+             * @param host the websocket host
+             * @param path the uri path
+             * @param text the message to send on successful connection
+             * @param on_msg the message handling function
              */
-            void run(char const* host, char const* path, char const* text);
+            void run(char const* host, char const* path, char const* text, std::function<void(std::string)> on_msg);
 
             /**
              * @brief Actions on resolve
@@ -111,7 +116,7 @@ namespace ayanami {
              */
             void on_close(beast::error_code ec);
         };
-    } // namespace Exchange
-} // namespace Ayanami
+    } // namespace exchange
+} // namespace ayanami
 
 #endif

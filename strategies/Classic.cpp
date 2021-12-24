@@ -1,5 +1,7 @@
 #include "Websocket.hpp"
 
+#include <iostream>
+
 int main(int argc, char const *argv[])
 {
     boost::asio::io_context ioc;
@@ -9,7 +11,8 @@ int main(int argc, char const *argv[])
         ->run(
             "ftx.com",
             "/ws/",
-            "{\"op\": \"subscribe\", \"channel\": \"trades\", \"market\": \"BTC-PERP\"}"
+            "{\"op\": \"subscribe\", \"channel\": \"trades\", \"market\": \"BTC-PERP\"}",
+            [](std::string msg){std::cout << msg << "\n"; }
         );
 
     ioc.run();

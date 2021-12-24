@@ -4,5 +4,5 @@ set(CMAKE_CXX_STANDARD 11)
 
 link_libraries(ayanami)
 
-add_executable(avellaneda_stoikov AvellanedaStoikov.cpp)
+add_executable(market_maker MarketMaker.cpp)
 add_executable(classic Classic.cpp)
