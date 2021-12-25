@@ -10,6 +10,7 @@ set(
         TradeSeriesTests.cpp
         TimeSeriesTests.cpp
         PriceSeriesTests.cpp
+        ftx/FTX_LimitOrderBookTests.cpp
 )
 
 add_executable(all_tests ${SOURCES})

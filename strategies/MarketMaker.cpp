@@ -1,28 +1,27 @@
 #include "Websocket.hpp"
+#include "PriceSeries.hpp"
 
 #include <iostream>
 #include <cpprest/json.h>
-
-/**
- * @brief Strategy state data
- * 
- */
-struct State {
-    int inventory_position;
-    long time_horizon;
-    const double risk_aversion = 0.1;
-    const double liquidity_param = 1;
-    double midprice;
-};
 
 /**
  * @brief Market making auto-trader based on the 2008 paper by M. Avellaneda and S. Stoikov
  * 
  * https://www.math.nyu.edu/~avellane/HighFrequencyTrading.pdf
  * 
+ * 
+ * TODO - compare latency with forward declaration
  */
 int main(int argc, char const *argv[]) {
-    State state;
+    constexpr double RISK_AVERSION_PARAM = 0.1;
+    constexpr double LIQUIDITY_PARAM = 1;
+
+    int inv = 0;
+    // TODO - time horizon
+    long time_horizon = 1;
+    double mid;
+
+    ayanami::PriceSeries series(1000);
 
     // Subscribe to ticker channel of FTX websocket
     boost::asio::io_context ioc;
@@ -31,20 +30,29 @@ int main(int argc, char const *argv[]) {
         ->run(
             "ftx.com",
             "/ws/",
-            "{\"op\": \"subscribe\", \"channel\": \"ticker\", \"market\": \"BTC-PERP\"}",
+            "{\"op\": \"subscribe\", \"channel\": \"orderbook\", \"market\": \"BTC-PERP\"}",
             [&](std::string msg){
                 web::json::value json = web::json::value::parse(msg);
-                if (json.at("type").as_string() == "update") {
-                    web::json::value data = json.at("data");
 
-                    //get midprice
-                    state.midprice = (data.at("bid").as_double() + data.at("ask").as_double()) / 2;
+                std::string type = json.at("type").as_string();
 
+                if (type == "update") {
+                //     web::json::value data = json.at("data");
                     
-                    std::cout << state.midprice << std::endl;
+                //     mid = (data.at("bid").as_double() + data.at("ask").as_double()) / 2;
+                //     series.add_price(mid);
+
+                //     // TODO - add time horizon
+                //     double res_price = mid - (inv * RISK_AVERSION_PARAM * std::pow(series.std_dev(), 2));
+
+                //     long time = (long) data.at("time").as_number().to_double();
+
+                //     std::cout << mid << " " << res_price << " " << time << std::endl;
+                } else if (type == "partial") {
+                    // handle intial message
                 } else {
-                    std::cout << "Un-actionable message recieved: " << msg << std::endl;
-                };
+                    std::cout << "Un-actionable message recieved: " << msg << "\n";
+                }
             }
         );
 
