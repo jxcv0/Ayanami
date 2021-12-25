@@ -38,7 +38,7 @@ int main(int argc, char const *argv[]) {
 
                 if (type == "update") {
                 //     web::json::value data = json.at("data");
-                    
+                    std::cout << msg << "\n";
                 //     mid = (data.at("bid").as_double() + data.at("ask").as_double()) / 2;
                 //     series.add_price(mid);
 

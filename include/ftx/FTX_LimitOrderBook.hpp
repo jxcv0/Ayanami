@@ -17,12 +17,20 @@ namespace ayanami {
     namespace ftx {
 
         /**
-         * @brief Populate an orderbook with a "partial" JSON response
+         * @brief Populate an orderbook with a "partial" JSON message
          * 
          * @param orderbook the orderbook to populate
-         * @param json the JSON
+         * @param data the "data" field of the JSON message
          */
-        void populate(std::map<double, double> orderbook, web::json::value json);
+        void populate_orderbook(std::map<double, double>& orderbook, web::json::value data);
+
+        /**
+         * @brief Update and orderbook with an "update" JSON message
+         * 
+         * @param orderbook the orderbook to update
+         * @param data the "data" field of the JSON message
+         */
+        void update_orderbook(std::map<double, double>& orderbook, web::json::value data);
     } // namespace ftx
 } // namespace ayanami
 
