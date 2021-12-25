@@ -1,4 +1,4 @@
-#include "ftx/FTX_LimitOrderBook.hpp"
+#include "ftx/FTX_OrderBookMsgs.hpp"
 
 #include <algorithm>
 
@@ -19,6 +19,12 @@ void ayanami::ftx::populate_orderbook(std::map<double, double>& orderbook, web::
     }
 }
 
+/**
+ * @brief Update and orderbook with an "update" JSON message
+ * 
+ * @param orderbook the orderbook to update
+ * @param data the "data" field of the JSON message
+ */
 void ayanami::ftx::update_orderbook(std::map<double, double>& orderbook, web::json::value data) {
     web::json::array asks = data["asks"].as_array();
     for (auto &&i : asks) {

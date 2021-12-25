@@ -25,7 +25,7 @@ set(
     src/TradeSeries.cpp
     src/TimeSeries.cpp
     src/PriceSeries.cpp
-    src/ftx/FTX_LimitOrderBook.cpp
+    src/ftx/FTX_OrderBookMsgs.cpp
 )
 
 set(
@@ -34,7 +34,7 @@ set(
     include/TradeSeries.hpp
     include/TimeSeries.hpp
     include/PriceSeries.hpp
-    include/ftx/FTX_LimitOrderBook.hpp
+    include/ftx/FTX_OrderBookMsgs.hpp
 )
 
 add_library(ayanami STATIC ${SOURCES} ${HEADERS})

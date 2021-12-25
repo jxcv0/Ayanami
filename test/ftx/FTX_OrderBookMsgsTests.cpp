@@ -1,10 +1,10 @@
 #include <gtest/gtest.h>
 
-#include "ftx/FTX_LimitOrderBook.hpp"
+#include "ftx/FTX_OrderBookMsgs.hpp"
 
 #include <map>
 
-TEST(FTX_LimitOrderBookTests, populate_test) {
+TEST(FTX_OrderBookMsgsTests, populate_test) {
 
     std::map<double, double> orderbook;
 
@@ -34,7 +34,7 @@ TEST(FTX_LimitOrderBookTests, populate_test) {
     ASSERT_DOUBLE_EQ(orderbook[50728], 0.050000000000000003);
 }
 
-TEST(FTX_LimitOrderBookTests, update_test) {
+TEST(FTX_OrderBookMsgsTests, update_test) {
 
     std::map<double, double> orderbook;
     orderbook[50673.0] = 10;
