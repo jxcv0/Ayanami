@@ -55,4 +55,10 @@ TEST(FTX_OrderBookMsgsTests, update_test) {
     ASSERT_DOUBLE_EQ(orderbook[50696.0], 0.0);
     ASSERT_DOUBLE_EQ(orderbook[50711.0], -3.2091);
     ASSERT_DOUBLE_EQ(orderbook[50786.0], -0.8365);
+
+    std::cout << orderbook[50696] << "\n";
+    std::cout << orderbook[50696.0] << "\n";
+
+    // rm 0
+    ASSERT_EQ(orderbook.size(), 4);
 }
