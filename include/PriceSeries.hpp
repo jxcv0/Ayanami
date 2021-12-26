@@ -56,9 +56,16 @@ namespace ayanami {
         double mean();
 
         /**
+         * @brief Calculate the variance of the price series
+         * 
+         * @return the variance 
+         */
+        double variance();
+
+        /**
          * @brief Calculate the standard devition of the price series
          * 
-         * @return Tthehe standard deviation
+         * @return the standard deviation
          */
         double std_dev();
     };    

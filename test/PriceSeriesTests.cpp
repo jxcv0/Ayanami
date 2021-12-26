@@ -24,6 +24,16 @@ TEST(PriceSeriesTests, mean_test) {
     ASSERT_DOUBLE_EQ(s2.mean(), 95.5);
 }
 
+TEST(PriceSeriesTests, variance_test) {
+    ayanami::PriceSeries s(100);
+    double arr[] = {10, 12, 23, 23, 16, 23, 21, 16};
+
+    for (auto &&i : arr) {
+        s.add_price(i);
+    }
+    ASSERT_DOUBLE_EQ(s.variance(), 24);
+}
+
 TEST(PriceSeriesTests, std_dev_test) {
     ayanami::PriceSeries s(100);
     double arr[] = {10, 12, 23, 23, 16, 23, 21, 16};

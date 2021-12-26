@@ -27,11 +27,14 @@ double ayanami::PriceSeries::mean() {
     return sum / series_.size();
 }
 
-double ayanami::PriceSeries::std_dev() {
+double ayanami::PriceSeries::variance() {
     std::vector<double> diff(series_.size());
     double mean = this->mean();
     std::transform(series_.begin(), series_.end(), diff.begin(), 
         [mean](double x) {return x - mean; });
-    double sq_sum = std::inner_product(diff.begin(), diff.end(), diff.begin(), 0.0);
-    return std::sqrt(sq_sum / series_.size());
+    return std::inner_product(diff.begin(), diff.end(), diff.begin(), 0.0) / series_.size();
+}
+
+double ayanami::PriceSeries::std_dev() {
+    return std::sqrt(this->variance());
 }
