@@ -3,8 +3,13 @@
 #include "LimitOrderBook.hpp"
 #include "ftx/FTX_OrderBookMsgs.hpp"
 
-#include <iostream>
 #include <cpprest/json.h>
+
+#include <iostream>
+#include <sstream>
+#include <chrono>
+#include <ctime>
+#include <math.h>
 
 /**
  * @brief Market making auto-trader based on the 2008 paper by M. Avellaneda and S. Stoikov
@@ -15,51 +20,90 @@
  * TODO - compare latency with forward declaration
  */
 int main(int argc, char const *argv[]) {
+    if (argc != 2) {
+        std::cerr << "Usage: market_maker <session duration in mins>\n"
+            << "Example:\n" <<
+            "   market_maker 60\n";
+        return EXIT_FAILURE;
+    }
+    
     constexpr double RISK_AVERSION_PARAM = 0.01;
-    constexpr double LIQUIDITY_PARAM = 1;
+    constexpr double LIQUIDITY_PARAM = 0.5;
 
+    std::stringstream str(argv[1]);
+    unsigned int inc;
+    str >> inc;
+
+    assert(inc > 0);
+
+    auto t = std::chrono::system_clock::now();
+    double start = std::chrono::duration_cast<std::chrono::milliseconds>(t.time_since_epoch()).count();
+    t += std::chrono::minutes(inc);
+    double end = std::chrono::duration_cast<std::chrono::milliseconds>(t.time_since_epoch()).count();
+
+    double mid_price;
     int inv = 0;
-    // TODO - time horizon
-    long time_horizon = 1;
-    double mid;
     
     std::map<double, double> orderbook;
-    ayanami::PriceSeries series(1000);
 
-    // Subscribe to ticker channel of FTX websocket
+    // TODO - This should use ticker feed
+    ayanami::PriceSeries series(10000);
+
     boost::asio::io_context ioc;
     ssl::context ctx{ssl::context::tlsv12_client};
-    std::make_shared<ayanami::connections::Websocket>(ioc, ctx)
-        ->run(
-            "ftx.com",
-            "/ws/",
-            "{\"op\": \"subscribe\", \"channel\": \"orderbook\", \"market\": \"BTC-PERP\"}",
-            [&](std::string msg){
-                web::json::value json = web::json::value::parse(msg);
+    auto ws = std::make_shared<ayanami::connections::Websocket>(ioc, ctx);
+    ws->run(
+        "ftx.com",
+        "/ws/",
+        "{\"op\": \"subscribe\", \"channel\": \"orderbook\", \"market\": \"BTC-PERP\"}",
+        [&](std::string msg){
+            web::json::value json = web::json::value::parse(msg);
 
-                std::string type = json.at("type").as_string();
+            std::string type = json.at("type").as_string();
 
-                if (type == "update") { // Update state
-                    web::json::value data = json.at("data");
-                    ayanami::ftx::update_orderbook(orderbook, data);
-                    mid = ayanami::lobs::mid_price(orderbook);
-                    series.add_price(mid);
+            if (type == "update") { // Actionable message
 
-                    // TODO - add time horizon
-                    double res_price = mid - (inv * RISK_AVERSION_PARAM * std::pow(series.std_dev(), 2));
+                // Parse JSON - simdjson?
+                web::json::value data = json.at("data");
+                ayanami::ftx::update_orderbook(orderbook, data);
 
-                    long time = (long) data.at("time").as_number().to_double();
+                // Update state
+                // TODO - position subscription
+                mid_price = ayanami::lobs::mid_price(orderbook);
+                series.add_price(mid_price);
+                double vol_param = series.variance();
 
-                    std::cout << mid << " " << res_price << " " << time << std::endl;
-                } else if (type == "partial") { // Populate orderbook
-                    std::cout << "Populating " << json["market"].as_string() << " orderbook..." << "\n";
-                    web::json::value data = json.at("data");
-                    ayanami::ftx::populate_orderbook(orderbook, data);
-                } else {
-                    std::cout << "Message recieved: " << msg << "\n";
+                // Calculate (T - t)
+                double time_now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+                double time_param = (time_now - start) / (end - start);
+
+                if (time_param > 1) {
+                    ws->close();
                 }
+                
+                // Calculate reservation price
+                double res_price = mid_price - (inv * RISK_AVERSION_PARAM * vol_param * time_param);
+
+                // Calculate quotes
+                double half_spread = (RISK_AVERSION_PARAM * vol_param * time_param) + ((2 / RISK_AVERSION_PARAM) * log(1 + (RISK_AVERSION_PARAM / LIQUIDITY_PARAM))) / 2;
+                double ask = std::round(res_price + half_spread);
+                double bid = std::round(res_price - half_spread);
+                double spread = ask - bid;
+
+                std::cout << "b: " << bid << " " << "a: " << ask << "spread: " << spread << "\n";
+
+                // Check if orders need changing. If yes place orders
+
+            } else if (type == "partial") { // Populate orderbook
+                std::cout << "Populating " << json["market"].as_string() << " orderbook...\n";
+                web::json::value data = json.at("data");
+                ayanami::ftx::populate_orderbook(orderbook, data);
+                std::cout << "Executing...\n" << "\n";
+
+            } else { // All other messages
+                std::cout << "Message recieved: " << msg << "\n";
             }
-        );
+        });
 
     ioc.run();
     return 0;

@@ -30,7 +30,7 @@ namespace ayanami {
     namespace connections {
 
         /**
-         * @brief The bybit websocket
+         * @brief A websocket
          * 
          */
         class Websocket : public std::enable_shared_from_this<Websocket> {
@@ -41,6 +41,7 @@ namespace ayanami {
             std::string text_;
             std::string path_;
             std::function<void(std::string)> on_msg_;
+            bool close_;
 
         public:
 
@@ -115,6 +116,12 @@ namespace ayanami {
              * @param ec boost/beast error code
              */
             void on_close(beast::error_code ec);
+
+            /**
+             * @brief Close the connection
+             * 
+             */
+            void close();
         };
     } // namespace exchange
 } // namespace ayanami
