@@ -30,17 +30,18 @@ void ayanami::ftx::update_orderbook(std::map<double, double>& orderbook, web::js
     for (auto &&i : asks) {
         double key = i[0].as_double();
         double val = -i[1].as_double();
-        if (val != 0) {
+        if (val < 0) {
             orderbook[key] = val;
         } else {
             orderbook.erase(key);
         }
     }
+
     web::json::array bids = data["bids"].as_array();
     for (auto &&i : bids) {
         double key = i[0].as_double();
         double val = i[1].as_double();
-        if (val != 0 ) {
+        if (val > 0) {
             orderbook[key] = val;
         } else {
             orderbook.erase(key);
