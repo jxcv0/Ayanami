@@ -8,7 +8,7 @@
  * @param orderbook the orderbook to populate
  * @param data the "data" field of the JSON message
  */
-void ayanami::ftx::populate_orderbook(std::map<double, double>& orderbook, web::json::value data) {
+void ayanami::ftx::populate_orderbook(std::map<double, double>& orderbook, web::json::value& data) {
     web::json::array asks = data["asks"].as_array();
     for (auto &&i : asks) {
         orderbook[i[0].as_double()] = -i[1].as_double();
@@ -25,23 +25,26 @@ void ayanami::ftx::populate_orderbook(std::map<double, double>& orderbook, web::
  * @param orderbook the orderbook to update
  * @param data the "data" field of the JSON message
  */
-void ayanami::ftx::update_orderbook(std::map<double, double>& orderbook, web::json::value data) {
+void ayanami::ftx::update_orderbook(std::map<double, double>& orderbook, web::json::value& data) {
     web::json::array asks = data["asks"].as_array();
     for (auto &&i : asks) {
+        double key = i[0].as_double();
         double val = -i[1].as_double();
         if (val < 0) {
-            orderbook[i[0].as_double()] = val;
+            orderbook[key] = val;
         } else {
-            orderbook.erase(i[0].as_double());
+            orderbook.erase(key);
         }
     }
+
     web::json::array bids = data["bids"].as_array();
     for (auto &&i : bids) {
+        double key = i[0].as_double();
         double val = i[1].as_double();
         if (val > 0) {
-            orderbook[i[0].as_double()] = val;
+            orderbook[key] = val;
         } else {
-            orderbook.erase(i[0].as_double());
+            orderbook.erase(key);
         }
     }
 }

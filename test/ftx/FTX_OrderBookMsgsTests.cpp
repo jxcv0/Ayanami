@@ -51,8 +51,11 @@ TEST(FTX_OrderBookMsgsTests, update_test) {
     ASSERT_DOUBLE_EQ(orderbook[50673.0], 17.8263);
     
     // asks
-    ASSERT_DOUBLE_EQ(orderbook[50694.0], -0.35);
-    ASSERT_DOUBLE_EQ(orderbook[50696.0], 0.0);
-    ASSERT_DOUBLE_EQ(orderbook[50711.0], -3.2091);
-    ASSERT_DOUBLE_EQ(orderbook[50786.0], -0.8365);
+    ASSERT_DOUBLE_EQ(orderbook.at(50694.0), -0.35);
+    ASSERT_DOUBLE_EQ(orderbook.at(50711.0), -3.2091);
+    ASSERT_DOUBLE_EQ(orderbook.at(50786.0), -0.8365);
+
+    // rm 0
+    ASSERT_ANY_THROW(orderbook.at(50696));
+    ASSERT_EQ(orderbook.size(), 4);
 }
