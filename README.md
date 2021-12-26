@@ -1,3 +1,3 @@
 # Ayanami
 
-Statistical arbitrage trading strategy.
+Statistical arbitrage and Market making trading strategies.
