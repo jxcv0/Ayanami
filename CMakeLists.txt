@@ -2,10 +2,10 @@ cmake_minimum_required(VERSION 3.16.0)
 project(Ayanami VERSION 0.1.0)
 
 # GoogleTest requires at least C++11
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_BUILD_TYPE debug)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++2a")
 
 enable_testing()
 
@@ -20,6 +20,7 @@ FetchContent_MakeAvailable(googletest)
 
 find_package(cpprestsdk REQUIRED)
 find_package(Boost 1.71.0 REQUIRED)
+find_package(OpenSSL REQUIRED)
 
 set(
   SOURCES
@@ -27,8 +28,9 @@ set(
     src/TradeSeries.cpp
     src/TimeSeries.cpp
     src/PriceSeries.cpp
-    src/ftx/FTX_OrderBookMsgs.cpp
     src/LimitOrderBook.cpp
+    src/ftx/FTX_OrderBookMsgs.cpp
+    src/ftx/FTX_APIRequest.cpp
 )
 
 set(
@@ -37,8 +39,9 @@ set(
     include/TradeSeries.hpp
     include/TimeSeries.hpp
     include/PriceSeries.hpp
-    include/ftx/FTX_OrderBookMsgs.hpp
     include/LimitOrderBook.hpp
+    include/ftx/FTX_OrderBookMsgs.hpp
+    include/ftx/FTX_APIRequest.hpp
 )
 
 add_library(ayanami STATIC ${SOURCES} ${HEADERS})
@@ -47,7 +50,8 @@ target_include_directories(
   ayanami
     PUBLIC
       ${PROJECT_SOURCE_DIR}/include
-      ${PROJECT_SOURCE_DIR}/build/_deps/cpprestsdk-src/Release/include/cpprest
+      #${PROJECT_SOURCE_DIR}/build/_deps/cpprestsdk-src/Release/include/cpprest
+      ${cpprestsdk_INCLUDE_DIRS}
       ${Boost_INCLUDE_DIRS}
 )
 
@@ -55,6 +59,8 @@ target_link_libraries(
   ayanami
     PUBLIC
       cpprestsdk::cpprest
+      ssl
+      crypto
       ${Boost_LIBRARIES}
 )
 
