@@ -21,11 +21,11 @@ namespace ayanami {
         std::string generate_order_json(std::string market, std::string side, double price, std::string type, double size, bool reduce_only, bool post_only);
 
         /**
-         * @brief Create string for order POST request for the FTX API
+         * @brief Create string for order POST request header for the FTX API
          * 
          * @param time the time in epoch seconds
          * @param json the order JSON
-         * @return the request string
+         * @return the request header string
          */
         std::string generate_order_header(long time, std::string& json);
     } // namespace ftx

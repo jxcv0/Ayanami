@@ -1,5 +1,4 @@
 #include "ftx/FTX_APIRequest.hpp"
-#include "Encryption.hpp"
 #include "APIKeys.hpp"
 
 #include <cpprest/json.h>
@@ -33,11 +32,11 @@ std::string ayanami::ftx::generate_order_json(std::string market, std::string si
 }
 
 /**
- * @brief Create string for order POST request for the FTX API
+ * @brief Create string for order POST request header for the FTX API
  * 
  * @param time the time in epoch seconds
  * @param json the order JSON
- * @return the request string
+ * @return the request header string
  */
 std::string ayanami::ftx::generate_order_header(long time, std::string& json) {
     return std::to_string(time) + "POST" + "/api/orders" + json;

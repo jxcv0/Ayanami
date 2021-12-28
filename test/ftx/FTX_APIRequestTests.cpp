@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 
 #include "ftx/FTX_APIRequest.hpp"
-#include "APIKeys.hpp"
 
 TEST(FTX_APIRequestsTests, generate_order_json_test) {
     std::string json = ayanami::ftx::generate_order_json("BTC-PERP", "buy", 8500, "limit", 1, false, false);
