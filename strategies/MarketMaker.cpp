@@ -46,11 +46,11 @@ int main(int argc, char const *argv[]) {
     
     std::map<double, double> orderbook;
 
-    // TODO - This should use ticker feed
+    // TODO - This should use trade feed
     ayanami::PriceSeries series(10000);
 
     boost::asio::io_context ioc;
-    ssl::context ctx{ssl::context::tlsv12_client};
+    ssl::context ctx{ssl::context::tlsv13_client};
     auto ws = std::make_shared<ayanami::connections::Websocket>(ioc, ctx);
     ws->run(
         "ftx.com",
