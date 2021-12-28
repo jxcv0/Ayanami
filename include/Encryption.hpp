@@ -16,7 +16,7 @@ namespace ayanami {
      * @param input the input to encrypt
      * @return the encrypted string 
      */
-    std::string hmac_sha256(const char *key, const char *input); 
+    std::string hmac_sha256(const char *secret, const char *input); 
 } // namespace ayanami
 
 #endif
