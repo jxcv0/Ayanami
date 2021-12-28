@@ -29,17 +29,20 @@ set(
     src/TimeSeries.cpp
     src/PriceSeries.cpp
     src/LimitOrderBook.cpp
+    src/Encryption.cpp
     src/ftx/FTX_OrderBookMsgs.cpp
     src/ftx/FTX_APIRequest.cpp
 )
 
 set(
   HEADERS
+    include/APIKeys.hpp
     include/Websocket.hpp
     include/TradeSeries.hpp
     include/TimeSeries.hpp
     include/PriceSeries.hpp
     include/LimitOrderBook.hpp
+    include/Encryption.hpp
     include/ftx/FTX_OrderBookMsgs.hpp
     include/ftx/FTX_APIRequest.hpp
 )
@@ -50,7 +53,6 @@ target_include_directories(
   ayanami
     PUBLIC
       ${PROJECT_SOURCE_DIR}/include
-      #${PROJECT_SOURCE_DIR}/build/_deps/cpprestsdk-src/Release/include/cpprest
       ${cpprestsdk_INCLUDE_DIRS}
       ${Boost_INCLUDE_DIRS}
 )

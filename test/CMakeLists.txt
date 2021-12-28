@@ -11,6 +11,7 @@ set(
         TimeSeriesTests.cpp
         PriceSeriesTests.cpp
         LimitOrderBookTests.cpp
+        EncryptionTests.cpp
         ftx/FTX_OrderBookMsgsTests.cpp
         ftx/FTX_APIRequestTests.cpp
 
