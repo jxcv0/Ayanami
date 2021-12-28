@@ -3,7 +3,16 @@
 
 #include <string>
 
+/**
+ * @brief Cryprocurrency trading library
+ * 
+ */
 namespace ayanami {
+
+    /**
+     * @brief Connection managment for FTX exchange
+     * 
+     */
     namespace ftx {
 
         /**
