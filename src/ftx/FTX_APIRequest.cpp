@@ -1,8 +1,10 @@
 #include "ftx/FTX_APIRequest.hpp"
+#include "Encryption.hpp"
+#include "APIKeys.hpp"
 
 #include <cpprest/json.h>
-
 #include <iostream>
+
 /**
  * @brief Create the JSON for an order reqest to the FTX API
  * 
@@ -25,7 +27,9 @@ std::string ayanami::ftx::generate_order_request(std::string market, std::string
     req[U("size")] = web::json::value(size);
     req[U("type")] = web::json::value(type);
     req[U("reduceOnly")] = web::json::value(reduce_only);
+    req[U("ioc")] = web::json::value(false);
     req[U("postOnly")] = web::json::value(post_only);
+    req[U("clientId")] = web::json::value(web::json::value::null());
     return req.serialize().c_str();
 }
 
@@ -35,9 +39,12 @@ std::string ayanami::ftx::generate_order_request(std::string market, std::string
  * @param timestamp Number of milliseconds since Unix epoch
  * @param method HTTP method in uppercase (e.g. GET or POST)
  * @param path Request path, including leading slash and any URL parameters but not including the hostname (e.g. /account)
- * @param post (POST only) Request body (JSON-encoded)
+ * @param req (POST only) Request body (JSON-encoded)
  * @return the sign
  */
-std::string ayanami::ftx::generate_sign(long timestamp, std::string method, std::string path, std::string post) {
-    // TODO
+std::string ayanami::ftx::generate_sign(long timestamp, std::string method, std::string path, std::string req) {
+    std::string str = std::to_string(timestamp) + method + path + req;
+    std::cout << str << "\n";
+    return ayanami::hmac_sha256(APIKeys::SECRET, str.c_str());
+
 }

@@ -26,10 +26,10 @@ namespace ayanami {
          * @param timestamp Number of milliseconds since Unix epoch
          * @param method HTTP method in uppercase (e.g. GET or POST)
          * @param path Request path, including leading slash and any URL parameters but not including the hostname (e.g. /account)
-         * @param post (POST only) Request body (JSON-encoded)
+         * @param req (POST only) Request body (JSON-encoded)
          * @return the sign
          */
-        std::string generate_sign(long timestamp, std::string method, std::string path, std::string post);
+        std::string generate_sign(long timestamp, std::string method, std::string path, std::string req);
     } // namespace ftx
 } // namespace ayanami
 
