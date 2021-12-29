@@ -8,10 +8,10 @@ ayanami::connections::HttpClient::HttpClient(net::any_io_executor ex, ssl::conte
     : resolver_(ex)
     , stream_(ex, ctx) {}
 
-void ayanami::connections::HttpClient::run(http::request<http::string_body> req, char const* host, char const* port, char const* target,
+void ayanami::connections::HttpClient::run(http::request<http::string_body> req, char const* port,
     std::function<void(http::response<http::string_body>)> on_response) {
-    
-    if (!SSL_set_tlsext_host_name(stream_.native_handle(), host)) {
+
+    if (!SSL_set_tlsext_host_name(stream_.native_handle(), req[http::field::host].data())) {
         beast::error_code ec{static_cast<int>(::ERR_get_error()), net::error::get_ssl_category()};
         std::cerr << ec.message() << "\n";
         return;
@@ -21,7 +21,7 @@ void ayanami::connections::HttpClient::run(http::request<http::string_body> req,
     req_ = req;
 
     resolver_.async_resolve(
-        host,
+        req[http::field::host].data(),
         port,
         beast::bind_front_handler(&HttpClient::on_resolve, shared_from_this())
     );
@@ -58,7 +58,8 @@ void ayanami::connections::HttpClient::on_handshake(beast::error_code ec) {
 
     beast::get_lowest_layer(stream_).expires_after(std::chrono::seconds(30));
 
-    http::async_write(stream_, req_,
+    http::async_write(stream_,
+        req_,
         beast::bind_front_handler(&HttpClient::on_write, shared_from_this())
     );
 }

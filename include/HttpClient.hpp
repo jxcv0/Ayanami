@@ -65,15 +65,14 @@ namespace ayanami {
             explicit HttpClient(net::any_io_executor ex, ssl::context& ctx);
 
             /**
-             * @brief Start asynchronous operation
+             * @brief Start async operation
              * 
-             * @param host the host
+             * @param req the request
              * @param port the port
-             * @param target the target
-             * @param version the message version
-             * @param on_response the response handling function
+             * @param host the host name
+             * @param on_response the funtion to handle responses
              */
-            void run(http::request<http::string_body> req, char const* host, char const* port, char const* target, 
+            void run(http::request<http::string_body> req, char const* port,
                 std::function<void(http::response<http::string_body>)> on_response);
 
             /**
