@@ -9,6 +9,3 @@ googletest/
 
 # API keys
 APIKeys.hpp
-
-# Misc
-misc/

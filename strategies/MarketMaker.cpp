@@ -24,7 +24,7 @@ int main(int argc, char const *argv[]) {
         std::cerr << "Usage: market_maker <session duration in mins>\n"
             << "Example:\n" <<
             "   market_maker 60\n";
-        return EXIT_FAILURE;
+        return 1;
     }
     
     constexpr double RISK_AVERSION_PARAM = 0.01;
