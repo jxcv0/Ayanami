@@ -8,18 +8,17 @@ ayanami::connections::HttpClient::HttpClient(net::any_io_executor ex, ssl::conte
     : resolver_(ex)
     , stream_(ex, ctx) {}
 
-void ayanami::connections::HttpClient::run(char const* host, char const* port, char const* target) {
+void ayanami::connections::HttpClient::run(http::request<http::string_body> req, char const* host, char const* port, char const* target,
+    std::function<void(http::response<http::string_body>)> on_response) {
+    
     if (!SSL_set_tlsext_host_name(stream_.native_handle(), host)) {
         beast::error_code ec{static_cast<int>(::ERR_get_error()), net::error::get_ssl_category()};
         std::cerr << ec.message() << "\n";
         return;
     }
 
-    // create request
-    req_.method(http::verb::post);
-    req_.target(target);
-    req_.set(http::field::host, host);
-    req_.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
+    on_response_ = on_response;
+    req_ = req;
 
     resolver_.async_resolve(
         host,
@@ -52,6 +51,18 @@ void ayanami::connections::HttpClient::on_connect(beast::error_code ec, tcp::res
     );
 }
 
+void ayanami::connections::HttpClient::on_handshake(beast::error_code ec) {
+    if (ec) {
+        return fail(ec, "On handshake");
+    }
+
+    beast::get_lowest_layer(stream_).expires_after(std::chrono::seconds(30));
+
+    http::async_write(stream_, req_,
+        beast::bind_front_handler(&HttpClient::on_write, shared_from_this())
+    );
+}
+
 void ayanami::connections::HttpClient::on_write(beast::error_code ec, std::size_t bytes_transferred) {
     if (ec) {
         return fail(ec, "On write");
@@ -59,10 +70,11 @@ void ayanami::connections::HttpClient::on_write(beast::error_code ec, std::size_
 
     beast::get_lowest_layer(stream_).expires_after(std::chrono::seconds(30));
 
-    http::async_write(
+    http::async_read(
         stream_,
-        req_,
-        beast::bind_front_handler(&HttpClient::on_write, shared_from_this())
+        buffer_,
+        res_,
+        beast::bind_front_handler(&HttpClient::on_read, shared_from_this())
     );
 }
 
@@ -73,8 +85,7 @@ void ayanami::connections::HttpClient::on_read(beast::error_code ec, std::size_t
         return fail(ec, "On read");
     }
 
-    // TODO - here
-    std::cout << res_ << std::endl;
+    on_response_(res_);
 
     beast::get_lowest_layer(stream_).expires_after(std::chrono::seconds(30));
 

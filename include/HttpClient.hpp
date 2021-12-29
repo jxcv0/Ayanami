@@ -7,7 +7,9 @@
 #include <boost/asio/ssl/context.hpp>
 #include <boost/asio/io_service.hpp>
 #include <boost/asio/ip/tcp.hpp>
+#include <boost/asio/strand.hpp>
 
+#include <functional>
 #include <cstdlib>
 #include <iostream>
 #include <memory>
@@ -40,7 +42,7 @@ namespace ayanami {
         void fail(beast::error_code ec, char const* what);
 
         /**
-         * @brief An HTTP client for placing orders 
+         * @brief An HTTP Client
          * 
          */
         class HttpClient : public std::enable_shared_from_this<HttpClient> {
@@ -50,6 +52,7 @@ namespace ayanami {
             beast::flat_buffer buffer_;
             http::request<http::string_body> req_; // string body?
             http::response<http::string_body> res_;
+            std::function<void(http::response<http::string_body>)> on_response_;
 
         public:
 
@@ -68,8 +71,10 @@ namespace ayanami {
              * @param port the port
              * @param target the target
              * @param version the message version
+             * @param on_response the response handling function
              */
-            void run(char const* host, char const* port, char const* target);
+            void run(http::request<http::string_body> req, char const* host, char const* port, char const* target, 
+                std::function<void(http::response<http::string_body>)> on_response);
 
             /**
              * @brief On resolve
