@@ -50,7 +50,7 @@ namespace ayanami {
             tcp::resolver resolver_;
             beast::ssl_stream<beast::tcp_stream> stream_;
             beast::flat_buffer buffer_;
-            http::request<http::string_body> req_; // string body?
+            http::request<http::string_body> req_;
             http::response<http::string_body> res_;
             std::function<void(http::response<http::string_body>)> on_response_;
 

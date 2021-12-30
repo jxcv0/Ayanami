@@ -20,9 +20,11 @@ void ayanami::connections::HttpClient::run(http::request<http::string_body> req,
     on_response_ = on_response;
     req_ = req;
 
+    std::cout << req[http::field::host].data() << "\n"; 
     resolver_.async_resolve(
         req[http::field::host].data(),
         port,
+        net::ip::resolver_query_base::numeric_service,
         beast::bind_front_handler(&HttpClient::on_resolve, shared_from_this())
     );
 }
