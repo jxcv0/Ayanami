@@ -52,58 +52,62 @@ int main(int argc, char const *argv[]) {
     boost::asio::io_context ioc;
     ssl::context ctx{ssl::context::tlsv13_client};
     auto ws = std::make_shared<ayanami::connections::Websocket>(ioc, ctx);
+
+    auto path = [&](std::string msg){
+        web::json::value json = web::json::value::parse(msg);
+
+        std::string type = json.at("type").as_string();
+
+        if (type == "update") { // Actionable message
+
+            // Parse JSON - simdjson?
+            web::json::value data = json.at("data");
+            ayanami::ftx::update_orderbook(orderbook, data);
+
+            // Update state
+            // TODO - position subscription
+            mid_price = ayanami::lobs::mid_price(orderbook);
+            series.add_price(mid_price);
+            double vol_param = series.variance();
+
+            // Calculate (T - t)
+            double time_now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+            double time_param = (time_now - start) / (end - start);
+
+            if (time_param > 1) {
+                ws->close();
+            }
+            
+            // Calculate reservation price
+            double res_price = mid_price - (inv * RISK_AVERSION_PARAM * vol_param * time_param);
+
+            // Calculate quotes
+            double half_spread = (RISK_AVERSION_PARAM * vol_param * time_param) + ((2 / RISK_AVERSION_PARAM) * log(1 + (RISK_AVERSION_PARAM / LIQUIDITY_PARAM))) / 2;
+            double ask = std::round(res_price + half_spread);
+            double bid = std::round(res_price - half_spread);
+            double spread = ask - bid;
+
+            std::cout << "b: " << bid << " " << "a: " << ask << "spread: " << spread << "\n";
+
+            // Check if orders need changing. If yes place orders
+
+        } else if (type == "partial") { // Populate orderbook
+            std::cout << "Populating " << json["market"].as_string() << " orderbook...\n";
+            web::json::value data = json.at("data");
+            ayanami::ftx::populate_orderbook(orderbook, data);
+            std::cout << "Executing...\n" << "\n";
+
+        } else { // All other messages
+            std::cout << "Message recieved: " << msg << "\n";
+        }
+    };
+
     ws->run(
         "ftx.com",
         "/ws/",
         "{\"op\": \"subscribe\", \"channel\": \"orderbook\", \"market\": \"BTC-PERP\"}",
-        [&](std::string msg){
-            web::json::value json = web::json::value::parse(msg);
-
-            std::string type = json.at("type").as_string();
-
-            if (type == "update") { // Actionable message
-
-                // Parse JSON - simdjson?
-                web::json::value data = json.at("data");
-                ayanami::ftx::update_orderbook(orderbook, data);
-
-                // Update state
-                // TODO - position subscription
-                mid_price = ayanami::lobs::mid_price(orderbook);
-                series.add_price(mid_price);
-                double vol_param = series.variance();
-
-                // Calculate (T - t)
-                double time_now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-                double time_param = (time_now - start) / (end - start);
-
-                if (time_param > 1) {
-                    ws->close();
-                }
-                
-                // Calculate reservation price
-                double res_price = mid_price - (inv * RISK_AVERSION_PARAM * vol_param * time_param);
-
-                // Calculate quotes
-                double half_spread = (RISK_AVERSION_PARAM * vol_param * time_param) + ((2 / RISK_AVERSION_PARAM) * log(1 + (RISK_AVERSION_PARAM / LIQUIDITY_PARAM))) / 2;
-                double ask = std::round(res_price + half_spread);
-                double bid = std::round(res_price - half_spread);
-                double spread = ask - bid;
-
-                std::cout << "b: " << bid << " " << "a: " << ask << "spread: " << spread << "\n";
-
-                // Check if orders need changing. If yes place orders
-
-            } else if (type == "partial") { // Populate orderbook
-                std::cout << "Populating " << json["market"].as_string() << " orderbook...\n";
-                web::json::value data = json.at("data");
-                ayanami::ftx::populate_orderbook(orderbook, data);
-                std::cout << "Executing...\n" << "\n";
-
-            } else { // All other messages
-                std::cout << "Message recieved: " << msg << "\n";
-            }
-        });
+        path
+    );
 
     ioc.run();
     return 0;
