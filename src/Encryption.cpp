@@ -3,6 +3,7 @@
 #include <openssl/hmac.h>
 #include <openssl/evp.h>
 #include <string.h>
+#include <iomanip>
 
 /**
  * @brief Generate SHA256 HMAC of an input using a secret key
@@ -12,22 +13,20 @@
  * @return the encrypted string 
  */
 std::string ayanami::hmac_sha256(const char *key, const char *input) {
-    unsigned char *p = (unsigned char*) malloc(1024);
-    char buf[1024] = {0};  
-    char tmp[3] = {0}; 
-    unsigned int output_length = 0;
-    p = (unsigned char*) malloc(EVP_MAX_MD_SIZE);
+    unsigned char hash[32];
 
     HMAC_CTX *ctx = HMAC_CTX_new();
-    HMAC_Init_ex(ctx, key, strlen(key), EVP_sha256(), NULL);
-    HMAC_Update(ctx, (unsigned char*)input, strlen(input)); 
-
-    HMAC_Final(ctx, p, &output_length);
+    HMAC_Init_ex(ctx, &key[0], strlen(key), EVP_sha256(), NULL);
+    HMAC_Update(ctx, (unsigned char*) &input[0], strlen(input));
+    unsigned int len = 32;
+    HMAC_Final(ctx, hash, &len);
     HMAC_CTX_reset(ctx);
-    for (int i = 0; i<32; i++)  
-    {  
-        sprintf(tmp, "%02x", p[i]);  
-        strcat(buf, tmp);  
-    }  
-    return std::string(buf);
+
+    std::stringstream str;
+    str << std::setfill('0');
+    for (int i = 0; i < len; i++) {
+        str << std::hex << std::setw(2) << (unsigned int)hash[i];
+    }
+
+    return str.str();
 }

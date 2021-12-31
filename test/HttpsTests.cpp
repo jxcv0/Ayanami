@@ -20,9 +20,9 @@ TEST(HttpClientTests, 200_ok_test) {
     std::string sign = time_now + "GET" + "/account";
     req.set("FTX-SIGN", ayanami::hmac_sha256(APIKeys::SECRET, sign.c_str()));
 
-    std::cout << "Request: " << req << "\n";
+    http::response<http::dynamic_body> res;
 
-    ayanami::connections::send_req(req, [](http::response<http::dynamic_body> res){
-        std::cout << res << "\n";
-    });
+    ayanami::connections::send_req(req, [&](http::response<http::dynamic_body> r){ res = r; });
+
+    ASSERT_EQ(res.result_int(), 200);
 }

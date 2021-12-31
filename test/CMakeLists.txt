@@ -12,7 +12,7 @@ set(
         PriceSeriesTests.cpp
         LimitOrderBookTests.cpp
         EncryptionTests.cpp
-        HttpClientTests.cpp
+        HttpsTests.cpp
         ftx/FTX_OrderBookMsgsTests.cpp
         ftx/FTX_APIRequestTests.cpp
 
