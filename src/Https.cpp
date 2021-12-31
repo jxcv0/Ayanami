@@ -7,8 +7,9 @@ void ayanami::connections::send_req(http::request<http::string_body> req,
 
     try {
         net::io_context ioc;
-        ssl::context ctx(ssl::context::tlsv12_client);
-        ctx.set_verify_mode(ssl::verify_peer);
+        ssl::context ctx(ssl::context::tlsv13_client);
+        ctx.set_default_verify_paths();
+        // ctx.set_verify_mode(ssl::verify_peer);
 
         tcp::resolver resolver(ioc);
         beast::ssl_stream<beast::tcp_stream> stream(ioc, ctx);
