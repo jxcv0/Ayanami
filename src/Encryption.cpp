@@ -2,8 +2,27 @@
 
 #include <openssl/hmac.h>
 #include <openssl/evp.h>
+
+#include <algorithm>
 #include <string.h>
 #include <iomanip>
+
+std::string ayanami::spacify(std::string& str) {
+    std::string out;
+    for (char c : str) {
+        switch (c) {
+        case ':':
+        case ',':
+            out += c;
+            out += ' ';
+            break;
+        
+        default:
+            out += c;
+        }
+    }
+    return out;
+}
 
 /**
  * @brief Generate SHA256 HMAC of an input using a secret key
