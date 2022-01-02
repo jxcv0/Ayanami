@@ -42,7 +42,7 @@ namespace ayanami {
             std::string text_;
             std::string path_;
             std::function<void(std::string)> on_msg_;
-            bool close_;
+            bool should_close_;
 
         public:
 
@@ -121,9 +121,7 @@ namespace ayanami {
             /**
              * @brief Send a message via the websocket
              * 
-             *  TODO
-             * 
-             * @param msg 
+             * @param msg the message string
              */
             void send(std::string msg);
 

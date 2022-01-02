@@ -39,9 +39,14 @@ int main(int argc, char const *argv[]) {
     assert(inc > 0);
 
     auto t = std::chrono::system_clock::now();
-    double start = std::chrono::duration_cast<std::chrono::milliseconds>(t.time_since_epoch()).count();
+    double start = std::chrono::duration_cast<std::chrono::milliseconds>(
+        t.time_since_epoch()
+    ).count();
+    
     t += std::chrono::minutes(inc);
-    double end = std::chrono::duration_cast<std::chrono::milliseconds>(t.time_since_epoch()).count();
+    double end = std::chrono::duration_cast<std::chrono::milliseconds>(
+        t.time_since_epoch()
+    ).count();
 
     double mid_price;
     int inv = 0;
@@ -90,7 +95,7 @@ int main(int argc, char const *argv[]) {
             double bid = std::round(res_price - half_spread);
             double spread = ask - bid;
 
-            std::cout << "b: " << bid << " " << "a: " << ask << "spread: " << spread << "\n";
+            std::cout << "b: " << bid << " " << "a: " << ask << " spread: " << spread << "\n";
 
             // Check if orders need changing. If yes place orders
 
@@ -106,15 +111,21 @@ int main(int argc, char const *argv[]) {
     };
 
     // Connect to ws
+    long time = std::chrono::duration_cast<std::chrono::milliseconds>(
+        std::chrono::system_clock::now().time_since_epoch()
+    ).count();
+
+    std::string login = ayanami::ftx::generate_ws_login(time, APIKeys::KEY, APIKeys::SECRET);
+
     ws->run(
         "ftx.com",
         "/ws/",
-        ayanami::ftx::generate_ws_login((long)time, APIKeys::KEY, APIKeys::SECRET).c_str(),
+        "{\"op\": \"subscribe\", \"channel\": \"orderbook\", \"market\": \"BTC-PERP\"}",
         path
     );
 
+    ioc.run();
     // TODO - send subscription msg
 
-    ioc.run();
     return 0;
 }

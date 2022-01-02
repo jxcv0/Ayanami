@@ -5,4 +5,3 @@ set(CMAKE_CXX_STANDARD 11)
 link_libraries(ayanami)
 
 add_executable(ftxmm FTX_MarketMaker.cpp)
-add_executable(classic Classic.cpp)
