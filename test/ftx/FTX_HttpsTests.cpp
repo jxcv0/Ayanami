@@ -4,7 +4,7 @@
 #include "Encryption.hpp"
 #include "APIKeys.hpp"
 
-TEST(HttpClientTests, 200_ok_test) {
+TEST(FTX_Https_tests, 200_ok_test) {
     long t = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
     std::string time_now = std::to_string(t);
 

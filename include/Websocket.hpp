@@ -9,6 +9,7 @@
 
 #include <memory>
 #include <functional>
+#include <string>
 
 namespace beast = boost::beast;         
 namespace http = beast::http;           
@@ -59,7 +60,7 @@ namespace ayanami {
              * 
              * @param host the websocket host
              * @param path the uri path
-             * @param text the message to send on successful connection
+             * @param text the message to send upon successful connection
              * @param on_msg the message handling function
              */
             void run(char const* host, char const* path, char const* text, std::function<void(std::string)> on_msg);
@@ -116,6 +117,15 @@ namespace ayanami {
              * @param ec boost/beast error code
              */
             void on_close(beast::error_code ec);
+
+            /**
+             * @brief Send a message via the websocket
+             * 
+             *  TODO
+             * 
+             * @param msg 
+             */
+            void send(std::string msg);
 
             /**
              * @brief Close the connection

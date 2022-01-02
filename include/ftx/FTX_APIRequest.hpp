@@ -37,6 +37,15 @@ namespace ayanami {
          * @return the request header string
          */
         std::string generate_order_header(long time, std::string& json);
+
+        /**
+         * @brief Generate authenicated websocket login request string
+         * 
+         * @param time int timestamp in ms (unix)
+         * @param secret the secret key
+         * @return the login message
+         */
+        std::string generate_ws_login(long time, const char* secret);
     } // namespace ftx
 } // namespace ayanami
 

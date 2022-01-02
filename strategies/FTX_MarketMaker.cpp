@@ -17,7 +17,6 @@
  * https://www.math.nyu.edu/~avellane/HighFrequencyTrading.pdf
  * 
  * 
- * TODO - compare latency with forward declaration
  */
 int main(int argc, char const *argv[]) {
     if (argc != 2) {

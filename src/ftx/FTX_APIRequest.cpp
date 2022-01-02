@@ -1,4 +1,5 @@
 #include "ftx/FTX_APIRequest.hpp"
+#include "Encryption.hpp"
 #include "APIKeys.hpp"
 
 #include <cpprest/json.h>
@@ -40,4 +41,9 @@ std::string ayanami::ftx::generate_order_json(std::string market, std::string si
  */
 std::string ayanami::ftx::generate_order_header(long time, std::string& json) {
     return std::to_string(time) + "POST" + "/api/orders" + json;
+}
+
+std::string ayanami::ftx::generate_ws_login(long time, const char* secret) {
+    std::string str(std::to_string(time) + "websocket_login");
+    return ayanami::hmac_sha256(secret, str.c_str());
 }
