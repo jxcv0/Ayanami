@@ -2,6 +2,8 @@
 #include "PriceSeries.hpp"
 #include "LimitOrderBook.hpp"
 #include "ftx/FTX_OrderBookMsgs.hpp"
+#include "ftx/FTX_APIRequests.hpp"
+#include "APIKeys.hpp"
 
 #include <cpprest/json.h>
 
@@ -25,7 +27,8 @@ int main(int argc, char const *argv[]) {
             "   market_maker 60\n";
         return 1;
     }
-    
+
+    // Set up some state data
     constexpr double RISK_AVERSION_PARAM = 0.01;
     constexpr double LIQUIDITY_PARAM = 0.5;
 
@@ -52,6 +55,7 @@ int main(int argc, char const *argv[]) {
     ssl::context ctx{ssl::context::tlsv13_client};
     auto ws = std::make_shared<ayanami::connections::Websocket>(ioc, ctx);
 
+    // Main path
     auto path = [&](std::string msg){
         web::json::value json = web::json::value::parse(msg);
 
@@ -101,12 +105,15 @@ int main(int argc, char const *argv[]) {
         }
     };
 
+    // Connect to ws
     ws->run(
         "ftx.com",
         "/ws/",
-        "{\"op\": \"subscribe\", \"channel\": \"orderbook\", \"market\": \"BTC-PERP\"}",
+        "",
         path
     );
+
+    // TODO - send subscription msg
 
     ioc.run();
     return 0;

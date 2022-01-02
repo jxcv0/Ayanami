@@ -32,7 +32,7 @@ set(
     src/LimitOrderBook.cpp
     src/Encryption.cpp
     src/ftx/FTX_OrderBookMsgs.cpp
-    src/ftx/FTX_APIRequest.cpp
+    src/ftx/FTX_APIRequests.cpp
 )
 
 set(
@@ -46,7 +46,7 @@ set(
     include/LimitOrderBook.hpp
     include/Encryption.hpp
     include/ftx/FTX_OrderBookMsgs.hpp
-    include/ftx/FTX_APIRequest.hpp
+    include/ftx/FTX_APIRequests.hpp
 )
 
 add_library(ayanami STATIC ${SOURCES} ${HEADERS})

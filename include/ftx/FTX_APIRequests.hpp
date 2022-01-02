@@ -39,13 +39,23 @@ namespace ayanami {
         std::string generate_order_header(long time, std::string& json);
 
         /**
-         * @brief Generate authenicated websocket login request string
+         * @brief Generate authentification sign for private topics
          * 
-         * @param time int timestamp in ms (unix)
+         * @param time int timestamp in seconds (unix)
          * @param secret the secret key
-         * @return the login message
+         * @return the login sign
          */
-        std::string generate_ws_login(long time, const char* secret);
+        std::string generate_ws_sign(long time, const char *secret);
+
+        /**
+         * @brief Generate ftx websocket login JSON
+         * 
+         * @param time int timestamp in seconds (unix)
+         * @param key the public key
+         * @param secret the secret key
+         * @return the login JSON
+         */
+        std::string generate_ws_login(long time, const char *key, const char *secret);
     } // namespace ftx
 } // namespace ayanami
 

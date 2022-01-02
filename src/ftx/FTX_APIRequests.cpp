@@ -1,4 +1,4 @@
-#include "ftx/FTX_APIRequest.hpp"
+#include "ftx/FTX_APIRequests.hpp"
 #include "Encryption.hpp"
 #include "APIKeys.hpp"
 
@@ -29,7 +29,8 @@ std::string ayanami::ftx::generate_order_json(std::string market, std::string si
     req[U("ioc")] = web::json::value(false);
     req[U("postOnly")] = web::json::value(post_only);
     req[U("clientId")] = web::json::value(web::json::value::null());
-    return req.serialize().c_str();
+    std::string str(req.serialize());
+    return ayanami::spacify(str);
 }
 
 /**
@@ -43,7 +44,28 @@ std::string ayanami::ftx::generate_order_header(long time, std::string& json) {
     return std::to_string(time) + "POST" + "/api/orders" + json;
 }
 
-std::string ayanami::ftx::generate_ws_login(long time, const char* secret) {
+/**
+ * @brief Generate authentification sign for private topics
+ * 
+ * @param time int timestamp in ms (unix)
+ * @param secret the secret key
+ * @return the login sign
+ */
+std::string ayanami::ftx::generate_ws_sign(long time, const char* secret) {
     std::string str(std::to_string(time) + "websocket_login");
     return ayanami::hmac_sha256(secret, str.c_str());
+}
+
+std::string ayanami::ftx::generate_ws_login(long time, const char *key, const char *secret) {
+    web::json::keep_object_element_order(true);
+    web::json::value args;
+    args[U("key")] = web::json::value(key);
+    args[U("sign")] = web::json::value(generate_ws_sign(time, secret));
+    args[U("time")] = web::json::value(time);
+
+    web::json::value msg;
+    msg[U("args")] = web::json::value(args);
+    msg[U("op")] = web::json::value("login");
+    std::string str(msg.serialize());
+    return ayanami::spacify(str);
 }

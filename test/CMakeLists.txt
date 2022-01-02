@@ -14,7 +14,7 @@ set(
         EncryptionTests.cpp
         ftx/FTX_HttpsTests.cpp
         ftx/FTX_OrderBookMsgsTests.cpp
-        ftx/FTX_APIRequestTests.cpp
+        ftx/FTX_APIRequestsTests.cpp
 
 )
 
