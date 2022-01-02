@@ -109,7 +109,7 @@ int main(int argc, char const *argv[]) {
     ws->run(
         "ftx.com",
         "/ws/",
-        "",
+        ayanami::ftx::generate_ws_login((long)time, APIKeys::KEY, APIKeys::SECRET).c_str(),
         path
     );
 

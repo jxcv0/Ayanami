@@ -56,6 +56,14 @@ std::string ayanami::ftx::generate_ws_sign(long time, const char* secret) {
     return ayanami::hmac_sha256(secret, str.c_str());
 }
 
+/**
+ * @brief Generate ftx websocket login JSON
+ * 
+ * @param time int timestamp in seconds (unix)
+ * @param key the public key
+ * @param secret the secret key
+ * @return the login JSON
+ */
 std::string ayanami::ftx::generate_ws_login(long time, const char *key, const char *secret) {
     web::json::keep_object_element_order(true);
     web::json::value args;

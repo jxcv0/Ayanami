@@ -69,4 +69,4 @@ target_link_libraries(
 )
 
 add_subdirectory(test)
-add_subdirectory(strategies)
+add_subdirectory(examples)

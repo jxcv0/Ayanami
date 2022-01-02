@@ -32,3 +32,7 @@ TEST(FTX_APIRequestsTests, generate_ws_login) {
 
     ASSERT_EQ(ayanami::ftx::generate_ws_login(time, key.c_str(), secret.c_str()), expected);
 }
+
+TEST(FTX_APIRequestsTests, ws_login_test) {
+    
+}
