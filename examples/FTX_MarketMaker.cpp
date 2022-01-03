@@ -1,4 +1,3 @@
-#include "Websocket.hpp"
 #include "PriceSeries.hpp"
 #include "LimitOrderBook.hpp"
 #include "ftx/FTX_OrderBookMsgs.hpp"
@@ -6,6 +5,7 @@
 #include "APIKeys.hpp"
 
 #include <cpprest/json.h>
+#include <cpprest/ws_client.h>
 
 #include <iostream>
 #include <sstream>
@@ -56,19 +56,20 @@ int main(int argc, char const *argv[]) {
     // TODO - This should use trade feed
     ayanami::PriceSeries series(10000);
 
-    boost::asio::io_context ioc;
-    ssl::context ctx{ssl::context::tlsv13_client};
-    auto ws = std::make_shared<ayanami::connections::Websocket>(ioc, ctx);
+    web::websockets::client::websocket_callback_client ws;
 
     // Main path
-    auto path = [&](std::string msg){
-        web::json::value json = web::json::value::parse(msg);
+    auto path = [&](web::websockets::client::websocket_incoming_message m){
+        web::json::value json = web::json::value::parse(
+            m.extract_string().get()
+        );
+
+        std::cout << "here\n";
 
         std::string type = json.at("type").as_string();
 
         if (type == "update") { // Actionable message
 
-            // Parse JSON - simdjson?
             web::json::value data = json.at("data");
             ayanami::ftx::update_orderbook(orderbook, data);
 
@@ -83,7 +84,7 @@ int main(int argc, char const *argv[]) {
             double time_param = (time_now - start) / (end - start);
 
             if (time_param > 1) {
-                ws->close();
+                ws.close().wait();
             }
             
             // Calculate reservation price
@@ -106,11 +107,11 @@ int main(int argc, char const *argv[]) {
             std::cout << "Executing...\n" << "\n";
 
         } else if (type == "error") { // Error messages
-            std::cout << "Error: " << msg << "\n";
-            ws->close();
+            std::cout << "Error: " << json << "\n";
+            ws.close().wait();
 
         } else { // All other message types
-            std::cout << "Msg: " << msg << "\n";
+            std::cout << "Msg: " << json << "\n";
         }
     };
 
@@ -119,17 +120,22 @@ int main(int argc, char const *argv[]) {
         std::chrono::system_clock::now().time_since_epoch()
     ).count();
 
-    std::string login = ayanami::ftx::generate_ws_login(time, APIKeys::KEY, APIKeys::SECRET);
-    std::cout << login.c_str() << "\n";
+    // std::string login = ayanami::ftx::generate_ws_login(time, APIKeys::KEY, APIKeys::SECRET);
+    // std::cout << login.c_str() << "\n";
 
-    ws->run(
-        "ftx.com",
-        "/ws/",
-        login.c_str(),
-        path
-    );
+    web::websockets::client::websocket_outgoing_message msg;
+    msg.set_utf8_message("{\"op\": \"subscribe\", \"channel\": \"orderbook\", \"market\": \"BTC-PERP\"}");
 
-    ioc.run();
+    ws.set_message_handler(path);
+
+    ws.connect("wss://ftx.com/ws/").then([&](){
+        ws.send(msg);
+    }).get();
+
+    while(true) {
+        // do nothing
+    }
+
     // TODO - send subscription msg
 
     return 0;
