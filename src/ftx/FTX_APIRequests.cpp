@@ -72,8 +72,8 @@ std::string ayanami::ftx::generate_ws_login(long time, const char *key, const ch
     args[U("time")] = web::json::value(time);
 
     web::json::value msg;
-    msg[U("args")] = web::json::value(args);
     msg[U("op")] = web::json::value("login");
+    msg[U("args")] = web::json::value(args);
     std::string str(msg.serialize());
     return ayanami::spacify(str);
 }

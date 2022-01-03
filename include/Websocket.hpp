@@ -119,13 +119,6 @@ namespace ayanami {
             void on_close(beast::error_code ec);
 
             /**
-             * @brief Send a message via the websocket
-             * 
-             * @param msg the message string
-             */
-            void send(std::string msg);
-
-            /**
              * @brief Close the connection
              * 
              */

@@ -19,7 +19,7 @@ TEST(FTX_APIRequestsTests, generate_order_req_test) {
 }
 
 TEST(FTX_APIRequestsTests, generate_ws_sign_test) {
-    long time = 1557246346499l;
+    long time = 1557246346499;
     std::string secret = "Y2QTHI23f23f23jfjas23f23To0RfUwX3H42fvN-";
     std::string expected = "d10b5a67a1a941ae9463a60b285ae845cdeac1b11edc7da9977bef0228b96de9";
     std::string actual = ayanami::ftx::generate_ws_sign(time, secret.c_str());
@@ -27,33 +27,10 @@ TEST(FTX_APIRequestsTests, generate_ws_sign_test) {
 }
 
 TEST(FTX_APIRequestsTests, generate_ws_login) {
-    long time = 1557246346499l;
+    long time = 1557246346499;
     std::string key("key");
     std::string secret("Y2QTHI23f23f23jfjas23f23To0RfUwX3H42fvN-");
-    std::string expected("{\"args\": {\"key\": \"key\", \"sign\": \"d10b5a67a1a941ae9463a60b285ae845cdeac1b11edc7da9977bef0228b96de9\", \"time\": 1557246346499}, \"op\": \"login\"}");
+    std::string expected("{\"op\": \"login\", \"args\": {\"key\": \"key\", \"sign\": \"d10b5a67a1a941ae9463a60b285ae845cdeac1b11edc7da9977bef0228b96de9\", \"time\": 1557246346499}}");
 
     ASSERT_EQ(ayanami::ftx::generate_ws_login(time, key.c_str(), secret.c_str()), expected);
-}
-
-TEST(FTX_APIRequestsTests, ws_200_ok_test) {
-    boost::asio::io_context ioc;
-    ssl::context ctx{ssl::context::tlsv13_client};
-    auto ws = std::make_shared<ayanami::connections::Websocket>(ioc, ctx);
-    auto on_msg = [&](std::string msg){
-        std::cout << msg << std::endl;
-        ws->close();
-    };
-
-    long time = std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::system_clock::now().time_since_epoch()
-    ).count();
-
-    std::string login = ayanami::ftx::generate_ws_login(time, APIKeys::KEY, APIKeys::SECRET);
-    std::cout << login << "\n";
-
-    ws->run("ftx.com", "/ws/", login.c_str(), on_msg);
-
-    ioc.run();
-
-    ws->send("{\"op\": \"subscribe\", \"channel\": \"orders\"}");
 }

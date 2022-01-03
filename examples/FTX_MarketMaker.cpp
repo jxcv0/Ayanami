@@ -105,8 +105,12 @@ int main(int argc, char const *argv[]) {
             ayanami::ftx::populate_orderbook(orderbook, data);
             std::cout << "Executing...\n" << "\n";
 
-        } else { // All other messages
-            std::cout << "Message recieved: " << msg << "\n";
+        } else if (type == "error") { // Error messages
+            std::cout << "Error: " << msg << "\n";
+            ws->close();
+
+        } else { // All other message types
+            std::cout << "Msg: " << msg << "\n";
         }
     };
 
@@ -116,11 +120,12 @@ int main(int argc, char const *argv[]) {
     ).count();
 
     std::string login = ayanami::ftx::generate_ws_login(time, APIKeys::KEY, APIKeys::SECRET);
+    std::cout << login.c_str() << "\n";
 
     ws->run(
         "ftx.com",
         "/ws/",
-        "{\"op\": \"subscribe\", \"channel\": \"orderbook\", \"market\": \"BTC-PERP\"}",
+        login.c_str(),
         path
     );
 
