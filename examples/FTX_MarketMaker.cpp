@@ -64,8 +64,6 @@ int main(int argc, char const *argv[]) {
             m.extract_string().get()
         );
 
-        std::cout << "here\n";
-
         std::string type = json.at("type").as_string();
 
         if (type == "update") { // Actionable message
@@ -80,7 +78,10 @@ int main(int argc, char const *argv[]) {
             double vol_param = series.variance();
 
             // Calculate (T - t)
-            double time_now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+            double time_now = std::chrono::duration_cast<std::chrono::milliseconds>(
+                std::chrono::system_clock::now().time_since_epoch()
+            ).count();
+
             double time_param = (time_now - start) / (end - start);
 
             if (time_param > 1) {
@@ -108,7 +109,7 @@ int main(int argc, char const *argv[]) {
 
         } else if (type == "error") { // Error messages
             std::cout << "Error: " << json << "\n";
-            ws.close().wait();
+            ws.close().get();
 
         } else { // All other message types
             std::cout << "Msg: " << json << "\n";
@@ -120,17 +121,23 @@ int main(int argc, char const *argv[]) {
         std::chrono::system_clock::now().time_since_epoch()
     ).count();
 
-    // std::string login = ayanami::ftx::generate_ws_login(time, APIKeys::KEY, APIKeys::SECRET);
-    // std::cout << login.c_str() << "\n";
+    web::websockets::client::websocket_outgoing_message login;
+    login.set_utf8_message(
+        ayanami::ftx::generate_ws_login(time, APIKeys::KEY, APIKeys::SECRET)
+    );
 
-    web::websockets::client::websocket_outgoing_message msg;
-    msg.set_utf8_message("{\"op\": \"subscribe\", \"channel\": \"orderbook\", \"market\": \"BTC-PERP\"}");
+    web::websockets::client::websocket_outgoing_message sub_msg;
+    sub_msg.set_utf8_message(
+        "{\"op\": \"subscribe\", \"channel\": \"orderbook\", \"market\": \"BTC-PERP\"}"
+    );
 
     ws.set_message_handler(path);
 
     ws.connect("wss://ftx.com/ws/").then([&](){
-        ws.send(msg);
-    }).get();
+        ws.send(login);
+    }).then([&](){
+        ws.send(sub_msg);
+    });
 
     while(true) {
         // do nothing
