@@ -24,7 +24,6 @@ find_package(OpenSSL REQUIRED)
 
 set(
   SOURCES
-    src/Websocket.cpp
     src/Https.cpp
     src/TradeSeries.cpp
     src/TimeSeries.cpp
@@ -39,7 +38,6 @@ set(
   HEADERS
     include/APIKeys.hpp
     include/Https.hpp
-    include/Websocket.hpp
     include/TradeSeries.hpp
     include/TimeSeries.hpp
     include/PriceSeries.hpp

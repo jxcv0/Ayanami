@@ -15,7 +15,6 @@ set(
         ftx/FTX_HttpsTests.cpp
         ftx/FTX_OrderBookMsgsTests.cpp
         ftx/FTX_APIRequestsTests.cpp
-
 )
 
 add_executable(all_tests ${SOURCES})
