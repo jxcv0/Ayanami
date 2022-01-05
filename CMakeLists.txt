@@ -32,7 +32,6 @@ set(
     src/Encryption.cpp
     src/ftx/FTX_OrderBookMsgs.cpp
     src/ftx/FTX_APIRequests.cpp
-    src/ftx/FTX_WSMessage.cpp
 )
 
 set(
@@ -46,7 +45,6 @@ set(
     include/Encryption.hpp
     include/ftx/FTX_OrderBookMsgs.hpp
     include/ftx/FTX_APIRequests.hpp
-    include/ftx/FTX_WSMessage.hpp
 )
 
 add_library(ayanami STATIC ${SOURCES} ${HEADERS})

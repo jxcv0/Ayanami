@@ -65,47 +65,52 @@ int main(int argc, char const *argv[]) {
 
     web::websockets::client::websocket_callback_client ws;
 
+    // Forward declaration of JSON objs
+    web::json::value json;
+    web::json::value data;
+    std::string type;
+    std::string channel;
+
     // Main path
-    // TODO - parse json message without object instantiation
     auto path = [&](web::websockets::client::websocket_incoming_message m){
-        web::json::value json = web::json::value::parse(
+        json = web::json::value::parse(
             m.extract_string().get()
         );
 
         std::cout << json << "\n";
 
-        std::string type = json.at("type").as_string();
+        type = json.at("type").as_string();
         if (type == "pong") {
             return;
         }
 
-        std::string channel = json.at("channel").as_string();
+        channel = json.at("channel").as_string();
 
         if (channel == "orderbook") {
             if (type == "update") { // Update midprice
-                web::json::value data = json.at("data");
+                data = json.at("data");
                 ayanami::ftx::update_orderbook(orderbook, data);
-
                 mid_price = ayanami::lobs::mid_price(orderbook);
 
             } else if (type == "partial") { // Populate orderbook
                 std::cout << "Populating " << json["market"].as_string() << " orderbook...\n";
-                web::json::value data = json.at("data");
+                data = json.at("data");
                 ayanami::ftx::populate_orderbook(orderbook, data);
+
                 std::cout << "Executing...\n" << "\n";
             }
 
-        } else if (channel == "trades") { // Update sigma^2
+        } else if (channel == "trades") { // Update sigma^2 and vol
             if (type == "update") {
-                web::json::array data = json.at("data").as_array();
-                for (auto &&i : data) {
+                data = json.at("data");
+                for (auto &&i : data.as_array()) {
                     series.add_price(i.at("price").as_double());
                 }
             }
 
         } else if (channel == "orders") { // Update orders
             if (type == "update") {
-                web::json::value data = json.at("data");
+                data = json.at("data");
                 if (data.at("side").as_string() == "buy") {
                     quotes.bid = data.at("price").as_double();
 
