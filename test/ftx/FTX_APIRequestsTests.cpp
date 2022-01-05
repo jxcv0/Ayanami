@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 
 #include "ftx/FTX_APIRequests.hpp"
-#include "Websocket.hpp"
 #include "APIKeys.hpp"
 
 TEST(FTX_APIRequestsTests, generate_order_json_test) {

@@ -15,6 +15,7 @@ set(
         ftx/FTX_HttpsTests.cpp
         ftx/FTX_OrderBookMsgsTests.cpp
         ftx/FTX_APIRequestsTests.cpp
+        ftx/FTX_WSMessageTests.cpp
 
 )
 
