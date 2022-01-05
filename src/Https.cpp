@@ -3,7 +3,7 @@
 #include <iostream>
 
 void ayanami::connections::send_req(http::request<http::string_body> req,
-    std::function<void(http::response<http::dynamic_body>)> func) {
+    http::response<http::dynamic_body>& res) {
 
     try {
         net::io_context ioc;
@@ -26,9 +26,7 @@ void ayanami::connections::send_req(http::request<http::string_body> req,
         stream.handshake(ssl::stream_base::client);
         http::write(stream, req);
         beast::flat_buffer buffer;
-        http::response<http::dynamic_body> res;
         http::read(stream, buffer, res);
-        func(res);
 
         beast::error_code ec;
         stream.shutdown(ec);

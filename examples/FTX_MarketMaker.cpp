@@ -13,11 +13,6 @@
 #include <ctime>
 #include <math.h>
 
-struct Quotes {
-    double bid;
-    double ask;
-};
-
 /**
  * @brief Market making auto-trader based on the 2008 paper by M. Avellaneda and S. Stoikov
  * 
@@ -41,14 +36,12 @@ int main(int argc, char const *argv[]) {
 
     // start time
     auto t = std::chrono::system_clock::now();
-
     double start = std::chrono::duration_cast<std::chrono::milliseconds>(
         t.time_since_epoch()
     ).count();
     
     // end time
     t += std::chrono::minutes(inc);
-
     double end = std::chrono::duration_cast<std::chrono::milliseconds>(
         t.time_since_epoch()
     ).count();
@@ -56,13 +49,10 @@ int main(int argc, char const *argv[]) {
     double mid_price;
     int inv = 0;
     std::map<double, double> orderbook;
-    
-    Quotes quotes;
-    quotes.ask = 0;
-    quotes.bid = 0;
 
     ayanami::PriceSeries series(100);
 
+    // Websocket
     web::websockets::client::websocket_callback_client ws;
 
     // Forward declaration of JSON objs
@@ -94,13 +84,14 @@ int main(int argc, char const *argv[]) {
 
             } else if (type == "partial") { // Populate orderbook
                 std::cout << "Populating " << json["market"].as_string() << " orderbook...\n";
+                
                 data = json.at("data");
                 ayanami::ftx::populate_orderbook(orderbook, data);
 
                 std::cout << "Executing...\n" << "\n";
             }
 
-        } else if (channel == "trades") { // Update sigma^2 and vol
+        } else if (channel == "trades") { // Update sigma^2
             if (type == "update") {
                 data = json.at("data");
                 for (auto &&i : data.as_array()) {
@@ -112,10 +103,10 @@ int main(int argc, char const *argv[]) {
             if (type == "update") {
                 data = json.at("data");
                 if (data.at("side").as_string() == "buy") {
-                    quotes.bid = data.at("price").as_double();
+                    // TODO
 
                 } else if (data.at("side").as_string() == "sell") {
-                    quotes.ask = data.at("price").as_double();
+                    // TODO
                 }
             }
 
@@ -129,13 +120,9 @@ int main(int argc, char const *argv[]) {
     };
 
     // Connect to ws
-    long time = std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::system_clock::now().time_since_epoch()
-    ).count();
-
     web::websockets::client::websocket_outgoing_message login;
     login.set_utf8_message(
-        ayanami::ftx::generate_ws_login(time, APIKeys::KEY, APIKeys::SECRET)
+        ayanami::ftx::generate_ws_login(start, APIKeys::KEY, APIKeys::SECRET)
     );
 
     web::websockets::client::websocket_outgoing_message trade_msg;

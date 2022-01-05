@@ -8,8 +8,6 @@
 #include <boost/asio/io_service.hpp>
 #include <boost/asio/ip/tcp.hpp>
 
-#include <functional>
-
 namespace beast = boost::beast;
 namespace http = beast::http;
 namespace net = boost::asio;
@@ -33,9 +31,11 @@ namespace ayanami {
          * @brief send a request to an FTX api endpoint
          * 
          * @param req the request
+         * @param res the forward declared response object
+         * 
          */
         void send_req(http::request<http::string_body> req,
-            std::function<void(http::response<http::dynamic_body>)> func);
+            http::response<http::dynamic_body>& res);
     } // namespace connections
 } // namespace ayanami
 #endif
