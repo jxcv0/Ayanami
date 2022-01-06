@@ -13,12 +13,6 @@ namespace ayanami {
      * https://www.math.nyu.edu/~avellane/HighFrequencyTrading.pdf
      */
     namespace av {
-
-        /**
-         * @brief calculate the reservation price
-         * 
-         * @return the reservation price
-         */
         
         /**
          * @brief Calculate the reservation price

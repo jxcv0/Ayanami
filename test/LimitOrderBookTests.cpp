@@ -2,7 +2,7 @@
 
 #include <cpprest/json.h>
 
-#include "ftx/FTX_OrderBookMsgs.hpp"
+#include "ftx/FTX_Websocket.hpp"
 #include "LimitOrderBook.hpp"
 
 TEST(LimitOrderBookTests, lobs_test) {

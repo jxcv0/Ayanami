@@ -1,6 +1,6 @@
 #include "PriceSeries.hpp"
 #include "LimitOrderBook.hpp"
-#include "ftx/FTX_OrderBookMsgs.hpp"
+#include "ftx/FTX_Websocket.hpp"
 #include "ftx/FTX_APIRequests.hpp"
 #include "APIKeys.hpp"
 

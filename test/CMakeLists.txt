@@ -13,7 +13,7 @@ set(
         LimitOrderBookTests.cpp
         EncryptionTests.cpp
         ftx/FTX_HttpsTests.cpp
-        ftx/FTX_OrderBookMsgsTests.cpp
+        ftx/FTX_WebsocketTests.cpp
         ftx/FTX_APIRequestsTests.cpp
 )
 

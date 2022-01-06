@@ -30,7 +30,7 @@ set(
     src/PriceSeries.cpp
     src/LimitOrderBook.cpp
     src/Encryption.cpp
-    src/ftx/FTX_OrderBookMsgs.cpp
+    src/ftx/FTX_Websocket.cpp
     src/ftx/FTX_APIRequests.cpp
 )
 
@@ -43,7 +43,7 @@ set(
     include/PriceSeries.hpp
     include/LimitOrderBook.hpp
     include/Encryption.hpp
-    include/ftx/FTX_OrderBookMsgs.hpp
+    include/ftx/FTX_Websocket.hpp
     include/ftx/FTX_APIRequests.hpp
 )
 
