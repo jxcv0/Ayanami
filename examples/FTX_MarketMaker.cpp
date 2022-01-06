@@ -20,10 +20,10 @@
  */
 int main(int argc, char const *argv[]) {
     if (argc != 2) {
-        std::cerr << "Usage: market_maker <session duration in mins>\n"
+        std::cerr << "Usage: ftxmm <session duration in seconds>\n"
             << "Example:\n" <<
-            "   market_maker 60\n";
-        return 1;
+            "   ftxmm 600\n";
+        return EXIT_FAILURE;
     }
 
     // Set up some state data
@@ -41,16 +41,18 @@ int main(int argc, char const *argv[]) {
     ).count();
     
     // end time
-    t += std::chrono::minutes(inc);
+    t += std::chrono::seconds(inc);
     double end = std::chrono::duration_cast<std::chrono::milliseconds>(
         t.time_since_epoch()
     ).count();
 
     double mid_price;
     int inv = 0;
-    std::map<double, double> orderbook;
-
+    double bid_quote;
+    double ask_quote;
+    std::map<double, double> market_orderbook;
     ayanami::PriceSeries series(100);
+    bool should_close = false;
 
     // Websocket
     web::websockets::client::websocket_callback_client ws;
@@ -63,11 +65,7 @@ int main(int argc, char const *argv[]) {
 
     // Main path
     auto path = [&](web::websockets::client::websocket_incoming_message m){
-        json = web::json::value::parse(
-            m.extract_string().get()
-        );
-
-        std::cout << json << "\n";
+        json = web::json::value::parse(m.extract_string().get());
 
         type = json.at("type").as_string();
         if (type == "pong") {
@@ -79,14 +77,14 @@ int main(int argc, char const *argv[]) {
         if (channel == "orderbook") {
             if (type == "update") { // Update midprice
                 data = json.at("data");
-                ayanami::ftx::update_orderbook(orderbook, data);
-                mid_price = ayanami::lobs::mid_price(orderbook);
+                ayanami::ftx::update_orderbook(market_orderbook, data);
+                mid_price = ayanami::lobs::mid_price(market_orderbook);
 
             } else if (type == "partial") { // Populate orderbook
                 std::cout << "Populating " << json["market"].as_string() << " orderbook...\n";
                 
                 data = json.at("data");
-                ayanami::ftx::populate_orderbook(orderbook, data);
+                ayanami::ftx::populate_orderbook(market_orderbook, data);
 
                 std::cout << "Executing...\n" << "\n";
             }
@@ -103,19 +101,58 @@ int main(int argc, char const *argv[]) {
             if (type == "update") {
                 data = json.at("data");
                 if (data.at("side").as_string() == "buy") {
-                    // TODO
+                    bid_quote = data.at("price").as_double();
 
                 } else if (data.at("side").as_string() == "sell") {
-                    // TODO
+                    ask_quote = data.at("price").as_double();
                 }
             }
 
         } else if (type == "error") { // Error messages
             std::cout << "Error: " << json << "\n";
-            ws.close().get();
+
+            // TODO decide if to close
+            // ws.close().get();
 
         } else { // All other messages
             std::cout << "Msg: " << json << "\n";
+        }
+
+        double time_now = std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::system_clock::now().time_since_epoch()
+        ).count();
+
+        double time_param = (time_now - start) / (end - start);
+
+        if (time_param > 1) {
+            should_close = true;
+            return;
+        }
+
+        double vol = series.variance();
+
+        // Calculate reservation price
+        double res_price = 
+            mid_price
+            - (inv * RISK_AVERSION_PARAM * vol * time_param);
+
+        // Calculate quotes
+        double half_spread = 
+            ((RISK_AVERSION_PARAM * vol * time_param)
+            + ((2 / RISK_AVERSION_PARAM)
+            * log(1 + (RISK_AVERSION_PARAM / LIQUIDITY_PARAM)))) / 2;
+
+        double bid = std::round(res_price - half_spread);
+        double ask = std::round(res_price + half_spread);
+
+        if (bid != bid_quote) {
+            std::cout << "Changing bid from " << bid_quote << " to " << bid << "\n";
+            bid_quote = bid;
+        }
+
+        if (ask != ask_quote) {
+            std::cout << "Changing ask from " << ask_quote << " to " << ask << "\n";
+            ask_quote = ask;
         }
     };
 
@@ -161,40 +198,13 @@ int main(int argc, char const *argv[]) {
         ws.send(orders_msg);
     });
 
-    while(true) {
+    while(!should_close) {
         sleep(15);
         std::cout << "Sending ping\n";
         ws.send(ping);
     }
 
-    return 0;
+    ws.close().wait();
+
+    return EXIT_SUCCESS;
 }
-
-
-// double time_now = std::chrono::duration_cast<std::chrono::milliseconds>(
-//     std::chrono::system_clock::now().time_since_epoch()
-// ).count();
-
-// double time_param = (time_now - start) / (end - start);
-
-// if (time_param > 1) {
-//     // TODO - close position if required
-//     ws.close().wait();
-// }
-
-// double vol = series.variance();
-
-// // Calculate reservation price
-// double res_price = 
-//     mid_price
-//     - (inv * RISK_AVERSION_PARAM * vol * time_param);
-
-// // Calculate quotes
-// double half_spread = 
-//     ((RISK_AVERSION_PARAM * vol * time_param)
-//     + ((2 / RISK_AVERSION_PARAM)
-//     * log(1 + (RISK_AVERSION_PARAM / LIQUIDITY_PARAM)))) / 2;
-
-// double ask = std::round(res_price + half_spread);
-// double bid = std::round(res_price - half_spread);
-// double spread = ask - bid;
