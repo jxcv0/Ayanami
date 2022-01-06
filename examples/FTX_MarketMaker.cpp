@@ -3,6 +3,7 @@
 #include "ftx/FTX_Websocket.hpp"
 #include "ftx/FTX_APIRequests.hpp"
 #include "APIKeys.hpp"
+#include "AvellanedaStoikov.hpp"
 
 #include <cpprest/json.h>
 #include <cpprest/ws_client.h>
@@ -132,15 +133,14 @@ int main(int argc, char const *argv[]) {
         double vol = series.variance();
 
         // Calculate reservation price
-        double res_price = 
-            mid_price
-            - (inv * RISK_AVERSION_PARAM * vol * time_param);
+        double res_price = ayanami::av::res_price(
+            mid_price, inv, RISK_AVERSION_PARAM, vol, time_param
+        );
 
         // Calculate quotes
-        double half_spread = 
-            ((RISK_AVERSION_PARAM * vol * time_param)
-            + ((2 / RISK_AVERSION_PARAM)
-            * log(1 + (RISK_AVERSION_PARAM / LIQUIDITY_PARAM)))) / 2;
+        double half_spread = ayanami::av::spread(
+            RISK_AVERSION_PARAM, vol, time_param, LIQUIDITY_PARAM
+        ) / 2;
 
         double bid = std::round(res_price - half_spread);
         double ask = std::round(res_price + half_spread);
