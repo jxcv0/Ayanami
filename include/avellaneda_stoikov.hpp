@@ -51,8 +51,6 @@ namespace ayanami {
             double price;       // order price
             double size;        // order size
             int id;             // some kind of id (exchange dependant)
-            double tick;        // instrument tick size;
-            order(double t);
         };
         
         /**

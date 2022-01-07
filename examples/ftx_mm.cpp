@@ -46,10 +46,11 @@ int main(int argc, char const *argv[]) {
     std::vector<ayanami::av::order> bids;
     std::vector<ayanami::av::order> asks;
     std::map<double, double> market_orderbook;
-    ayanami::price_series series(100);
-    bool should_close = false; // I dont like this
-
+    ayanami::price_series series(1000);
+    bool should_close = false; // I do not like this sam i am
     ayanami::av::av_in av_in;
+    av_in.risk = 0.1;
+    av_in.liq = 0.01;
     ayanami::av::av_out av_out(1);
 
     // Websocket
@@ -92,7 +93,6 @@ int main(int argc, char const *argv[]) {
                 data = json.at("data");
                 for (auto &&i : data.as_array()) {
                     series.add_price(i.at("price").as_double());
-                    av_in.vol = series.variance();
                 }
             }
 
@@ -121,21 +121,25 @@ int main(int argc, char const *argv[]) {
             std::chrono::system_clock::now().time_since_epoch()
         ).count();
 
-        double time_param = (time_now - start) / (end - start);
+        av_in.time = (time_now - start) / (end - start);
 
-        if (time_param > 1) {
+        if (av_in.time > 1) {
             should_close = true;
             return;
         }
 
-        double vol = series.variance();
+        av_in.vol = series.variance();
 
         // Calculate reservation price
         ayanami::av::res_price(av_in, av_out);
 
+        // Calculate spread
+        ayanami::av::spread(av_in, av_out);
+
         // Calculate quotes
-        double bid = std::round(av_out.res - (av_out.spread / 2));
-        double ask = std::round(av_out.res + (av_out.spread / 2));
+        std::cout << json << "\n\n";
+        std::cout << "bid: " << std::round(av_out.res - (av_out.spread / 2)) << "\n";
+        std::cout << "ask: " << std::round(av_out.res + (av_out.spread / 2)) << "\n\n";
 
     };
 
@@ -181,13 +185,14 @@ int main(int argc, char const *argv[]) {
         ws.send(orders_msg);
     });
 
-    while(!should_close) {
+    for(;;) {
         sleep(15);
         std::cout << "Sending ping\n";
         ws.send(ping);
+        if (should_close) {
+            ws.close().get();
+            break;
+        }
     }
-
-    ws.close().wait();
-
     return EXIT_SUCCESS;
 }

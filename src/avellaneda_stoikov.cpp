@@ -1,8 +1,6 @@
 #include "avellaneda_stoikov.hpp"
 #include <math.h>
 
-ayanami::av::order::order(double t) : tick(t){};
-
 void ayanami::av::res_price(const av_in& in, av_out& out) {
     out.res = (in.mid - (in.inv * in.risk * in.vol * in.time));
 }
