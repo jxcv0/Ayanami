@@ -1,5 +1,5 @@
-#ifndef TRADESERIES_HPP
-#define TRADESERIES_HPP
+#ifndef TRADE_SERIES_HPP
+#define TRADE_SERIES_HPP
 
 #include <map>
 
@@ -13,7 +13,7 @@ namespace ayanami {
      * @brief Represents a time series of trades.
      * 
      */
-    class Series {
+    class series {
 
         std::map<long, std::pair<double, double>> series_;
 
@@ -28,11 +28,11 @@ namespace ayanami {
     public:
 
         /**
-         * @brief Construct a new Series object with a maximum size.
+         * @brief Construct a new series object with a maximum size.
          * 
          * @param lag the maximum lookback period in seconds
          */
-        Series(int maxSize);
+        series(int maxSize);
 
         /**
          * @brief Get the size of the series
