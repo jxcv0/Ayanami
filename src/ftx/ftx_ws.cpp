@@ -1,4 +1,4 @@
-#include "ftx/FTX_Websocket.hpp"
+#include "ftx/ftx_ws.hpp"
 
 #include <algorithm>
 

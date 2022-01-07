@@ -1,20 +1,17 @@
-cmake_minimum_required(VERSION 3.0.0)
+cmake_minimum_required(VERSION 3.22.1)
 
-# GoogleTest requires at least C++11
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 20)
 
 enable_testing()
 
 set(
     SOURCES
-        TradeSeriesTests.cpp
-        TimeSeriesTests.cpp
-        PriceSeriesTests.cpp
-        LimitOrderBookTests.cpp
-        EncryptionTests.cpp
-        ftx/FTX_HttpsTests.cpp
-        ftx/FTX_WebsocketTests.cpp
-        ftx/FTX_APIRequestsTests.cpp
+        trade_series_tests.cpp
+        price_series_tests.cpp
+        limit_order_book_tests.cpp
+        encryption_tests.cpp
+        ftx/ftx_ws_tests.cpp
+        ftx/ftx_rest_tests.cpp
 )
 
 add_executable(all_tests ${SOURCES})

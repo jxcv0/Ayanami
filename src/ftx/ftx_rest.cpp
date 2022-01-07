@@ -1,6 +1,6 @@
-#include "ftx/FTX_APIRequests.hpp"
-#include "Encryption.hpp"
-#include "APIKeys.hpp"
+#include "ftx/ftx_rest.hpp"
+#include "encryption.hpp"
+#include "api_keys.hpp"
 
 #include <cpprest/json.h>
 #include <string>

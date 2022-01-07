@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16.0)
+cmake_minimum_required(VERSION 3.22.1)
 project(Ayanami VERSION 0.1.0)
 
 # GoogleTest requires at least C++11
@@ -24,29 +24,27 @@ find_package(OpenSSL REQUIRED)
 
 set(
   SOURCES
-    src/Https.cpp
-    src/TradeSeries.cpp
-    src/TimeSeries.cpp
-    src/PriceSeries.cpp
-    src/LimitOrderBook.cpp
-    src/Encryption.cpp
-    src/AvellanedaStoikov.cpp
-    src/ftx/FTX_Websocket.cpp
-    src/ftx/FTX_APIRequests.cpp
+    src/https.cpp
+    src/trade_series.cpp
+    src/price_series.cpp
+    src/limit_order_book.cpp
+    src/encryption.cpp
+    src/avellaneda_stoikov.cpp
+    src/ftx/ftx_ws.cpp
+    src/ftx/ftx_rest.cpp
 )
 
 set(
   HEADERS
-    include/APIKeys.hpp
-    include/Https.hpp
-    include/TradeSeries.hpp
-    include/TimeSeries.hpp
-    include/PriceSeries.hpp
-    include/LimitOrderBook.hpp
-    include/Encryption.hpp
-    include/AvellanedaStoikov.hpp
-    include/ftx/FTX_Websocket.hpp
-    include/ftx/FTX_APIRequests.hpp
+    include/api_keys.hpp
+    include/https.hpp
+    include/trade_series.hpp
+    include/price_series.hpp
+    include/limit_order_book.hpp
+    include/encryption.hpp
+    include/avellaneda_stoikov.hpp
+    include/ftx/ftx_ws.hpp
+    include/ftx/ftx_rest.hpp
 )
 
 add_library(ayanami STATIC ${SOURCES} ${HEADERS})

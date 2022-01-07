@@ -1,9 +1,9 @@
-#include "PriceSeries.hpp"
-#include "LimitOrderBook.hpp"
-#include "ftx/FTX_Websocket.hpp"
-#include "ftx/FTX_APIRequests.hpp"
-#include "APIKeys.hpp"
-#include "AvellanedaStoikov.hpp"
+#include "price_series.hpp"
+#include "limit_order_book.hpp"
+#include "ftx/ftx_ws.hpp"
+#include "ftx/ftx_rest.hpp"
+#include "api_keys.hpp"
+#include "avellaneda_stoikov.hpp"
 
 #include <cpprest/json.h>
 #include <cpprest/ws_client.h>
@@ -43,14 +43,14 @@ int main(int argc, char const *argv[]) {
         t.time_since_epoch()
     ).count();
 
-    std::vector<ayanami::av::Order> bids;
-    std::vector<ayanami::av::Order> asks;
+    std::vector<ayanami::av::order> bids;
+    std::vector<ayanami::av::order> asks;
     std::map<double, double> market_orderbook;
-    ayanami::PriceSeries series(100);
+    ayanami::price_series series(100);
     bool should_close = false; // I dont like this
 
-    ayanami::av::AV_in av_in;
-    ayanami::av::AV_out av_out(1);
+    ayanami::av::av_in av_in;
+    ayanami::av::av_out av_out(1);
 
     // Websocket
     web::websockets::client::websocket_callback_client ws;

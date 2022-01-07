@@ -13,7 +13,7 @@ namespace ayanami {
      * @brief Chache and operate on a series of price data
      * 
      */
-    class PriceSeries {
+    class price_series {
 
         const int max_size_;
 
@@ -32,7 +32,7 @@ namespace ayanami {
          * 
          * @param max the lag period of the series
          */
-        PriceSeries(int max);
+        price_series(int max);
 
         /**
          * @brief Add a price to the series

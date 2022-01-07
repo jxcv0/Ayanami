@@ -23,7 +23,7 @@ namespace ayanami {
          * @brief State data required to calulate reservation price and optimal bid/ask spread
          * 
          */
-        struct AV_in {
+        struct av_in {
             double mid;         // Current market midprice
             int inv;            // Current inventory value
             double risk;        // Risk aversion parameter
@@ -38,7 +38,7 @@ namespace ayanami {
          * @brief State data required to calculate optimal bid and ask prices 
          * 
          */
-        struct AV_out {
+        struct av_out {
             double res;         // Reservation price
             double spread;      // Spread 
         };
@@ -47,12 +47,12 @@ namespace ayanami {
          * @brief Generic order datatype
          * 
          */
-        struct Order {
-            double price;       // Order price
-            double size;        // Order size
+        struct order {
+            double price;       // order price
+            double size;        // order size
             int id;             // some kind of id (exchange dependant)
             double tick;        // instrument tick size;
-            Order(double t);
+            order(double t);
         };
         
         /**
@@ -61,7 +61,7 @@ namespace ayanami {
          * @param in state in
          * @param out state out
          */
-        void res_price(const AV_in& in, AV_out& out);
+        void res_price(const av_in& in, av_out& out);
 
         /**
          * @brief Calculate the spread
@@ -69,7 +69,7 @@ namespace ayanami {
          * @param in state in
          * @param out state out
          */
-        void spread(const AV_in& in, AV_out& out);
+        void spread(const av_in& in, av_out& out);
 
         /**
          * @brief Initialize bid quotes and store the values in a vector 
@@ -78,7 +78,7 @@ namespace ayanami {
          * @param bids the bids
          * @param place the function used to place an order
          */
-        void init_bids(const AV_out& out, std::vector<Order>& bids, std::function<void(const Order&)> place);
+        void init_bids(const av_out& out, std::vector<order>& bids, std::function<void(const order&)> place);
 
         /**
          * @brief Check and modify orders if required by moving them to the back of the queue
@@ -90,7 +90,7 @@ namespace ayanami {
          * @param bids the bids
          * @param modify_orders the function used to modify an order
          */
-        void modify_bids(const AV_out& out, std::vector<Order>& bids, std::function<void(const Order&)> modify);
+        void modify_bids(const av_out& out, std::vector<order>& bids, std::function<void(const order&)> modify);
 
         /**
          * @brief Initialize bid quotes
@@ -99,7 +99,7 @@ namespace ayanami {
          * @param asks the asks
          * @param place the function used to place an order
          */
-        void init_asks(const AV_out& out, std::vector<Order>& asks, std::function<void(const Order&)> place);
+        void init_asks(const av_out& out, std::vector<order>& asks, std::function<void(const order&)> place);
 
         /**
          * @brief Check and modify orders if required by moving them to the back of the queue
@@ -111,7 +111,7 @@ namespace ayanami {
          * @param asks the asks
          * @param modify_orders the function used to modify an order
          */
-        void modify_asks(const AV_out& out, std::vector<Order>& asks, std::function<void(const Order&)> modify);
+        void modify_asks(const av_out& out, std::vector<order>& asks, std::function<void(const order&)> modify);
     } // namespace av
 } // namespace ayanami
 

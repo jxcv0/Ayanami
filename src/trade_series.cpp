@@ -1,4 +1,4 @@
-#include "TradeSeries.hpp"
+#include "trade_series.hpp"
 
 ayanami::Series::Series(int maxSize) {
     maxSize_ = maxSize;

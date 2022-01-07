@@ -8,4 +8,4 @@ build/
 googletest/
 
 # API keys
-APIKeys.hpp
+api_keys.hpp
