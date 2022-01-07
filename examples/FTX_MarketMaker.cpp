@@ -27,10 +27,6 @@ int main(int argc, char const *argv[]) {
         return EXIT_FAILURE;
     }
 
-    // Set up some state data
-    constexpr double RISK_AVERSION_PARAM = 0.01; // place holder - needs calculating
-    constexpr double LIQUIDITY_PARAM = 0.5; // place holder - needs calculating
-
     std::stringstream str(argv[1]);
     unsigned int inc;
     str >> inc;
@@ -47,13 +43,14 @@ int main(int argc, char const *argv[]) {
         t.time_since_epoch()
     ).count();
 
-    double mid_price;
-    int inv = 0;
-    double bid_quote;
-    double ask_quote;
+    std::vector<ayanami::av::Order> bids;
+    std::vector<ayanami::av::Order> asks;
     std::map<double, double> market_orderbook;
     ayanami::PriceSeries series(100);
-    bool should_close = false;
+    bool should_close = false; // I dont like this
+
+    ayanami::av::AV_in av_in;
+    ayanami::av::AV_out av_out(1);
 
     // Websocket
     web::websockets::client::websocket_callback_client ws;
@@ -79,7 +76,7 @@ int main(int argc, char const *argv[]) {
             if (type == "update") { // Update midprice
                 data = json.at("data");
                 ayanami::ftx::update_orderbook(market_orderbook, data);
-                mid_price = ayanami::lobs::mid_price(market_orderbook);
+                av_in.mid = ayanami::lobs::mid_price(market_orderbook);
 
             } else if (type == "partial") { // Populate orderbook
                 std::cout << "Populating " << json["market"].as_string() << " orderbook...\n";
@@ -90,11 +87,12 @@ int main(int argc, char const *argv[]) {
                 std::cout << "Executing...\n" << "\n";
             }
 
-        } else if (channel == "trades") { // Update sigma^2
+        } else if (channel == "trades") { // Update vol
             if (type == "update") {
                 data = json.at("data");
                 for (auto &&i : data.as_array()) {
                     series.add_price(i.at("price").as_double());
+                    av_in.vol = series.variance();
                 }
             }
 
@@ -102,10 +100,10 @@ int main(int argc, char const *argv[]) {
             if (type == "update") {
                 data = json.at("data");
                 if (data.at("side").as_string() == "buy") {
-                    bid_quote = data.at("price").as_double();
+                    // TODO
 
                 } else if (data.at("side").as_string() == "sell") {
-                    ask_quote = data.at("price").as_double();
+                    // TODO ? = data.at("price").as_double();
                 }
             }
 
@@ -133,27 +131,12 @@ int main(int argc, char const *argv[]) {
         double vol = series.variance();
 
         // Calculate reservation price
-        double res_price = ayanami::av::res_price(
-            mid_price, inv, RISK_AVERSION_PARAM, vol, time_param
-        );
+        ayanami::av::res_price(av_in, av_out);
 
         // Calculate quotes
-        double half_spread = ayanami::av::spread(
-            RISK_AVERSION_PARAM, vol, time_param, LIQUIDITY_PARAM
-        ) / 2;
+        double bid = std::round(av_out.res - (av_out.spread / 2));
+        double ask = std::round(av_out.res + (av_out.spread / 2));
 
-        double bid = std::round(res_price - half_spread);
-        double ask = std::round(res_price + half_spread);
-
-        if (bid != bid_quote) {
-            std::cout << "Changing bid from " << bid_quote << " to " << bid << "\n";
-            bid_quote = bid;
-        }
-
-        if (ask != ask_quote) {
-            std::cout << "Changing ask from " << ask_quote << " to " << ask << "\n";
-            ask_quote = ask;
-        }
     };
 
     // Connect to ws
