@@ -43,15 +43,10 @@ int main(int argc, char const *argv[]) {
         t.time_since_epoch()
     ).count();
 
-    std::vector<ayanami::av::order> bids;
-    std::vector<ayanami::av::order> asks;
     std::map<double, double> market_orderbook;
-    ayanami::price_series series(1000);
-    bool should_close = false; // I do not like this sam i am
-    ayanami::av::av_in av_in;
-    av_in.risk = 0.1;
-    av_in.liq = 0.01;
-    ayanami::av::av_out av_out(1);
+    ayanami::price_series series(50);
+    ayanami::av::av_in av_in(0.01, 0.1, 0);
+    ayanami::av::av_out av_out;
 
     // Websocket
     web::websockets::client::websocket_callback_client ws;
@@ -94,6 +89,37 @@ int main(int argc, char const *argv[]) {
                 for (auto &&i : data.as_array()) {
                     series.add_price(i.at("price").as_double());
                 }
+
+                double time_now = std::chrono::duration_cast<std::chrono::milliseconds>(
+                    std::chrono::system_clock::now().time_since_epoch()
+                ).count();
+
+                av_in.time = (time_now - start) / (end - start);
+
+                if (av_in.time > 1) {
+                    // TODO decide if to close
+                    ws.close().get();
+                    return;
+                }
+
+                av_in.vol = series.variance();
+
+                // Calculate reservation price
+                ayanami::av::res_price(av_in, av_out);
+
+                // Calculate spread
+                ayanami::av::spread(av_in, av_out);
+
+                // Calculate quotes
+                std::cout << "bid: " << std::round(av_out.res - (av_out.spread / 2)) << "\n";
+                std::cout << "ask: " << std::round(av_out.res + (av_out.spread / 2)) << "\n\n";
+
+                std::cout << "mid: " << av_in.mid << "\n";
+                std::cout << "inv: " << av_in.inv << "\n";
+                std::cout << "risk: " << av_in.risk << "\n";
+                std::cout << "vol: " << av_in.vol << "\n";
+                std::cout << "liq: " << av_in.liq << "\n";
+                std::cout << "time: " << av_in.time << "\n\n";
             }
 
         } else if (channel == "orders") { // Update orders
@@ -111,36 +137,11 @@ int main(int argc, char const *argv[]) {
             std::cout << "Error: " << json << "\n";
 
             // TODO decide if to close
-            // ws.close().get();
+            ws.close().get();
 
         } else { // All other messages
             std::cout << "Msg: " << json << "\n";
         }
-
-        double time_now = std::chrono::duration_cast<std::chrono::milliseconds>(
-            std::chrono::system_clock::now().time_since_epoch()
-        ).count();
-
-        av_in.time = (time_now - start) / (end - start);
-
-        if (av_in.time > 1) {
-            should_close = true;
-            return;
-        }
-
-        av_in.vol = series.variance();
-
-        // Calculate reservation price
-        ayanami::av::res_price(av_in, av_out);
-
-        // Calculate spread
-        ayanami::av::spread(av_in, av_out);
-
-        // Calculate quotes
-        std::cout << json << "\n\n";
-        std::cout << "bid: " << std::round(av_out.res - (av_out.spread / 2)) << "\n";
-        std::cout << "ask: " << std::round(av_out.res + (av_out.spread / 2)) << "\n\n";
-
     };
 
     // Connect to ws
@@ -188,11 +189,8 @@ int main(int argc, char const *argv[]) {
     for(;;) {
         sleep(15);
         std::cout << "Sending ping\n";
-        ws.send(ping);
-        if (should_close) {
-            ws.close().get();
-            break;
-        }
+        ws.send(ping); // this crashes if ws is closed
     }
+
     return EXIT_SUCCESS;
 }

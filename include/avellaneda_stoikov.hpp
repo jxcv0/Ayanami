@@ -1,7 +1,7 @@
 #ifndef AV_STATE_HPP
 #define AV_STATE_HPP
 
-#include <vector>
+#include <map>
 #include <functional>
 
 /**
@@ -25,13 +25,12 @@ namespace ayanami {
          */
         struct av_in {
             double mid;         // Current market midprice
-            int inv;            // Current inventory value
+            double inv;        // Current inventory value
             double risk;        // Risk aversion parameter
-            double vol = 0;     // volatility parameter
+            double vol;     // volatility parameter
             double liq;         // liquidity parameter
             double time;        // time parameter (T-t)
-            double bid;         // Latest strategy bid quote
-            double ask;         // Latest strategy ask quote
+            av_in(double r, double l, double i); 
         };
 
         /**
@@ -40,7 +39,7 @@ namespace ayanami {
          */
         struct av_out {
             double res;         // Reservation price
-            double spread;      // Spread 
+            double spread;      // Spread
         };
 
         /**
@@ -74,42 +73,20 @@ namespace ayanami {
          * 
          * @param in the strategy state
          * @param bids the bids
-         * @param place the function used to place an order
+         * @param interval interval between orders
+         * @param buffer the number of ticks away from optimal to buffer orders
          */
-        void init_bids(const av_out& out, std::vector<order>& bids, std::function<void(const order&)> place);
-
-        /**
-         * @brief Check and modify orders if required by moving them to the back of the queue
-         * 
-         * NOTE: This function does not modify the vector of orders. After init, that is the
-         * responsibility of the websocket JSON proccessing function which is API specific.
-         * 
-         * @param in the strategy state
-         * @param bids the bids
-         * @param modify_orders the function used to modify an order
-         */
-        void modify_bids(const av_out& out, std::vector<order>& bids, std::function<void(const order&)> modify);
+        void generate_bids(const av_out& out, std::map<double, order>& bids, double interval, int buffer);
 
         /**
          * @brief Initialize bid quotes
          * 
          * @param in the strategy state
          * @param asks the asks
-         * @param place the function used to place an order
+         * @param interval interval between orders
+         * @param buffer the number of ticks away from optimal to buffer orders
          */
-        void init_asks(const av_out& out, std::vector<order>& asks, std::function<void(const order&)> place);
-
-        /**
-         * @brief Check and modify orders if required by moving them to the back of the queue
-         * 
-         * NOTE: This function does not modify the vector of orders. After init, that is the
-         * responsibility of the websocket JSON proccessing function which is API specific.
-         * 
-         * @param in the strategy state
-         * @param asks the asks
-         * @param modify_orders the function used to modify an order
-         */
-        void modify_asks(const av_out& out, std::vector<order>& asks, std::function<void(const order&)> modify);
+        void generate_asks(const av_out& out, std::map<double, order>& asks, double interval, int buffer);
     } // namespace av
 } // namespace ayanami
 
