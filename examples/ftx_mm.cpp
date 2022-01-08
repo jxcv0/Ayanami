@@ -1,3 +1,5 @@
+#define _TURN_OFF_PLATFORM_STRING
+
 #include "price_series.hpp"
 #include "limit_order_book.hpp"
 #include "ftx/ftx_ws.hpp"
@@ -113,13 +115,6 @@ int main(int argc, char const *argv[]) {
                 // Calculate quotes
                 std::cout << "bid: " << std::round(av_out.res - (av_out.spread / 2)) << "\n";
                 std::cout << "ask: " << std::round(av_out.res + (av_out.spread / 2)) << "\n\n";
-
-                std::cout << "mid: " << av_in.mid << "\n";
-                std::cout << "inv: " << av_in.inv << "\n";
-                std::cout << "risk: " << av_in.risk << "\n";
-                std::cout << "vol: " << av_in.vol << "\n";
-                std::cout << "liq: " << av_in.liq << "\n";
-                std::cout << "time: " << av_in.time << "\n\n";
             }
 
         } else if (channel == "orders") { // Update orders

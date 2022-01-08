@@ -4,6 +4,7 @@
 
 #include <cpprest/json.h>
 #include <string>
+#include <functional>
 
 /**
  * @brief Create order request string for the FTX API
@@ -17,7 +18,10 @@
  * @param post_only true if order should be post only
  * @return std::string 
  */
-std::string ayanami::ftx::generate_order_json(std::string market, std::string side, double price, std::string type, double size, bool reduce_only, bool post_only) {
+std::string ayanami::ftx::generate_order_json(
+    std::string market, std::string side, double price, std::string type, double size, bool reduce_only,
+    bool post_only) {
+        
     web::json::keep_object_element_order(true);
     web::json::value req;
     req[U("market")] = web::json::value(market);
@@ -64,7 +68,7 @@ std::string ayanami::ftx::generate_ws_sign(long time, const char* secret) {
  * @param secret the secret key
  * @return the login JSON
  */
-std::string ayanami::ftx::generate_ws_login(long time, const char *key, const char *secret) {
+std::string ayanami::ftx::generate_ws_login(long time, const char* key, const char* secret) {
     web::json::keep_object_element_order(true);
     web::json::value args;
     args[U("key")] = web::json::value(key);

@@ -1,7 +1,10 @@
 #ifndef FTX_APIREQUESTS_HPP
 #define FTX_APIREQUESTS_HPP
 
+#include "https.hpp"
+
 #include <string>
+#include <map>
 
 /**
  * @brief Cryprocurrency trading library
@@ -25,9 +28,11 @@ namespace ayanami {
          * @param size the order size
          * @param reduce_only true if order should be reduce only
          * @param post_only true if order should be post only
-         * @return std::string 
+         * @return the order JSON
          */
-        std::string generate_order_json(std::string market, std::string side, double price, std::string type, double size, bool reduce_only, bool post_only);
+        std::string generate_order_json(
+            std::string market, std::string side, double price, std::string type, double size,
+            bool reduce_only, bool post_only);
 
         /**
          * @brief Create string for order POST request header for the FTX API
@@ -45,7 +50,7 @@ namespace ayanami {
          * @param secret the secret key
          * @return the login sign
          */
-        std::string generate_ws_sign(long time, const char *secret);
+        std::string generate_ws_sign(long time, const char* secret);
 
         /**
          * @brief Generate ftx websocket login JSON
@@ -55,7 +60,7 @@ namespace ayanami {
          * @param secret the secret key
          * @return the login JSON
          */
-        std::string generate_ws_login(long time, const char *key, const char *secret);
+        std::string generate_ws_login(long time, const char* key, const char* secret);
     } // namespace ftx
 } // namespace ayanami
 

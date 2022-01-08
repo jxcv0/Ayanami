@@ -41,16 +41,6 @@ namespace ayanami {
             double res;         // Reservation price
             double spread;      // Spread
         };
-
-        /**
-         * @brief Generic order datatype
-         * 
-         */
-        struct order {
-            double price;       // order price
-            double size;        // order size
-            int id;             // some kind of id (exchange dependant)
-        };
         
         /**
          * @brief Calculate the reservation price
@@ -76,7 +66,7 @@ namespace ayanami {
          * @param interval interval between orders
          * @param buffer the number of ticks away from optimal to buffer orders
          */
-        void generate_bids(const av_out& out, std::map<double, order>& bids, double interval, int buffer);
+        void generate_bids(const av_out& out, std::map<double, int>& bids, double interval, int buffer);
 
         /**
          * @brief Initialize bid quotes
@@ -86,7 +76,7 @@ namespace ayanami {
          * @param interval interval between orders
          * @param buffer the number of ticks away from optimal to buffer orders
          */
-        void generate_asks(const av_out& out, std::map<double, order>& asks, double interval, int buffer);
+        void generate_asks(const av_out& out, std::map<double, int>& asks, double interval, int buffer);
     } // namespace av
 } // namespace ayanami
 

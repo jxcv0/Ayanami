@@ -7,7 +7,7 @@ TEST(avellaneda_stoikov_tests, generate_bids_test) {
     out.res = 1011.5;
     out.spread = 3; // optimal bid should be 1010
 
-    std::map<double, ayanami::av::order> bids;
+    std::map<double, int> bids;
 
     ayanami::av::generate_bids(out, bids, 0.5, 5);
 
@@ -24,7 +24,7 @@ TEST(avellaneda_stoikov_tests, generate_asks_test) {
     out.res = 1011.5;
     out.spread = 3; // optimal ask should be 1013
 
-    std::map<double, ayanami::av::order> asks;
+    std::map<double, int> asks;
 
     ayanami::av::generate_asks(out, asks, 0.5, 5);
 

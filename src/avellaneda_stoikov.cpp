@@ -11,22 +11,20 @@ void ayanami::av::spread(const av_in& in, av_out& out) {
     out.spread = ((in.risk * in.vol * in.time) + ((2 / in.risk) * log(1 + (in.risk / in.liq)))) / 2;
 }
 
-void ayanami::av::generate_bids(const av_out& out, std::map<double, order>& bids, double interval, int buffer) {
+void ayanami::av::generate_bids(const av_out& out, std::map<double, int>& bids, double interval, int buffer) {
     // bids are initialized from highest price to lowest
     double optimal = out.res - (out.spread / 2);
     for (size_t i = 0; i < buffer ; i++) {
-        order o;
-        bids[optimal] = o;
+        bids[optimal] = 1; // will be overwritten with id by ws message parser
         optimal -= interval;
-    }    
+    }
 }
 
-void ayanami::av::generate_asks(const av_out& out, std::map<double, order>& asks, double interval, int buffer) {
+void ayanami::av::generate_asks(const av_out& out, std::map<double, int>& asks, double interval, int buffer) {
     // bids are initialized from lowest price to highest
     double optimal = out.res + (out.spread / 2);
     for (size_t i = 0; i < buffer ; i++) {
-        order o;
-        asks[optimal] = o;
+        asks[optimal] = 1; // will be overwritten by ws message parser
         optimal += interval;
-    }    
+    }
 }
