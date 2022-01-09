@@ -28,10 +28,12 @@ int main(int argc, char const *argv[]) {
             "   ftxmm 600\n";
         return EXIT_FAILURE;
     }
-
     std::stringstream str(argv[1]);
     unsigned int inc;
     str >> inc;
+
+    constexpr double TICK_SIZE = 1;
+    constexpr double ORDER_SIZE = 0.0001;
 
     // start time
     auto t = std::chrono::system_clock::now();
@@ -45,19 +47,24 @@ int main(int argc, char const *argv[]) {
         t.time_since_epoch()
     ).count();
 
+    http::request<http::string_body> req;
+    http::response<http::dynamic_body> res;
+
     std::map<double, double> market_orderbook;
+    std::map<double, int> bids; // strategy bids
+    std::map<double, int> asks; // strategy asks
     ayanami::price_series series(50);
     ayanami::av::av_in av_in(0.01, 0.1, 0);
     ayanami::av::av_out av_out;
 
-    // Websocket
+    // Websocket and Https
     web::websockets::client::websocket_callback_client ws;
-
-    // Forward declaration of JSON objs
     web::json::value json;
     web::json::value data;
     std::string type;
     std::string channel;
+
+    bool ready = false;
 
     // Main path
     auto path = [&](web::websockets::client::websocket_incoming_message m){
@@ -85,7 +92,7 @@ int main(int argc, char const *argv[]) {
                 std::cout << "Executing...\n" << "\n";
             }
 
-        } else if (channel == "trades") { // Update vol
+        } else if (channel == "trades") { // Update vol and run av
             if (type == "update") {
                 data = json.at("data");
                 for (auto &&i : data.as_array()) {
@@ -106,25 +113,39 @@ int main(int argc, char const *argv[]) {
 
                 av_in.vol = series.variance();
 
-                // Calculate reservation price
+                // Calculate optimal quotes
                 ayanami::av::res_price(av_in, av_out);
-
-                // Calculate spread
                 ayanami::av::spread(av_in, av_out);
 
                 // Calculate quotes
                 std::cout << "bid: " << std::round(av_out.res - (av_out.spread / 2)) << "\n";
                 std::cout << "ask: " << std::round(av_out.res + (av_out.spread / 2)) << "\n\n";
+
+                if (ready) {
+                    if (!bids.empty()) {
+                        // move bids if required
+                    } else { // Init bids
+                        ayanami::av::generate_bids(av_out, bids, TICK_SIZE, 20);
+                        // init orders
+                    }
+
+                    if (!bids.empty()) {
+                        // move asks if required
+                    } else { // Init asks
+                        ayanami::av::generate_asks(av_out, asks, TICK_SIZE, 20);
+                        // init orders
+                    }
+                }
             }
 
-        } else if (channel == "orders") { // Update orders
+        } else if (channel == "orders") { // Update open orders
             if (type == "update") {
                 data = json.at("data");
                 if (data.at("side").as_string() == "buy") {
-                    // TODO
+                    bids[data.at("price").as_double()] = data.at("id").as_integer();
 
                 } else if (data.at("side").as_string() == "sell") {
-                    // TODO ? = data.at("price").as_double();
+                    asks[data.at("price").as_double()] = data.at("id").as_integer();
                 }
             }
 
@@ -184,6 +205,7 @@ int main(int argc, char const *argv[]) {
     for(;;) {
         sleep(15);
         std::cout << "Sending ping\n";
+        ready = true;
         ws.send(ping); // this crashes if ws is closed
     }
 

@@ -1,8 +1,7 @@
-#ifndef AV_STATE_HPP
-#define AV_STATE_HPP
+#ifndef AVELLANEDA_STOIKOV_HPP
+#define AVELLANEDA_STOIKOV_HPP
 
 #include <map>
-#include <functional>
 
 /**
  * @brief Cryprocurrency trading library
@@ -59,7 +58,7 @@ namespace ayanami {
         void spread(const av_in& in, av_out& out);
 
         /**
-         * @brief Initialize bid quotes and store the values in a vector 
+         * @brief Initialize bid quotes and store the values in a map 
          * 
          * @param in the strategy state
          * @param bids the bids
@@ -69,7 +68,7 @@ namespace ayanami {
         void generate_bids(const av_out& out, std::map<double, int>& bids, double interval, int buffer);
 
         /**
-         * @brief Initialize bid quotes
+         * @brief Initialize ask quotes and store the values in a map 
          * 
          * @param in the strategy state
          * @param asks the asks

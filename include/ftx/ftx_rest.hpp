@@ -41,7 +41,7 @@ namespace ayanami {
          * @param json the order JSON
          * @return the request header string
          */
-        std::string generate_order_header(long time, std::string& json);
+        std::string generate_sign_str(long time, const char* target, std::string& json);
 
         /**
          * @brief Generate authentification sign for private topics
@@ -61,6 +61,14 @@ namespace ayanami {
          * @return the login JSON
          */
         std::string generate_ws_login(long time, const char* key, const char* secret);
+
+        using request = http::request<http::string_body>;
+        using response = http::response<http::dynamic_body>;
+
+        void generate_order_request(request& req, response& res, std::string time, std::string key,
+            std::string sign);
+
+        void generate_modify_request();
     } // namespace ftx
 } // namespace ayanami
 

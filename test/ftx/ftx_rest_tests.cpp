@@ -34,9 +34,9 @@ TEST(ftx_rest_test, generate_order_json_test) {
     ASSERT_EQ(json, example);
 }
 
-TEST(ftx_rest_test, generate_order_req_test) {
+TEST(ftx_rest_test, generate_sign_str_test) {
     std::string json("{\"market\": \"BTC-PERP\", \"side\": \"buy\", \"price\": 8500, \"size\": 1, \"type\": \"limit\", \"reduceOnly\": false, \"ioc\": false, \"postOnly\": false, \"clientId\": null}");
-    std::string req = ayanami::ftx::generate_order_header(1588591856950, json);
+    std::string req = ayanami::ftx::generate_sign_str(1588591856950, "/api/orders", json);
     std::string expected("1588591856950POST/api/orders{\"market\": \"BTC-PERP\", \"side\": \"buy\", \"price\": 8500, \"size\": 1, \"type\": \"limit\", \"reduceOnly\": false, \"ioc\": false, \"postOnly\": false, \"clientId\": null}");
 
     ASSERT_EQ(req, expected);
@@ -58,4 +58,25 @@ TEST(ftx_rest_test, generate_ws_login) {
     std::string expected("{\"op\": \"login\", \"args\": {\"key\": \"key\", \"sign\": \"d10b5a67a1a941ae9463a60b285ae845cdeac1b11edc7da9977bef0228b96de9\", \"time\": 1557246346499}}");
 
     ASSERT_EQ(ayanami::ftx::generate_ws_login(time, key.c_str(), secret.c_str()), expected);
+}
+
+TEST(ftx_rest_test, generate_order_request) {
+    std::string key("LR0RQT6bKjrUNh38eCw9jYC89VDAbRkCogAc_XAm");
+    std::string secret("T4lPid48QtjNxjLUFOcUZghD7CUJ7sTVsfuvQZF2");
+    http::request<http::string_body> req;
+    http::response<http::dynamic_body> res;
+
+    long ts = 1588591856950;
+    auto ts_str = std::to_string(ts);
+
+    std::string json("{\"market\": \"BTC-PERP\", \"side\": \"buy\", \"price\": 8500, \"size\": 1, \"type\": \"limit\", \"reduceOnly\": false, \"ioc\": false, \"postOnly\": false, \"clientId\": null}");
+    std::string sign_str = ayanami::ftx::generate_sign_str(ts, "/api/orders", json);
+    std::string sign = ayanami::hmac_sha256(secret.c_str(), sign_str.c_str());
+    ayanami::ftx::generate_order_request(req, res, ts_str, key, sign);
+
+    ASSERT_EQ(req.method(), http::verb::post);
+    ASSERT_EQ(req.target().to_string(), "https://ftx.com/api/orders");
+    ASSERT_EQ(req.at("FTX-KEY"), key);
+    ASSERT_EQ(req.at("FTX-TS"), ts_str);
+    ASSERT_EQ(req.at("FTX-SIGN").to_string(), "c4fbabaf178658a59d7bbf57678d44c369382f3da29138f04cd46d3d582ba4ba");
 }

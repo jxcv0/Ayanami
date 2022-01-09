@@ -1,6 +1,7 @@
 #include "ftx/ftx_rest.hpp"
 #include "encryption.hpp"
 #include "api_keys.hpp"
+#include "https.hpp"
 
 #include <cpprest/json.h>
 #include <string>
@@ -44,8 +45,8 @@ std::string ayanami::ftx::generate_order_json(
  * @param json the order JSON
  * @return the request header string
  */
-std::string ayanami::ftx::generate_order_header(long time, std::string& json) {
-    return std::to_string(time) + "POST" + "/api/orders" + json;
+std::string ayanami::ftx::generate_sign_str(long time, const char* target, std::string& json) {
+    return std::to_string(time) + "POST" + target + json;
 }
 
 /**
@@ -80,4 +81,19 @@ std::string ayanami::ftx::generate_ws_login(long time, const char* key, const ch
     msg[U("args")] = web::json::value(args);
     std::string str(msg.serialize());
     return ayanami::spacify(str);
+}
+
+using request = http::request<http::string_body>;
+using response = http::response<http::dynamic_body>;
+
+void ayanami::ftx::generate_order_request(request& req, response& res, std::string time, std::string key,
+    std::string sign) {
+
+    req.clear();
+    
+    req.method(http::verb::post);
+    req.target("https://ftx.com/api/orders");
+    req.set("FTX-KEY", key);
+    req.set("FTX-TS", time);
+    req.set("FTX-SIGN", sign);
 }
