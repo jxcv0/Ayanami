@@ -43,6 +43,7 @@ set(
     include/limit_order_book.hpp
     include/encryption.hpp
     include/avellaneda_stoikov.hpp
+    include/av_coro.hpp
     include/ftx/ftx_ws.hpp
     include/ftx/ftx_rest.hpp
 )

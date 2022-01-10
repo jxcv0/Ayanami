@@ -86,7 +86,7 @@ std::string ayanami::ftx::generate_ws_login(long time, const char* key, const ch
 using request = http::request<http::string_body>;
 using response = http::response<http::dynamic_body>;
 
-void ayanami::ftx::generate_order_request(request& req, response& res, std::string time, std::string key,
+void ayanami::ftx::generate_order_request(request& req, std::string time, const char* key,
     std::string sign) {
 
     req.clear();
@@ -96,4 +96,23 @@ void ayanami::ftx::generate_order_request(request& req, response& res, std::stri
     req.set("FTX-KEY", key);
     req.set("FTX-TS", time);
     req.set("FTX-SIGN", sign);
+}
+
+void ayanami::ftx::generate_modify_request(request& req, std::string time, const char* key,
+    const char* secret, int id, double price, double size) { 
+
+    req.clear();
+
+    std::string id_str = std::to_string(id);
+    std::string target("https://ftx.com/orders/" + id_str + "/modify");
+
+    std::string json(
+        "{\"price\": " + std::to_string(price) + ", \"size\": " + std::to_string(size) + "}"
+    );
+    std::string sign(time + "POST" + "/orders/" + id_str + "/modify" + json);
+    req.method(http::verb::post);
+    req.target("https://ftx.com/orders/123456/modify");
+    req.set("FTX-KEY", key);
+    req.set("FTX-TS", time);
+    req.set("FTX-SIGN", ayanami::hmac_sha256(secret, sign.c_str()));
 }

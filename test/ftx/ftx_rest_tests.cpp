@@ -64,7 +64,6 @@ TEST(ftx_rest_test, generate_order_request) {
     std::string key("LR0RQT6bKjrUNh38eCw9jYC89VDAbRkCogAc_XAm");
     std::string secret("T4lPid48QtjNxjLUFOcUZghD7CUJ7sTVsfuvQZF2");
     http::request<http::string_body> req;
-    http::response<http::dynamic_body> res;
 
     long ts = 1588591856950;
     auto ts_str = std::to_string(ts);
@@ -72,11 +71,27 @@ TEST(ftx_rest_test, generate_order_request) {
     std::string json("{\"market\": \"BTC-PERP\", \"side\": \"buy\", \"price\": 8500, \"size\": 1, \"type\": \"limit\", \"reduceOnly\": false, \"ioc\": false, \"postOnly\": false, \"clientId\": null}");
     std::string sign_str = ayanami::ftx::generate_sign_str(ts, "/api/orders", json);
     std::string sign = ayanami::hmac_sha256(secret.c_str(), sign_str.c_str());
-    ayanami::ftx::generate_order_request(req, res, ts_str, key, sign);
+    ayanami::ftx::generate_order_request(req, ts_str, key.c_str(), sign);
 
     ASSERT_EQ(req.method(), http::verb::post);
     ASSERT_EQ(req.target().to_string(), "https://ftx.com/api/orders");
     ASSERT_EQ(req.at("FTX-KEY"), key);
     ASSERT_EQ(req.at("FTX-TS"), ts_str);
     ASSERT_EQ(req.at("FTX-SIGN").to_string(), "c4fbabaf178658a59d7bbf57678d44c369382f3da29138f04cd46d3d582ba4ba");
+}
+
+TEST(ftx_rest_test, generate_modify_request_test) {
+    std::string key("LR0RQT6bKjrUNh38eCw9jYC89VDAbRkCogAc_XAm");
+    std::string secret("T4lPid48QtjNxjLUFOcUZghD7CUJ7sTVsfuvQZF2");
+    http::request<http::string_body> req;
+
+    long ts = 1588591856950;
+    auto ts_str = std::to_string(ts);
+
+    ayanami::ftx::generate_modify_request(req, ts_str, key.c_str(), secret.c_str(), 123456, 1000, 123);
+    ASSERT_EQ(req.method(), http::verb::post);
+    ASSERT_EQ(req.target().to_string(), "https://ftx.com/orders/123456/modify");
+    ASSERT_EQ(req.at("FTX-KEY"), key);
+    ASSERT_EQ(req.at("FTX-TS"), ts_str);
+    ASSERT_EQ(req.at("FTX-SIGN").to_string(), "85354a555e4175fe14b4630e553c6168b0c263e0b3b8a3c5232da30290b48dbe");
 }
