@@ -11,7 +11,7 @@ set(
         limit_order_book_tests.cpp
         encryption_tests.cpp
         avellaneda_stoikov_tests.cpp
-        av_coro_tests.cpp
+        order_machine_tests.cpp
         ftx/ftx_ws_tests.cpp
         ftx/ftx_rest_tests.cpp
 )
