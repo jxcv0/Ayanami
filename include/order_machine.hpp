@@ -14,21 +14,12 @@
 namespace ayanami {
 
     template<typename... events>
-    struct event {
-        std::string_view str;
-    };
+    struct event {};
 
-    struct place {
-        std::string_view str = "place";
-    };
-
-    struct modify {
-        std::string_view str = "modify";
-    };
-
-    struct cancel {
-        std::string_view str = "cancel";
-    };
+    struct collect {};
+    struct init {};
+    struct run {};
+    struct close {};
 
     /**
      * @brief Promise type of order machine
@@ -92,17 +83,36 @@ namespace ayanami {
         std::coroutine_handle<promise_type> coro;
     };
 
-    order_machine get_order_machine() {
-        // orders
-        std::map<double, std::pair<double, int>> orders;
+    order_machine get_order_machine(const std::map<double, std::pair<double, int>>& orders) {
         for(;;) {
-            auto ev = co_await event<place, modify, cancel>{};
-            if (std::holds_alternative<modify>(ev)) {
-                std::cout << "modifying\n";
-            } else if (std::holds_alternative<place>(ev)) {
-                std::cout << "placing\n";
-            } else if (std::holds_alternative<cancel>(ev)) {
-                std::cout << "cancelling\n";
+            // collect
+            auto e = co_await event<collect>{};
+            if (std::holds_alternative<collect>(e)) {
+                std::cout << "Awaiting sufficient data ...\n";
+                // TODO - await data
+
+                // init
+                auto e = co_await event<init>{};
+                if(std::holds_alternative<init>(e)) {
+                    std::cout << "Initializing ...\n";
+                    // TODO - place all orders in map
+
+                    // run
+                    auto e = co_await event<run>{};
+                    if(std::holds_alternative<run>(e)) {
+                    std::cout << "Running ...\n";
+                        // only modify orders that need changing
+
+                        // close
+                        auto e = co_await event<close>{};
+                        if (std::holds_alternative<close>(e)) {
+                            std::cout << "Closing ...\n";
+                            // cancel all orders 
+                            // close position
+                            goto end;
+                        }
+                    }
+                } end:;
             }
         }
     }
