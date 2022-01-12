@@ -14,15 +14,19 @@
 namespace ayanami {
 
     template<typename... events>
-    struct event {};
+    struct event {
+        // event(std::map<double, std::pair<double, int>> orders);
+        // std::map<double, std::pair<double, int>> orders;
+    };
 
+    // TODO - pass in av_state through events, inherit event?
     struct collect {};
     struct init {};
     struct run {};
     struct close {};
 
     /**
-     * @brief Promise type of order machine
+     * @brief Promise type
      * 
      */
     struct order_machine {
@@ -83,38 +87,44 @@ namespace ayanami {
         std::coroutine_handle<promise_type> coro;
     };
 
+    // TODO - pass in correct place/modify function
     order_machine get_order_machine(const std::map<double, std::pair<double, int>>& orders) {
         for(;;) {
             // collect
             auto e = co_await event<collect>{};
             if (std::holds_alternative<collect>(e)) {
-                std::cout << "Awaiting sufficient data ...\n";
+                auto s = std::get<collect>(e);
+                std::cout << "collecting ... \n";
                 // TODO - await data
 
                 // init
                 auto e = co_await event<init>{};
                 if(std::holds_alternative<init>(e)) {
-                    std::cout << "Initializing ...\n";
-                    // TODO - place all orders in map
+                    auto s = std::get<init>(e);
+                    std::cout << "placing ... \n";
+                    // place all orders in map
 
                     // run
                     auto e = co_await event<run>{};
                     if(std::holds_alternative<run>(e)) {
-                    std::cout << "Running ...\n";
-                        // only modify orders that need changing
+                        auto s = std::get<run>(e);
+                        std::cout << "shuffling ... \n";
+                        // compare map orders to b and a
+                        // shuffle orders
 
                         // close
                         auto e = co_await event<close>{};
                         if (std::holds_alternative<close>(e)) {
-                            std::cout << "Closing ...\n";
+                            auto s = std::get<close>(e);
+                            std::cout << "closing ... \n";
                             // cancel all orders 
                             // close position
                             goto end;
                         }
                     }
-                } end:;
+                } 
             }
-        }
+        } end: std::cout << "End.\n";
     }
 } // namespace ayanami
 
