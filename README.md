@@ -1,6 +1,6 @@
 # Ayanami
 
-Implimentation a the market making strategy on the FTX cryptocurrency exchange as described in the 2008 paper by Marco Avellaneda and Sasha Stoikov [High-frequency trading in a limit order book](https://www.math.nyu.edu/~avellane/HighFrequencyTrading.pdf).
+Implimentation of a market making strategy on the FTX cryptocurrency exchange as described in the 2008 paper by Marco Avellaneda and Sasha Stoikov [High-frequency trading in a limit order book](https://www.math.nyu.edu/~avellane/HighFrequencyTrading.pdf).
 
 ## Purpose and Design
 
