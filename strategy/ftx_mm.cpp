@@ -64,8 +64,6 @@ int main(int argc, char const *argv[]) {
     std::string type;
     std::string channel;
 
-    bool ready = false;
-
     // Main path
     auto path = [&](web::websockets::client::websocket_incoming_message m){
         // TODO - This time with no spaghetti
@@ -116,7 +114,6 @@ int main(int argc, char const *argv[]) {
     for(;;) {
         sleep(15);
         std::cout << "Sending ping\n";
-        ready = true;
         ws.send(ping); // this crashes if ws is closed
     }
 

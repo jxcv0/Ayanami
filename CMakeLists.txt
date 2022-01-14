@@ -44,8 +44,10 @@ set(
     include/encryption.hpp
     include/avellaneda_stoikov.hpp
     include/order_machine.hpp
+    include/msg_base.hpp
     include/ftx/ftx_ws.hpp
     include/ftx/ftx_rest.hpp
+    include/ftx/ftx_msg.hpp
 )
 
 add_library(ayanami STATIC ${SOURCES} ${HEADERS})
@@ -68,4 +70,4 @@ target_link_libraries(
 )
 
 add_subdirectory(test)
-add_subdirectory(examples)
+add_subdirectory(strategy)

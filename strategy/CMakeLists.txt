@@ -5,4 +5,3 @@ set(CMAKE_CXX_STANDARD 20)
 link_libraries(ayanami)
 
 add_executable(ftxmm ftx_mm.cpp)
-add_executable(ws ws_test.cpp)
