@@ -25,8 +25,6 @@ find_package(OpenSSL REQUIRED)
 set(
   SOURCES
     src/https.cpp
-    src/trade_series.cpp
-    src/price_series.cpp
     src/limit_order_book.cpp
     src/encryption.cpp
     src/avellaneda_stoikov.cpp
@@ -38,16 +36,12 @@ set(
   HEADERS
     include/api_keys.hpp
     include/https.hpp
-    include/trade_series.hpp
-    include/price_series.hpp
     include/limit_order_book.hpp
     include/encryption.hpp
     include/avellaneda_stoikov.hpp
     include/order_machine.hpp
-    include/msg_base.hpp
     include/ftx/ftx_ws.hpp
     include/ftx/ftx_rest.hpp
-    include/ftx/ftx_msg.hpp
 )
 
 add_library(ayanami STATIC ${SOURCES} ${HEADERS})

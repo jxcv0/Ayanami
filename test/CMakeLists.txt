@@ -6,12 +6,9 @@ enable_testing()
 
 set(
     SOURCES
-        trade_series_tests.cpp
-        price_series_tests.cpp
         limit_order_book_tests.cpp
         encryption_tests.cpp
         avellaneda_stoikov_tests.cpp
-        order_machine_tests.cpp
         ftx/ftx_ws_tests.cpp
         ftx/ftx_rest_tests.cpp
 )
