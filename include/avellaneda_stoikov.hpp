@@ -3,11 +3,7 @@
 
 #include <map>
 
-/**
- * @brief Cryprocurrency trading library
- * 
- */
-namespace ayanami {
+namespace Ayanami {
 
     /**
      * @brief Market making auto-trader based on the 2008 paper by M. Avellaneda and S. Stoikov.
@@ -16,27 +12,27 @@ namespace ayanami {
      * 
      * https://www.math.nyu.edu/~avellane/HighFrequencyTrading.pdf
      */
-    namespace av {
+    namespace AV {
 
         /**
          * @brief State data required to calulate reservation price and optimal bid/ask spread
          * 
          */
-        struct av_in {
+        struct AvIn {
             double mid;         // Current market midprice
             double inv;        // Current inventory value
             double risk;        // Risk aversion parameter
             double vol;     // volatility parameter
             double liq;         // liquidity parameter
             double time;        // time parameter (T-t)
-            av_in(double r, double l, double i); 
+            AvIn(double r, double l, double i); 
         };
 
         /**
          * @brief State data required to calculate optimal bid and ask prices 
          * 
          */
-        struct av_out {
+        struct AvOut{
             double res;         // Reservation price
             double spread;      // Spread
         };
@@ -47,7 +43,7 @@ namespace ayanami {
          * @param in state in
          * @param out state out
          */
-        void res_price(const av_in& in, av_out& out);
+        void res_price(const AvIn& in, AvOut& out);
 
         /**
          * @brief Calculate the spread
@@ -55,7 +51,7 @@ namespace ayanami {
          * @param in state in
          * @param out state out
          */
-        void spread(const av_in& in, av_out& out);
+        void spread(const AvIn& in, AvOut& out);
 
         /**
          * @brief Initialize bid quotes and store the values in a map 
@@ -65,7 +61,7 @@ namespace ayanami {
          * @param interval interval between orders
          * @param buffer the number of ticks away from optimal to buffer orders
          */
-        void generate_bids(const av_out& out, std::map<double, int>& bids, double interval, int buffer);
+        void generate_bids(const AvOut& out, std::map<double, int>& bids, double interval, int buffer);
 
         /**
          * @brief Initialize ask quotes and store the values in a map 
@@ -75,7 +71,7 @@ namespace ayanami {
          * @param interval interval between orders
          * @param buffer the number of ticks away from optimal to buffer orders
          */
-        void generate_asks(const av_out& out, std::map<double, int>& asks, double interval, int buffer);
+        void generate_asks(const AvOut& out, std::map<double, int>& asks, double interval, int buffer);
     } // namespace av
 } // namespace ayanami
 

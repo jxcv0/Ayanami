@@ -1,7 +1,7 @@
 #define _TURN_OFF_PLATFORM_STRING
 
 #include "limit_order_book.hpp"
-#include "ftx/ftx_ws.hpp"
+#include "ftx/ftx_websocket.hpp"
 #include "ftx/ftx_rest.hpp"
 #include "api_keys.hpp"
 #include "avellaneda_stoikov.hpp"
@@ -22,18 +22,27 @@
  */
 int main(int argc, char const *argv[]) {
 
+    // market orderbook
+    std::map<float, float> orderbook;
+
+    // strategy orderbook
+    std::map<float, std::pair<float, int>> orders;
+
+    // websocket
     web::websockets::client::websocket_callback_client ws;
 
     // Main path
-    auto path = [&](web::websockets::client::websocket_incoming_message m){
+    auto path = [&](web::websockets::client::websocket_incoming_message msg){
         // TODO - This time with no spaghetti
+        std::string sv_msg(msg.extract_string().get());
+        std::cout << sv_msg << "\n";
     };
 
-    // Connect to ws
-    // web::websockets::client::websocket_outgoing_message login;
-    // login.set_utf8_message(
-    //     ayanami::ftx::generate_ws_login(start, APIKeys::KEY, APIKeys::SECRET)
-    // );
+    // Connect to ws - TODO start time
+    web::websockets::client::websocket_outgoing_message login;
+    login.set_utf8_message(
+        Ayanami::FTX::generate_ws_login(1, APIKeys::KEY, APIKeys::SECRET)
+    );
 
     web::websockets::client::websocket_outgoing_message trade_msg;
     trade_msg.set_utf8_message(
@@ -57,19 +66,19 @@ int main(int argc, char const *argv[]) {
 
     ws.set_message_handler(path);
 
-    // ws.connect("wss://ftx.com/ws/").then([&](){
-    //     std::cout << "Authenticating websocket connection ...\n";
-    //     ws.send(login);
-    // }).then([&](){
-    //     std::cout << "Subscribing to trades channel ...\n";
-    //     ws.send(trade_msg);
-    // }).then([&](){
-    //     std::cout << "Subscribing to orderbook channel ...\n";
-    //     ws.send(lob_msg);
-    // }).then([&](){
-    //     std::cout << "Subscribing to orders channel ...\n";
-    //     ws.send(orders_msg);
-    // });
+    ws.connect("wss://ftx.com/ws/").then([&](){
+        std::cout << "Authenticating websocket connection ...\n";
+        ws.send(login);
+    }).then([&](){
+        std::cout << "Subscribing to trades channel ...\n";
+        ws.send(trade_msg);
+    }).then([&](){
+        std::cout << "Subscribing to orderbook channel ...\n";
+        ws.send(lob_msg);
+    }).then([&](){
+        std::cout << "Subscribing to orders channel ...\n";
+        ws.send(orders_msg);
+    });
 
     for(;;) {
         sleep(15);

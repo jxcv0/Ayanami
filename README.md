@@ -22,7 +22,7 @@ The code is written in **modules**. Modules come in two basic kinds. Namely, **s
 - ... each protect their own private state.
 - ... are encapsulated and should only be interacted with via a public interface.
 - ... are not objects.
-- ... are not an instance of a datatype. In almost all cases, state modules are singletons and are unapologetic about it.
+- ... are not an instance of a datatype. In almost all cases, state modules are singletons and are unapologetic about it. (I have not stuck tightly to this rule).
 
 Both state and logic modules may make use of private functions to either hide implementation from a public interface or to minimize the exposure of state.
 

@@ -6,17 +6,13 @@
 #include <string>
 #include <map>
 
-/**
- * @brief Cryprocurrency trading library
- * 
- */
-namespace ayanami {
+namespace Ayanami {
 
     /**
      * @brief Connection managment for FTX exchange
      * 
      */
-    namespace ftx {
+    namespace FTX {
 
         /**
          * @brief Create order JSON for the FTX API
@@ -53,7 +49,7 @@ namespace ayanami {
         std::string generate_ws_sign(long time, const char* secret);
 
         /**
-         * @brief Generate ftx websocket login JSON
+         * @brief Generate FTX websocket login JSON
          * 
          * @param time int timestamp in seconds (unix)
          * @param key the public key
@@ -68,17 +64,28 @@ namespace ayanami {
         /**
          * @brief Set up an order request so that it places an order when send
          * 
-         * @param req the pre instantiated request
-         * @param res the pre instantiated response
+         * @param req the request
+         * @param res the response
          * @param time the time as epoch millisecond
          * @param key the api key
          * @param sign the authentification sign for private api endpoints
          */
         void generate_order_request(request& req, std::string time, const char* key, std::string sign);
 
+        /**
+         * @brief Set up a request so that it modifies an order when sent
+         * 
+         * @param req the request
+         * @param time the response
+         * @param key the api key
+         * @param secret the api secret
+         * @param id the order id
+         * @param price the new price
+         * @param size the new size
+         */
         void generate_modify_request(request& req, std::string time, const char* key,
             const char* secret, int id, double price, double size);
-    } // namespace ftx
-} // namespace ayanami
+    } // namespace FTX
+} // namespace Ayanami
 
 #endif

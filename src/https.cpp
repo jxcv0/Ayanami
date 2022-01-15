@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-void ayanami::connections::send_req(http::request<http::string_body> req,
+void Ayanami::Connections::send_req(http::request<http::string_body> req,
     http::response<http::dynamic_body>& res) {
 
     try {

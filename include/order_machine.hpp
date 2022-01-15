@@ -8,26 +8,22 @@
 #include <string_view>
 #include <iostream>
 
-/**
- * @brief Cryprocurrency trading library
- * 
- */
-namespace ayanami {
+namespace Ayanami {
 
     /**
      * this is an absurd and slow way of implimenting a bit of code that manages orders.
      * but it looks cool
      */
 
-    struct event_base {
+    struct EventBase {
         std::map<double, std::pair<double, int>> orders;
     };
 
     // TODO - pass in av_state through events
-    struct collect : event_base {};
-    struct init : event_base {};
-    struct run : event_base {};
-    struct close : event_base {};
+    struct Collect : EventBase {};
+    struct Init : EventBase {};
+    struct Run : EventBase {};
+    struct Close : EventBase {};
 
     template<typename... events>
     struct event {};
@@ -36,15 +32,15 @@ namespace ayanami {
      * @brief Promise type
      * 
      */
-    struct order_machine {
+    struct OrderMachine {
         struct promise_type {
             using handle = std::coroutine_handle<promise_type>;
 
-            order_machine get_return_object() noexcept {
+            OrderMachine get_return_object() noexcept {
                 return { handle::from_promise(*this) };
             }
 
-            std::suspend_never initial_suspend() const noexcept { return {}; }
+            std::suspend_never Initial_suspend() const noexcept { return {}; }
             std::suspend_always final_suspend() const noexcept { return {}; }
 
             template<typename... E>
@@ -76,9 +72,9 @@ namespace ayanami {
             bool (*is_wanted_event)(const std::type_info&) = nullptr;
         };
 
-        ~order_machine() { coro.destroy(); }
-        order_machine(const order_machine &) = delete;
-        order_machine &operator=(const order_machine &) = delete;
+        ~OrderMachine() { coro.destroy(); }
+        OrderMachine(const OrderMachine &) = delete;
+        OrderMachine &operator=(const OrderMachine &) = delete;
 
         template<typename E>
         void on_event(E &&e) {
@@ -90,38 +86,38 @@ namespace ayanami {
         }
 
     private:
-        order_machine(std::coroutine_handle<promise_type> coro) : coro { coro } {}
+        OrderMachine(std::coroutine_handle<promise_type> coro) : coro { coro } {}
         std::coroutine_handle<promise_type> coro;
     };
 
-    order_machine get_order_machine(const std::map<double, std::pair<double, int>>& orders) {
+    OrderMachine get_order_machine(const std::map<double, std::pair<double, int>>& orders) {
         for(;;) {
-            // collect
-            auto e = co_await event<collect>{};
-            if (std::holds_alternative<collect>(e)) {
-                auto s = std::get<collect>(e);
+            // Collect
+            auto e = co_await event<Collect>{};
+            if (std::holds_alternative<Collect>(e)) {
+                auto s = std::get<Collect>(e);
                 std::cout << std::to_string(s.orders[100].second) << "\n";
                 // TODO - await data
 
-                // init
-                auto e = co_await event<init>{};
-                if(std::holds_alternative<init>(e)) {
-                    auto s = std::get<init>(e);
+                // Init
+                auto e = co_await event<Init>{};
+                if(std::holds_alternative<Init>(e)) {
+                    auto s = std::get<Init>(e);
                     // place all orders in map
 
-                    // run
-                    auto e = co_await event<run>{};
-                    if(std::holds_alternative<run>(e)) {
-                        auto s = std::get<run>(e);
+                    // Run
+                    auto e = co_await event<Run>{};
+                    if(std::holds_alternative<Run>(e)) {
+                        auto s = std::get<Run>(e);
                         // compare map orders to b and a
                         // shuffle orders
 
-                        // close
-                        auto e = co_await event<close>{};
-                        if (std::holds_alternative<close>(e)) {
-                            auto s = std::get<close>(e);
+                        // Close
+                        auto e = co_await event<Close>{};
+                        if (std::holds_alternative<Close>(e)) {
+                            auto s = std::get<Close>(e);
                             // cancel all orders 
-                            // close position
+                            // Close position
                             goto end;
                         }
                     }

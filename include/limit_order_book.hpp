@@ -3,17 +3,13 @@
 
 #include <map>
 
-/**
- * @brief Cryprocurrency trading library
- * 
- */
-namespace ayanami {
+namespace Ayanami {
 
     /**
-     * @brief limit order book functions
+     * @brief limit order book logic module
      * 
      */
-    namespace lobs {
+    namespace LOB {
 
         /**
          * @brief Get the best bid from an orderbook

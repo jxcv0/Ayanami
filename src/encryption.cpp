@@ -7,7 +7,7 @@
 #include <string.h>
 #include <iomanip>
 
-std::string ayanami::spacify(std::string& str) {
+std::string Ayanami::spacify(std::string& str) {
     std::string out;
     for (char c : str) {
         switch (c) {
@@ -31,7 +31,7 @@ std::string ayanami::spacify(std::string& str) {
  * @param input the input to encrypt
  * @return the encrypted string 
  */
-std::string ayanami::hmac_sha256(const char *key, const char *input) {
+std::string Ayanami::hmac_sha256(const char *key, const char *input) {
     unsigned char hash[32];
 
     HMAC_CTX *ctx = HMAC_CTX_new();

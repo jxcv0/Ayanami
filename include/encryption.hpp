@@ -3,11 +3,7 @@
 
 #include <string>
 
-/**
- * @brief Cryprocurrency trading library
- * 
- */
-namespace ayanami {
+namespace Ayanami {
 
     /**
      * @brief Add spaces to a JSON string after every ':' and ',';

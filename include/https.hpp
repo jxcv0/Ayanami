@@ -15,17 +15,13 @@ namespace ssl = boost::asio::ssl;
 using tcp = boost::asio::ip::tcp;
      
 
-/**
- * @brief Cryprocurrency trading library
- * 
- */
-namespace ayanami {
+namespace Ayanami {
 
     /**
      * @brief Connection managment for FTX exchange
      * 
      */
-    namespace connections {
+    namespace Connections {
 
         /**
          * @brief send a request to an FTX api endpoint
