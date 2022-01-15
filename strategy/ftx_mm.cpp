@@ -82,8 +82,9 @@ int main(int argc, char const *argv[]) {
 
     for(;;) {
         sleep(15);
-        std::cout << "Sending ping\n";
+        std::cout << "Sending ping\n\n";
         ws.send(ping); // this crashes if ws is closed
+        std::cout << "\n\n";
     }
 
     return EXIT_SUCCESS;
