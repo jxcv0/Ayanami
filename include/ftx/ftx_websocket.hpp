@@ -1,6 +1,7 @@
 #ifndef FTX_WEBSOCKET_HPP
 #define FTX_WEBSOCKET_HPP
 
+#include "json.hpp"
 #include <cpprest/json.h>
 
 #include <map>
@@ -8,32 +9,6 @@
 #include <vector>
 
 namespace Ayanami {
-
-    /**
-     * @brief Constexpr map for faster lookups
-     * 
-     * @tparam Key map key type
-     * @tparam Value map value type
-     * @tparam Size size of map must be known at compiletime
-     */
-    template<typename Key, typename Value, std::size_t Size>
-    struct LookupMap {
-        std::array<std::pair<Key, Value>, Size> data;
-
-        [[nodiscard]] constexpr Value at(const Key &key) const {
-
-            // linear search function is apparently faster for small maps than binary search
-            const auto itr = std::find_if(data.begin(), data.end(), [&key](const auto &v) {
-                return v.first == key;
-            });
-
-            if (itr != data.end()) {
-                return itr->second;
-            } else {
-                throw std::range_error("Not Found");
-            }
-        }
-    };
 
     /**
      * @brief Connection managment for FTX exchange
@@ -88,7 +63,7 @@ namespace Ayanami {
             {"orders", Channel::ORDERS}
         }};
         static constexpr auto channelMap =
-            LookupMap<std::string_view, Channel, channelValues.size()>{{channelValues}};
+            Ayanami::LookupMap<std::string_view, Channel, channelValues.size()>{{channelValues}};
 
         /**
          * @brief Channel enum lookup values and LookupMap
@@ -98,7 +73,7 @@ namespace Ayanami {
             {"BTC-PERP", Market::BTCPERP}     // this is here as others will be added later
         }};
         static constexpr auto marketMap =
-            LookupMap<std::string_view, Market, marketValues.size()>{{marketValues}};
+            Ayanami::LookupMap<std::string_view, Market, marketValues.size()>{{marketValues}};
 
         /**
          * @brief Type enum lookup values and LookupMap
@@ -114,7 +89,7 @@ namespace Ayanami {
             {"pong", Type::PONG}
         }};
         static constexpr auto typeMap =
-            LookupMap<std::string_view, Type, typeValues.size()>{{typeValues}};
+            Ayanami::LookupMap<std::string_view, Type, typeValues.size()>{{typeValues}};
 
         /**
          * @brief Side enum lookup values and LookupMap
@@ -125,7 +100,7 @@ namespace Ayanami {
             {"sell", Side::SELL}
         }};
         static constexpr auto sideMap =
-            LookupMap<std::string_view, Side, sideValues.size()>{{sideValues}};
+            Ayanami::LookupMap<std::string_view, Side, sideValues.size()>{{sideValues}};
 
         /**
          * @brief Datatype that represents the data field of trades type message

@@ -9,6 +9,7 @@ set(
         limit_order_book_tests.cpp
         encryption_tests.cpp
         avellaneda_stoikov_tests.cpp
+        json_tests.cpp
         ftx/ftx_websocket_tests.cpp
         ftx/ftx_rest_tests.cpp
 )
