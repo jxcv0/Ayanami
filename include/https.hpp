@@ -13,7 +13,7 @@ namespace http = beast::http;
 namespace net = boost::asio;
 namespace ssl = boost::asio::ssl;
 using tcp = boost::asio::ip::tcp;
-     
+
 
 namespace Ayanami {
 
