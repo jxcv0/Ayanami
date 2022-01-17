@@ -6,7 +6,7 @@ Implimentation of a market making strategy on the FTX cryptocurrency exchange as
 
 The purpose of this project is to serve as a learning tool for C++ and to generate a codebase I can draw on as a portfolio of sorts and to document my progess.
 
-The code follows a procedural style described by [Brian Will](https://www.youtube.com/watch?v=0iyB0_qPvWk) that I liked the sound of after having started learning java and encountering some of the issues he mentions in his videos:
+The code follows a procedural style described by [Brian Will](https://www.youtube.com/watch?v=0iyB0_qPvWk) that I liked the sound of after having started learning java and encountering similar isues with OOP.
 
 The code is written in **modules**. Modules come in two basic kinds. Namely, **state** modules, and **logic** modules.
 
@@ -22,7 +22,7 @@ The code is written in **modules**. Modules come in two basic kinds. Namely, **s
 - ... each protect their own private state.
 - ... are encapsulated and should only be interacted with via a public interface.
 - ... are not objects.
-- ... are not an instance of a datatype. In almost all cases, state modules are singletons and are unapologetic about it. (I have not stuck tightly to this rule).
+- ... are not an instance of a datatype. In almost all cases, state modules are singletons and are unapologetic about it. (I have not stuck tightly to this).
 
 Both state and logic modules may make use of private functions to either hide implementation from a public interface or to minimize the exposure of state.
 
