@@ -17,24 +17,22 @@ namespace Ayanami {
     namespace FTX {
 
         /**
-         * @brief Orderbook channel enums
+         * @brief Webocket response channel
          * 
          */
         enum class Channel {
+            NONE,
             TRADES,
             ORDERBOOK,
             ORDERS
         };
 
         /**
-         * @brief Orderbook channel enums
+         * @brief Websocket response type
          * 
          */
-        enum class Market {
-            BTCPERP
-        };
-
         enum class Type {
+            NONE,
             ERROR,
             SUBSCRIBED,
             UNSUBSCRIBED,
@@ -45,12 +43,24 @@ namespace Ayanami {
         };
 
         /**
-         * @brief Order/trade side enums
+         * @brief Generic websocket response message from the FTX websocket.
+         * Members of this struct will be assigned or cleared depending on the message.
          * 
          */
-        enum class Side {
-            BUY,
-            SELL
+        struct FTX_WebsocketMessage {
+            Type type;
+            Channel channel;
+            std::string_view market; // only ever will be one market for mm strategy
+            int code;
+            std::string_view msg;
+            std::map<double, double> orderbookData; // only used for orderbook messages
+            std::map<double, std::pair<double, int>> ordersData; // only used for orders messages
+            
+            /**
+             * @brief Reset all fields in this message
+             * 
+             */
+            void reset();
         };
 
         /**
@@ -64,16 +74,6 @@ namespace Ayanami {
         }};
         static constexpr auto channelMap =
             Ayanami::LookupMap<std::string_view, Channel, channelValues.size()>{{channelValues}};
-
-        /**
-         * @brief Channel enum lookup values and LookupMap
-         * 
-         */
-        static constexpr std::array<std::pair<std::string_view, Market>, 1> marketValues {{
-            {"BTC-PERP", Market::BTCPERP}     // this is here as others will be added later
-        }};
-        static constexpr auto marketMap =
-            Ayanami::LookupMap<std::string_view, Market, marketValues.size()>{{marketValues}};
 
         /**
          * @brief Type enum lookup values and LookupMap
@@ -92,93 +92,13 @@ namespace Ayanami {
             Ayanami::LookupMap<std::string_view, Type, typeValues.size()>{{typeValues}};
 
         /**
-         * @brief Side enum lookup values and LookupMap
+         * @brief Parse websocket response json string and update data in message struct.
+         * This function is specific to the strategy and is not a generic parsing function.
          * 
+         * @param update the struct to update
+         * @param str the json string from the websocket
          */
-        static constexpr std::array<std::pair<std::string_view, Side>, 2> sideValues = {{
-            {"buy", Side::BUY},
-            {"sell", Side::SELL}
-        }};
-        static constexpr auto sideMap =
-            Ayanami::LookupMap<std::string_view, Side, sideValues.size()>{{sideValues}};
-
-        /**
-         * @brief Datatype that represents the data field of trades type message
-         * 
-         */
-        struct Trades {
-            int id;
-            double price;       // is double as cppresdk does not convert to float
-            double size;        // is double as cppresdk does not convert to float
-            Side side;
-            bool liquidation;
-            std::string time;
-        };
-
-        /**
-         * @brief Datatype that represents the data field of orderbook type message
-         * 
-         */
-        struct Orderbook {
-            // TODO
-        };
-
-        /**
-         * @brief Datatype that represents the data field of order type message
-         * 
-         */
-        struct Orders {
-            // TODO
-        };
-
-        /**
-         * @brief FTX websocket message datatype
-         * 
-         */
-        struct FTXWebsocketMsg {
-            Type type;
-            Channel channel;
-            Market market;
-            int code;
-            std::string_view msg;
-            // a single trades message may contain multiple trades
-            std::variant<std::vector<Trades>, Orderbook, Orders> data;
-        };
-
-
-        /**
-         * @brief Parse a JSON message into an ftx_ws_msg
-         * 
-         * TODO - find and measure speed of std::any alternatives
-         * 
-         * @param str the JSON string to parse
-         * @return the parsed ftx message as an ftx_ws_msg with ambiguous type
-         */
-        FTXWebsocketMsg parse(const std::string& str);
-
-        /**
-         * @brief TODO
-         * 
-         * @param msg 
-         * @return std::variant<Trades, Orderbook, Orders> 
-         */
-        std::variant<Trades, Orderbook, Orders> exctract_data(const FTXWebsocketMsg &msg);
-
-        /**
-         * @brief Populate an orderbook with a "partial" JSON message
-         * 
-         * @param orderbook the orderbook to populate
-         * @param data the "data" field of the JSON message
-         */
-        void populate_orderbook(std::map<double, double>& orderbook, web::json::value& data);
-
-        /**
-         * @brief Update and orderbook with an "update" JSON message
-         * 
-         * @param orderbook the orderbook to update
-         * @param data the "data" field of the JSON message
-         */
-        void update_orderbook(std::map<double, double>& orderbook, web::json::value& data);
+        void parse_ws_response(FTX_WebsocketMessage &update, const std::string& str);
     } // namespace ftx
 } // namespace ayanami
 

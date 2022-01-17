@@ -2,6 +2,12 @@
 
 #include <algorithm>
 
+
+void Ayanami::LOB::update_orderbook(std::map<double, double> &orderbook,
+    const std::map<double, double> &update) {
+    // TODO
+}
+
 /**
  * @brief Get the best bid from an orderbook
  * 

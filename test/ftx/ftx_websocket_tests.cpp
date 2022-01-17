@@ -4,87 +4,62 @@
 
 #include <map>
 
-TEST(FTXWebsocketMessageTests, populate_test) {
+TEST(FTXWebsocketMessageTests, parse_orderbook_snapshot_message) {
+    std::string in = Ayanami::file_to_string("test/json_test_cases/ftx_orderbook_snapshot.json");
+    Ayanami::FTX::FTX_WebsocketMessage update;
+    Ayanami::FTX::parse_ws_response(update, in);
 
-    std::map<double, double> orderbook;
-
-    std::string msg = Ayanami::file_to_string("test/json_test_cases/ftx_orderbook_snapshot.json");
-    web::json::value json = web::json::value::parse(msg);
-
-    Ayanami::FTX::populate_orderbook(orderbook, json);
-
-    // asks
-    ASSERT_DOUBLE_EQ(orderbook[50736], -0.12690000000000001);
-    ASSERT_DOUBLE_EQ(orderbook[50737], -0.095699999999999993);
-    ASSERT_DOUBLE_EQ(orderbook[50738], -0.68589999999999995);
-    ASSERT_DOUBLE_EQ(orderbook[50739], -1.4262999999999999);
-    ASSERT_DOUBLE_EQ(orderbook[50740], -1.5772999999999999);
-    ASSERT_DOUBLE_EQ(orderbook[50741], -0.098599999999999993);
-    ASSERT_DOUBLE_EQ(orderbook[50742], -0.74150000000000005);
-    ASSERT_DOUBLE_EQ(orderbook[50743], -0.59109999999999996);
+    ASSERT_EQ(update.type, Ayanami::FTX::Type::PARTIAL);
+    ASSERT_EQ(update.channel, Ayanami::FTX::Channel::ORDERBOOK);
+    ASSERT_EQ(update.market, "BTC-PERP");
+    ASSERT_EQ(update.code, 200);
+    ASSERT_EQ(update.msg, "OK");
 
     // bids
-    ASSERT_DOUBLE_EQ(orderbook[50735], 6.0541999999999998);
-    ASSERT_DOUBLE_EQ(orderbook[50734], 0.053699999999999998);
-    ASSERT_DOUBLE_EQ(orderbook[50733], 0.55689999999999995);
-    ASSERT_DOUBLE_EQ(orderbook[50732], 0.12529999999999999);
-    ASSERT_DOUBLE_EQ(orderbook[50731], 1.8452999999999999);
-    ASSERT_DOUBLE_EQ(orderbook[50730], 0.18149999999999999);
-    ASSERT_DOUBLE_EQ(orderbook[50729], 1.3488);
-    ASSERT_DOUBLE_EQ(orderbook[50728], 0.050000000000000003);
+    ASSERT_DOUBLE_EQ(update.orderbookData[43075.0], 5.7513);
+    ASSERT_DOUBLE_EQ(update.orderbookData[43074.0], 0.1735);
+    ASSERT_DOUBLE_EQ(update.orderbookData[43073.0], 0.5737);
+    ASSERT_DOUBLE_EQ(update.orderbookData[43072.0], 0.0212);
+    ASSERT_DOUBLE_EQ(update.orderbookData[43071.0], 0.484);
+
+    // asks
+    ASSERT_DOUBLE_EQ(update.orderbookData[43076.0], -1.443);
+    ASSERT_DOUBLE_EQ(update.orderbookData[43077.0], -3.6275);
+    ASSERT_DOUBLE_EQ(update.orderbookData[43078.0], -0.5563);
+    ASSERT_DOUBLE_EQ(update.orderbookData[43079.0], -0.6228);
+    ASSERT_DOUBLE_EQ(update.orderbookData[43080.0], -1.103);
 }
 
-TEST(FTXWebsocketMessageTests, update_test) {
+TEST(FTXWebsocketMessageTests, parse_orderbook_update_message) {
+    std::string in = Ayanami::file_to_string("test/json_test_cases/ftx_orderbook_update.json");
+    Ayanami::FTX::FTX_WebsocketMessage update;
 
-    std::map<double, double> orderbook;
-    orderbook[50673.0] = 10;
-    orderbook[50694.0] = -10;
-    orderbook[50696.0] = -10;
-    orderbook[50711.0] = -10;
-    orderbook[50786.0] = -10;
+    // mock previous data
+    update.orderbookData[50694] = 0.1;
 
-    std::string msg = Ayanami::file_to_string("test/json_test_cases/ftx_orderbook_update.json");
-    web::json::value json = web::json::value::parse(msg);
-    Ayanami::FTX::update_orderbook(orderbook, json);
+    Ayanami::FTX::parse_ws_response(update, in);
+
+    ASSERT_EQ(update.type, Ayanami::FTX::Type::UPDATE);
+    ASSERT_EQ(update.channel, Ayanami::FTX::Channel::ORDERBOOK);
+    ASSERT_EQ(update.market, "BTC-PERP");
+    ASSERT_EQ(update.code, 200);
+    ASSERT_EQ(update.msg, "OK");
 
     // bids
-    ASSERT_DOUBLE_EQ(orderbook[50673.0], 17.8263);
-    
+    ASSERT_DOUBLE_EQ(update.orderbookData[42729.0], 6.6028);
+    ASSERT_DOUBLE_EQ(update.orderbookData[42698.0], 12.9434);
+
     // asks
-    ASSERT_DOUBLE_EQ(orderbook.at(50694.0), -0.35);
-    ASSERT_DOUBLE_EQ(orderbook.at(50711.0), -3.2091);
-    ASSERT_DOUBLE_EQ(orderbook.at(50786.0), -0.8365);
+    ASSERT_DOUBLE_EQ(update.orderbookData[42730.0], -1.8567);
+    ASSERT_DOUBLE_EQ(update.orderbookData[42732.0], -0.109);
+    ASSERT_DOUBLE_EQ(update.orderbookData[42737.0], -1.2402);
+    ASSERT_DOUBLE_EQ(update.orderbookData[42741.0], -10.6792);
+    ASSERT_DOUBLE_EQ(update.orderbookData[42742.0], -0.561);
+    ASSERT_DOUBLE_EQ(update.orderbookData[42747.0], -1.0843);
+    ASSERT_DOUBLE_EQ(update.orderbookData[42776.0], -11.1424);
+    ASSERT_DOUBLE_EQ(update.orderbookData[42779.0], -2.8618);
+    ASSERT_DOUBLE_EQ(update.orderbookData[42825.0], -12.4236);
 
-    // rm 0
-    ASSERT_ANY_THROW(orderbook.at(50696));
-    ASSERT_EQ(orderbook.size(), 4);
-}
-
-TEST(FTXWebsocketMessageTests, parse_trades_msg_test) {
-    std::string msg = Ayanami::file_to_string("test/json_test_cases/ftx_trades.json");
-    auto ftxMessage = Ayanami::FTX::parse(msg);
-
-    ASSERT_EQ(ftxMessage.type, Ayanami::FTX::Type::UPDATE);
-    ASSERT_EQ(ftxMessage.channel, Ayanami::FTX::Channel::TRADES);
-    ASSERT_EQ(ftxMessage.market, Ayanami::FTX::Market::BTCPERP);
-    ASSERT_EQ(ftxMessage.code, 200);
-    ASSERT_EQ(ftxMessage.msg, "OK");
-    ASSERT_TRUE(std::holds_alternative<std::vector<Ayanami::FTX::Trades>>(ftxMessage.data));
-    
-    auto data = std::get<std::vector<Ayanami::FTX::Trades>>(ftxMessage.data);
-    ASSERT_EQ(data.size(), 1);
-
-    auto trade = data.front();
-    ASSERT_EQ(trade.id, 3084555351);
-    ASSERT_DOUBLE_EQ(trade.price, 43345.0);
-    ASSERT_DOUBLE_EQ(trade.size, 0.0023);
-    ASSERT_EQ(trade.side, Ayanami::FTX::Side::SELL);
-    ASSERT_FALSE(trade.liquidation);
-    ASSERT_EQ(trade.time, "2022-01-14T21:39:17.451561+00:00");
-}
-
-TEST(FTXWebsocketMessageTests, parse_orderbook_msg_test) {
-    // std::string msg("TODO");
-    // auto parsed_message = Ayanami::FTX::parse(msg);
-    ASSERT_TRUE(false);
+    // check that previous data has been removed
+    ASSERT_EQ(update.orderbookData.size(), 11);
 }

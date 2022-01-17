@@ -23,10 +23,10 @@
 int main(int argc, char const *argv[]) {
 
     // market orderbook
-    std::map<float, float> orderbook;
+    std::map<double, double> orderbook;
 
     // strategy orderbook
-    std::map<float, std::pair<float, int>> orders;
+    std::map<double, std::pair<double, int>> orders;
 
     // websocket
     web::websockets::client::websocket_callback_client ws;
@@ -34,8 +34,8 @@ int main(int argc, char const *argv[]) {
     // Main path
     auto path = [&](web::websockets::client::websocket_incoming_message msg){
         // TODO - This time with no spaghetti
-        std::string sv_msg(msg.extract_string().get());
-        std::cout << sv_msg << "\n";
+        std::string str(msg.extract_string().get());
+        std::cout << str << "\n";
     };
 
     // Connect to ws - TODO start time
@@ -44,18 +44,13 @@ int main(int argc, char const *argv[]) {
         Ayanami::FTX::generate_ws_login(1, APIKeys::KEY, APIKeys::SECRET)
     );
 
-    web::websockets::client::websocket_outgoing_message trade_msg;
-    trade_msg.set_utf8_message(
-        "{\"op\": \"subscribe\", \"channel\": \"trades\", \"market\": \"BTC-PERP\"}"
-    );
-
-    web::websockets::client::websocket_outgoing_message lob_msg;
-    lob_msg.set_utf8_message(
+    web::websockets::client::websocket_outgoing_message lobMessage;
+    lobMessage.set_utf8_message(
         "{\"op\": \"subscribe\", \"channel\": \"orderbook\", \"market\": \"BTC-PERP\"}"
     );
 
-    web::websockets::client::websocket_outgoing_message orders_msg;
-    orders_msg.set_utf8_message(
+    web::websockets::client::websocket_outgoing_message ordersMessage;
+    ordersMessage.set_utf8_message(
         "{\"op\": \"subscribe\", \"channel\": \"orders\"}"
     );
 
@@ -70,14 +65,11 @@ int main(int argc, char const *argv[]) {
         std::cout << "Authenticating websocket connection ...\n";
         ws.send(login);
     }).then([&](){
-        std::cout << "Subscribing to trades channel ...\n";
-        ws.send(trade_msg);
-    }).then([&](){
         std::cout << "Subscribing to orderbook channel ...\n";
-        ws.send(lob_msg);
+        ws.send(lobMessage);
     }).then([&](){
         std::cout << "Subscribing to orders channel ...\n";
-        ws.send(orders_msg);
+        ws.send(ordersMessage);
     });
 
     for(;;) {
