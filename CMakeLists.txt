@@ -24,6 +24,7 @@ find_package(OpenSSL REQUIRED)
 
 set(
   SOURCES
+    src/simdjson.cpp
     src/https.cpp
     src/json.cpp
     src/limit_order_book.cpp
@@ -35,6 +36,7 @@ set(
 
 set(
   HEADERS
+    include/simdjson.h
     include/api_keys.hpp
     include/https.hpp
     include/json.hpp
