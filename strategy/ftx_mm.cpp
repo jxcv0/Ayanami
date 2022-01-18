@@ -3,6 +3,7 @@
 #include "limit_order_book.hpp"
 #include "ftx/ftx_rest.hpp"
 #include "api_keys.hpp"
+#include "encryption.hpp"
 
 #include "simdjson.h"
 
@@ -26,40 +27,36 @@ int main(int argc, char const *argv[]) {
 
     // TODO - make constexpr
     std::map<std::string_view, std::function<void(const simdjson::dom::element&)>> funcMap = {
-        // type
+        // usable data
         {"update", [&](auto doc){ funcMap[doc["channel"]](doc); }},
-
         {"partial", [&](auto doc){ funcMap[doc["channel"]](doc); }},
 
+        // errors
         {"error", [&](auto doc){
             std::cout << "[ERROR] Code: "<< doc["code"] << " " << doc["msg"] << "\n";
             ws.close();
             exit(1);
         }},
 
-        {"subscribed", [&](auto doc){
+        // info
+        {"subscribed", [](auto doc){
             std::cout << "[SUBSCRIBED] Channel: " << doc["channel"] << "\n"; }},
-
-        {"unsubscribed", [&](auto doc){
+        {"unsubscribed", [](auto doc){
             std::cout << "[UNSUBSCRIBED] Channel: " << doc["channel"] << "\n"; }},
+        {"info", [](auto doc){ 
+            std::cout << "[INFO] Message: " << doc["msg"] << "\nCode: " << doc["code"] << "\n"; }},
+        {"pong", [](auto doc){ std::cout << "[INFO] Pong recieved\n"; }},
 
-        {"info", [&](auto doc){ 
-            std::cout << "[INFO] Message: " << doc["msg"] << "\nCode: " << doc["code"] << "\n";}},
-
-        // channel
+        // channels
         {"orderbook", [&](auto doc){
-            // handle orderbook message 
-            std::cout << doc["channel"] << "\n";
+            // handle orderbook message
         }},
         {"orders", [&](auto doc){
             // handle orders message
-            std::cout << doc["channel"] << "\n";
         }},
         {"fills", [&](auto doc){
             // handle fills message
-            std::cout << doc["channel"] << "\n";
         }}
-        // {"trades", [&](){ /* not required if using constant volatility */ }}
     };
 
     // Main path
@@ -70,9 +67,10 @@ int main(int argc, char const *argv[]) {
         funcMap[doc["type"]](doc);
     };
 
-    // Connect to ws - TODO start time
+    // Connect to ws
     web::websockets::client::websocket_outgoing_message login;
-    login.set_utf8_message(Ayanami::FTX::generate_ws_login(1, APIKeys::KEY, APIKeys::SECRET));
+    login.set_utf8_message(
+        Ayanami::FTX::generate_ws_login(Ayanami::get_time(), APIKeys::KEY, APIKeys::SECRET));
 
     web::websockets::client::websocket_outgoing_message lobMessage;
     lobMessage.set_utf8_message(
@@ -82,7 +80,7 @@ int main(int argc, char const *argv[]) {
     ordersMessage.set_utf8_message("{\"op\": \"subscribe\", \"channel\": \"orders\"}");
 
     web::websockets::client::websocket_outgoing_message fillsMessage;
-    ordersMessage.set_utf8_message("{\"op\": \"subscribe\", \"channel\": \"fills\"}");
+    fillsMessage.set_utf8_message("{\"op\": \"subscribe\", \"channel\": \"fills\"}");
 
     web::websockets::client::websocket_outgoing_message ping;
     ping.set_utf8_message("{\"op\": \"ping\"}");
@@ -90,15 +88,17 @@ int main(int argc, char const *argv[]) {
     ws.set_message_handler(handle_message);
 
     ws.connect("wss://ftx.com/ws/")
-        .then([&](){ws.send(login);})
+        .then([&](){ ws.send(login); })
         .then([&](){ ws.send(lobMessage); })
-        .then([&](){ ws.send(ordersMessage); });
+        .then([&](){ ws.send(ordersMessage); })
+        .then([&](){ ws.send(fillsMessage); })
+        .wait();
 
     for(;;) {
         sleep(15);
-        std::cout << "[PING]\n";
+        std::cout << "[INFO] Ping sent\n";
         ws.send(ping); // this crashes if ws is closed
     }
 
-    return EXIT_SUCCESS;
+    return 0;
 }

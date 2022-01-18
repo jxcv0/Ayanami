@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <string.h>
 #include <iomanip>
+#include <chrono>
 
 std::string Ayanami::spacify(std::string& str) {
     std::string out;
@@ -48,4 +49,9 @@ std::string Ayanami::hmac_sha256(const char *key, const char *input) {
     }
 
     return str.str();
+}
+
+long Ayanami::get_time() {
+    return std::chrono::duration_cast<std::chrono::milliseconds>(
+        std::chrono::system_clock::now().time_since_epoch()).count();
 }
