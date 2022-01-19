@@ -10,8 +10,7 @@ set(
         encryption_tests.cpp
         avellaneda_stoikov_tests.cpp
         json_tests.cpp
-        ftx/ftx_websocket_tests.cpp
-        ftx/ftx_rest_tests.cpp
+        ftx/ftx_api_tests.cpp
 )
 
 add_executable(all_tests ${SOURCES})

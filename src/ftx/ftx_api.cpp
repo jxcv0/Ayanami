@@ -1,4 +1,4 @@
-#include "ftx/ftx_rest.hpp"
+#include "ftx/ftx_api.hpp"
 #include "encryption.hpp"
 #include "api_keys.hpp"
 #include "https.hpp"

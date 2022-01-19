@@ -1,32 +1,8 @@
 #include <gtest/gtest.h>
 
-#include "ftx/ftx_rest.hpp"
+#include "ftx/ftx_api.hpp"
 #include "encryption.hpp"
 #include "api_keys.hpp"
-
-// not needed
-// TEST(FTXRestTests, 200_ok_test) {
-//     long t = std::chrono::duration_cast<std::chrono::milliseconds>(
-//         std::chrono::system_clock::now().time_since_epoch()
-//     ).count();
-//     std::string time_now = std::to_string(t);
-
-//     // get account information - requires authentification
-//     http::request<http::string_body> req;
-//     http::response<http::dynamic_body> res;
-//     req.method(http::verb::get);
-//     req.target("https://FTX.com/api/account");
-//     req.set(http::field::host, "FTX.com");
-//     req.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
-//     req.set("FTX-KEY", APIKeys::KEY);
-//     req.set("FTX-TS", time_now);
-//     std::string sign = time_now + "GET" + "/api/account";
-//     req.set("FTX-SIGN", Ayanami::hmac_sha256(APIKeys::SECRET, sign.c_str()));
-
-//     Ayanami::Connections::send_req(req, res);
-
-//     ASSERT_EQ(res.result_int(), 200);
-// }
 
 TEST(FTXRestTests, generate_order_json_test) {
     std::string json = Ayanami::FTX::generate_order_json("BTC-PERP", "buy", 8500, "limit", 1, false, false);

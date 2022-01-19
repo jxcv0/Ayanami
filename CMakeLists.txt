@@ -30,8 +30,7 @@ set(
     src/limit_order_book.cpp
     src/encryption.cpp
     src/avellaneda_stoikov.cpp
-    src/ftx/ftx_websocket.cpp
-    src/ftx/ftx_rest.cpp
+    src/ftx/ftx_api.cpp
 )
 
 set(
@@ -44,8 +43,7 @@ set(
     include/encryption.hpp
     include/avellaneda_stoikov.hpp
     include/order_machine.hpp
-    include/ftx/ftx_websocket.hpp
-    include/ftx/ftx_rest.hpp
+    include/ftx/ftx_api.hpp
 )
 
 add_library(ayanami STATIC ${SOURCES} ${HEADERS})

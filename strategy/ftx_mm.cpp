@@ -1,7 +1,7 @@
 #define _TURN_OFF_PLATFORM_STRING // cppresdk
 
 #include "limit_order_book.hpp"
-#include "ftx/ftx_rest.hpp"
+#include "ftx/ftx_api.hpp"
 #include "api_keys.hpp"
 #include "encryption.hpp"
 
@@ -44,7 +44,7 @@ int main(int argc, char const *argv[]) {
         {"unsubscribed", [](auto doc){
             std::cout << "[UNSUBSCRIBED] Channel: " << doc["channel"] << "\n"; }},
         {"info", [](auto doc){ 
-            std::cout << "[INFO] Message: " << doc["msg"] << "\nCode: " << doc["code"] << "\n"; }},
+            std::cout << "[INFO] Message: " << doc["msg"] << "\nCode: " << doc["code"] << "\n";}},
         {"pong", [](auto doc){ std::cout << "[INFO] Pong recieved\n"; }},
 
         // channels
@@ -62,8 +62,7 @@ int main(int argc, char const *argv[]) {
     // Main path
     simdjson::dom::parser parser;
     auto handle_message = [&](web::websockets::client::websocket_incoming_message msg){
-        simdjson::padded_string json(msg.extract_string().get());
-        simdjson::dom::element doc = parser.parse(json);
+        simdjson::dom::element doc = parser.parse(msg.extract_string().get());
         funcMap[doc["type"]](doc);
     };
 
