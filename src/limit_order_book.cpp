@@ -5,7 +5,14 @@
 
 void Ayanami::LOB::update_orderbook(std::map<double, double> &orderbook,
     const std::map<double, double> &update) {
-    // TODO
+    std::for_each(update.begin(), update.end(), [&](const auto &kv){
+        if (kv.second != 0) {
+            orderbook[kv.first] = kv.second;
+        } else {
+            // orderbook should already have been initiallised so no check is required
+            orderbook.erase(kv.first);
+        }
+    });
 }
 
 /**
