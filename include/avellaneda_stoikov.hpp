@@ -20,12 +20,14 @@ namespace Ayanami {
          */
         struct AvIn {
             double mid;         // Current market midprice
-            double inv;        // Current inventory value
+            double inv;         // Current inventory value
             double risk;        // Risk aversion parameter
-            double vol;     // volatility parameter
+            const double vol;   // volatility parameter of constant value
             double liq;         // liquidity parameter
             double time;        // time parameter (T-t)
-            AvIn(double r, double l, double i); 
+            
+            // these values are required before strategy execution
+            AvIn(double r, double l, double i, double v);
         };
 
         /**
@@ -52,26 +54,6 @@ namespace Ayanami {
          * @param out state out
          */
         void spread(const AvIn& in, AvOut& out);
-
-        /**
-         * @brief Initialize bid quotes and store the values in a map 
-         * 
-         * @param in the strategy state
-         * @param bids the bids
-         * @param interval interval between orders
-         * @param buffer the number of ticks away from optimal to buffer orders
-         */
-        void generate_bids(const AvOut& out, std::map<double, int>& bids, double interval, int buffer);
-
-        /**
-         * @brief Initialize ask quotes and store the values in a map 
-         * 
-         * @param in the strategy state
-         * @param asks the asks
-         * @param interval interval between orders
-         * @param buffer the number of ticks away from optimal to buffer orders
-         */
-        void generate_asks(const AvOut& out, std::map<double, int>& asks, double interval, int buffer);
     } // namespace av
 } // namespace ayanami
 
