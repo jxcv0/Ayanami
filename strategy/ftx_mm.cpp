@@ -4,20 +4,25 @@
 #include "ftx/ftx_api.hpp"
 #include "api_keys.hpp"
 #include "encryption.hpp"
-
+#include "avellaneda_stoikov.hpp"
+#include "https.hpp"
 #include "simdjson.h"
 
 #include <cpprest/ws_client.h>
 
 /**
- * 
+ *
  * @brief WORK IN PROGRESS
- * 
+ *
  */
 int main(int argc, char const *argv[]) {
+    // strategy state
+    Ayanami::AV::AvIn in(1, 1, 1, 1);
+    Ayanami::AV::AvOut out;
 
     // market orderbook
     std::map<double, double> orderbook;
+    std::map<double, double> update;
 
     // strategy orderbook
     std::map<double, std::pair<double, int>> orders;
@@ -43,21 +48,33 @@ int main(int argc, char const *argv[]) {
             std::cout << "[SUBSCRIBED] Channel: " << doc["channel"] << "\n"; }},
         {"unsubscribed", [](auto doc){
             std::cout << "[UNSUBSCRIBED] Channel: " << doc["channel"] << "\n"; }},
-        {"info", [](auto doc){ 
+        {"info", [](auto doc){
             std::cout << "[INFO] Message: " << doc["msg"] << "\nCode: " << doc["code"] << "\n";}},
         {"pong", [](auto doc){ std::cout << "[INFO] Pong recieved\n"; }},
 
         // channels
         {"orderbook", [&](auto doc){
             // handle orderbook message
+            for (auto &&i : doc["data"]["bids"]) {
+                update[i.at(0)] = i.at(1);
+            }
+            for (auto &&i : doc["data"]["asks"]) {
+                update[i.at(0)] = -(double)i.at(1);
+            }
+            Ayanami::LOB::update_orderbook(orderbook, update);
         }},
         {"orders", [&](auto doc){
             // handle orders message
+            // orders[doc["data"]["price"]] = std::make_pair(doc["data"]["size"], doc["data"]["id"]);
+            std::cout << doc["data"]["status"] << "\n";
         }},
         {"fills", [&](auto doc){
             // handle fills message
+            std::cout << doc << "\n";
         }}
     };
+
+
 
     // Main path
     simdjson::dom::parser parser;
@@ -93,10 +110,24 @@ int main(int argc, char const *argv[]) {
         .then([&](){ ws.send(fillsMessage); })
         .wait();
 
+
+    auto rate_limited_executor = [&in, &out](){
+        Ayanami::AV::res_price(in, out);
+        std::cout << "RP: " << out.res << "\t";
+        std::cout << "S: " << out.spread << "\n";
+    };
+
+    std::thread([&](){
+        for (;;) {
+            rate_limited_executor();
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+    }).detach();
+
     for(;;) {
-        sleep(15);
+        std::this_thread::sleep_for(std::chrono::seconds(15));
         std::cout << "[INFO] Ping sent\n";
-        ws.send(ping); // this crashes if ws is closed
+        ws.send(ping);
     }
 
     return 0;

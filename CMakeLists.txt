@@ -42,7 +42,6 @@ set(
     include/limit_order_book.hpp
     include/encryption.hpp
     include/avellaneda_stoikov.hpp
-    include/order_machine.hpp
     include/ftx/ftx_api.hpp
 )
 

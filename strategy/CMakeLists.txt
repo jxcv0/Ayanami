@@ -5,4 +5,4 @@ set(CMAKE_CXX_STANDARD 20)
 link_libraries(ayanami)
 
 add_executable(ftxmm ftx_mm.cpp)
-add_executable(collect_data collect_data.cpp)
+add_executable(bbmm bybit_mm.cpp)
