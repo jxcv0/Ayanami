@@ -30,5 +30,5 @@ Datatypes do not belong to either kind of module and are defined in whichever mo
 
 As much as possible, state code is moved into logic modules.
 
-## Contributions
-I am open to contrubutions however unlikely they are.
+## Status
+This project is currently in the "make it work" stage. Once functional, it will transition to the "make it pretty" stage.
