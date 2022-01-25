@@ -117,6 +117,13 @@ void Ayanami::FTX::generate_modify_request(request& req, std::string time, const
     req.set("FTX-SIGN", Ayanami::hmac_sha256(secret, sign.c_str()));
 }
 
+/**
+ * @brief Generate the mandatory default header fields for FTX FIX api messsages as key
+ * value pairs
+ * 
+ * @param key the API key
+ * @return map of mandatory default key values pair 
+ */
 std::map<std::string_view, std::string_view> Ayanami::FTX::get_fix_default(const char *key) {
     std::map<std::string_view, std::string_view> map = {
         {"8", "FIX.4.2"},
