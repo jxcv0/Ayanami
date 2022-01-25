@@ -117,3 +117,13 @@ void Ayanami::FTX::generate_modify_request(request& req, std::string time, const
     req.set("FTX-SIGN", Ayanami::hmac_sha256(secret, sign.c_str()));
 }
 
+std::map<std::string_view, std::string_view> Ayanami::FTX::get_fix_default(const char *key) {
+    std::map<std::string_view, std::string_view> map = {
+        {"8", "FIX.4.2"},
+        {"9", "162"},
+        {"35", "A"},
+        {"49", key},
+        {"56", "FTX"}
+    };
+    return map;
+}

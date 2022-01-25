@@ -4,14 +4,14 @@
 #include "encryption.hpp"
 #include "api_keys.hpp"
 
-TEST(FTXRestTests, generate_order_json_test) {
+TEST(FTXRestTests, generate_order_json) {
     std::string json = Ayanami::FTX::generate_order_json("BTC-PERP", "buy", 8500, "limit", 1, false, false);
     std::string example("{\"market\": \"BTC-PERP\", \"side\": \"buy\", \"price\": 8500, \"size\": 1, \"type\": \"limit\", \"reduceOnly\": false, \"ioc\": false, \"postOnly\": false, \"clientId\": null}");
 
     ASSERT_EQ(json, example);
 }
 
-TEST(FTXRestTests, generate_sign_str_test) {
+TEST(FTXRestTests, generate_sign_str) {
     std::string json("{\"market\": \"BTC-PERP\", \"side\": \"buy\", \"price\": 8500, \"size\": 1, \"type\": \"limit\", \"reduceOnly\": false, \"ioc\": false, \"postOnly\": false, \"clientId\": null}");
     std::string req = Ayanami::FTX::generate_sign_str(1588591856950, "/api/orders", json);
     std::string expected("1588591856950POST/api/orders{\"market\": \"BTC-PERP\", \"side\": \"buy\", \"price\": 8500, \"size\": 1, \"type\": \"limit\", \"reduceOnly\": false, \"ioc\": false, \"postOnly\": false, \"clientId\": null}");
@@ -19,7 +19,7 @@ TEST(FTXRestTests, generate_sign_str_test) {
     ASSERT_EQ(req, expected);
 }
 
-TEST(FTXRestTests, generate_ws_sign_test) {
+TEST(FTXRestTests, generate_ws_sign) {
     long time = 1557246346499;
     std::string secret("Y2QTHI23f23f23jfjas23f23To0RfUwX3H42fvN-");
     std::string expected("d10b5a67a1a941ae9463a60b285ae845cdeac1b11edc7da9977bef0228b96de9");
@@ -57,7 +57,7 @@ TEST(FTXRestTests, generate_order_request) {
     ASSERT_EQ(req.at("FTX-SIGN").to_string(), "c4fbabaf178658a59d7bbf57678d44c369382f3da29138f04cd46d3d582ba4ba");
 }
 
-TEST(FTXRestTests, generate_modify_request_test) {
+TEST(FTXRestTests, generate_modify_request) {
     std::string key("LR0RQT6bKjrUNh38eCw9jYC89VDAbRkCogAc_XAm");
     std::string secret("T4lPid48QtjNxjLUFOcUZghD7CUJ7sTVsfuvQZF2");
     http::request<http::string_body> req;
@@ -71,4 +71,21 @@ TEST(FTXRestTests, generate_modify_request_test) {
     ASSERT_EQ(req.at("FTX-KEY"), key);
     ASSERT_EQ(req.at("FTX-TS"), ts_str);
     ASSERT_EQ(req.at("FTX-SIGN").to_string(), "85354a555e4175fe14b4630e553c6168b0c263e0b3b8a3c5232da30290b48dbe");
+}
+
+TEST(FTXFixTests, create_header) {
+    std::string key("zyfvB4QPg0A3kkVgqUE9V1fOA-Y6jhdG3seqIIZx");
+    std::map<std::string_view, std::string_view> expected = {
+        {"8", "FIX.4.2"},
+        {"9", "162"},
+        {"35", "A"},
+        {"49", "zyfvB4QPg0A3kkVgqUE9V1fOA-Y6jhdG3seqIIZx"},
+        {"56", "FTX"}
+    };
+
+    std::map<std::string_view, std::string_view> actual = Ayanami::FTX::get_fix_default(key.c_str());
+
+    std::for_each(expected.begin(), expected.end(), [&](const auto &kv){
+        ASSERT_EQ(kv.second, actual.at(kv.first));
+    });
 }

@@ -85,6 +85,8 @@ namespace Ayanami {
          */
         void generate_modify_request(request& req, std::string time, const char* key,
             const char* secret, int id, double price, double size);
+
+        std::map<std::string_view, std::string_view> get_fix_default(const char *key);
     } // namespace FTX
 } // namespace Ayanami
 
