@@ -102,7 +102,6 @@ namespace Ayanami {
     template<typename Message, typename... Messages>
     void emplace_message(MessageBus<Messages...> &bus, const Message &message) {
         static_assert(std::disjunction_v<std::is_same<Message, Messages>...>);
-        std::cout << "here\n";
         bus.messages().push_back(message);
     } 
 } // namespace Ayanami
