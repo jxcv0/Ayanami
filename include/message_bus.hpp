@@ -1,5 +1,5 @@
-#ifndef EVENT_BUS_HPP
-#define EVENT_BUS_HPP
+#ifndef MESSAGE_BUS_HPP
+#define MESSAGE_BUS_HPP
 
 #include <vector>
 #include <functional>
@@ -9,101 +9,79 @@
 
 namespace Ayanami {
 
-    // template<typename M, typename... Messages>
-    // concept Message = std::enable_if<std::disjunction_v<std::is_same<M, Messages>...>>::value;
+    /**
+     * @brief Overload pattern for message bus visitor
+     * 
+     * @tparam Types types
+     */
+    template<typename... Types>
+    struct Visitor : Types... {
+        using Types::operator()...;
+    };
 
     /**
-     * @brief Accepts parsed messages and dispaches thier data to the appropriate handler.
-     * Messages can be queued using Ayanami::push_back_message or dispatched immediately with
-     * operator().
+     * @brief Message bus distributes a message to handlers via a visitor
      * 
-     * This class probably didn't need this much templating as all message and handler types 
-     * where known before it was written.
-     * 
+     * @tparam Messages the message types known at compile time
      */
     template<typename... Messages>
     class MessageBus {
-        std::vector<std::variant<Messages...>> message_queue_;
-        std::vector<std::any> handlers_;
+        std::vector<std::variant<Messages...>> queue_;
 
     public:
 
         /**
-         * @brief Distribute a message to appropriate handler callbacks
+         * @brief Distribute all messages in the queue to the visitors.
          * 
-         * @tparam Message the type which must be the same as at least one of the templated
-         * types of the messagebus
-         * @param message the message
+         * @param visitor the callback visitor
          */
-        template<typename Message,
-            typename std::enable_if<std::disjunction_v<std::is_same<Message, Messages>...>>::value>
-        void operator()(const Message &message) {
-            std::for_each(handlers_.begin(), handlers_.end(), [&message](auto handler){
-                if (std::is_invocable_v<std::type_info(handler), Message>) {
-                    handler(message);
-                }
-            });
-        }
-
-        /**
-         * @brief Dispatch all queued messages to handler callbacks.
-         * 
-         */
-        void dispatch() {
-            while(!message_queue_.empty()) {
-                this(message_queue_.front());
-
+        void operator()(auto visitor) {
+            while (!queue_.empty()) {
+                std::visit(visitor, queue_.front());
+                queue_.erase(queue_.begin());
             }
         }
 
         /**
-         * @brief Get the callables registered to the message bus
+         * @brief Distribute a message to callback visitor
          * 
-         * @return std::vector<std::any> 
+         * @tparam Message the message type. Must be the same as at least one of the templated
+         * types of the bus.
+         * @param visitor the callback visitor 
+         * @param message the message
          */
-        std::vector<std::any> handlers() {
-            return handlers_;
+        template<typename Message>
+        void operator()(auto visitor, Message message){
+            static_assert(std::disjunction_v<std::is_same<Message, Messages>...>);
+            push_back(message);
+            while (!queue_.empty()) {
+                std::visit(visitor, queue_.front());
+                queue_.erase(queue_.begin());
+            }
         }
 
         /**
-         * @brief Get the message queue
+         * @brief Push a message to the back of the message queue
          * 
-         * @return the collection of messages
+         * @tparam Message the message type. Must be the same as at least one of the templated
+         * types of the bus.
+         * @param message the message
          */
-        std::vector<std::variant<Messages...>> messages() {
-            return message_queue_;
+        template<typename Message>
+        void push_back(Message message) {
+            static_assert(std::disjunction_v<std::is_same<Message, Messages>...>);
+            queue_.push_back(message);
         }
-    }; // MessageBus
 
-    /**
-     * @brief Assign a callback to a message bus.
-     * The callback functor must accept at least one of the templated types of the message bus
-     * 
-     * @tparam Message the parameter type of the callback
-     * @tparam Messages the templated types of the message bus
-     * @param bus the message bus
-     * @param callback the callback functor
-     */
-    template<typename Message, typename... Messages>
-    void register_callback(MessageBus<Messages...> &bus, std::function<void(Message)> callback) {
-        static_assert(std::disjunction_v<std::is_same<Message, Messages>...>);
-        bus.handlers().push_back(callback);
-    }
-
-    /**
-     * @brief Emplace a message to the back of the message bus queue
-     * 
-     * @tparam Message the message type wich must be the same as at least one of the templated
-     * types of the message bus
-     * @tparam Messages the template parameters of the message bus
-     * @param bus the message bus
-     * @param message the message
-     */
-    template<typename Message, typename... Messages>
-    void emplace_message(MessageBus<Messages...> &bus, const Message &message) {
-        static_assert(std::disjunction_v<std::is_same<Message, Messages>...>);
-        bus.messages().push_back(message);
-    } 
+        /**
+         * @brief Get the size of the message queue
+         * 
+         * @return size_t the queue size
+         */
+        size_t size(){
+            return queue_.size();
+        }
+    };
 } // namespace Ayanami
 
 #endif
