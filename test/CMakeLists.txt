@@ -1,28 +1,28 @@
 cmake_minimum_required(VERSION 3.22.1)
-
-set(CMAKE_CXX_STANDARD 20)
+project(ayanamitestsuite)
 
 enable_testing()
 
 set(
     SOURCES
-        limit_order_book_tests.cpp
-        encryption_tests.cpp
-        avellaneda_stoikov_tests.cpp
-        json_tests.cpp
-        ftx/ftx_api_tests.cpp
+    message_bus_tests.cpp
+    limit_order_book_tests.cpp
+    encryption_tests.cpp
+    avellaneda_stoikov_tests.cpp
+    json_tests.cpp
+    ftx/ftx_api_tests.cpp
 )
 
-add_executable(all_tests ${SOURCES})
+add_executable(${PROJECT_NAME} ${SOURCES})
 
 target_link_libraries(
-    all_tests 
-        PUBLIC
-            ayanami
-            gtest_main
+    ${PROJECT_NAME} 
+    PUBLIC
+    ayanami
+    gtest_main
 )
 
 add_test(
-    NAME all_tests
-    COMMAND all_tests
+    NAME ${PROJECT_NAME}
+    COMMAND ${PROJECT_NAME}
 )
