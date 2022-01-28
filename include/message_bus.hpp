@@ -91,7 +91,7 @@ namespace Ayanami {
     }
 
     /**
-     * @brief Emplace a message to the back of the message bus queque
+     * @brief Emplace a message to the back of the message bus queue
      * 
      * @tparam Message the message type wich must be the same as at least one of the templated
      * types of the message bus
