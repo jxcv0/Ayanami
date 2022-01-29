@@ -19,6 +19,9 @@ namespace Ayanami {
         using Types::operator()...;
     };
 
+    template<typename T, typename... Ts>
+    concept valid = std::disjunction_v<std::is_same<T, Ts>...>;
+
     /**
      * @brief Message bus distributes a message to handlers via a visitor
      * 
@@ -29,6 +32,7 @@ namespace Ayanami {
         std::vector<std::variant<Messages...>> queue_;
 
     public:
+
 
         /**
          * @brief Distribute all messages in the queue to the visitors.
@@ -50,9 +54,8 @@ namespace Ayanami {
          * @param visitor the callback visitor 
          * @param message the message
          */
-        template<typename Message>
+        template<valid<Messages...> Message>
         void operator()(auto visitor, Message message){
-            static_assert(std::disjunction_v<std::is_same<Message, Messages>...>);
             push_back(message);
             while (!queue_.empty()) {
                 std::visit(visitor, queue_.front());
@@ -67,9 +70,8 @@ namespace Ayanami {
          * types of the bus.
          * @param message the message
          */
-        template<typename Message>
+        template<valid<Messages...> Message>
         void push_back(Message message) {
-            static_assert(std::disjunction_v<std::is_same<Message, Messages>...>);
             queue_.push_back(message);
         }
 
