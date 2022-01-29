@@ -20,67 +20,28 @@ int main(int argc, char const *argv[]) {
     Ayanami::AV::AvIn in(1, 1, 1, 1);
     Ayanami::AV::AvOut out;
 
+    // req and res
+    http::request<http::string_body> req;
+    http::response<http::dynamic_body> res;
+
     // market orderbook
     std::map<double, double> orderbook;
     std::map<double, double> update;
 
     // strategy orderbook
-    std::map<double, std::pair<double, int>> orders;
+    std::map<double, std::pair<double, int>> bids;
+    std::map<double, std::pair<double, int>> asks;
 
     // websocket
     web::websockets::client::websocket_callback_client ws;
 
-    // TODO - make constexpr
-    std::map<std::string_view, std::function<void(const simdjson::dom::element&)>> funcMap = {
-        // usable data
-        {"update", [&](auto doc){ funcMap[doc["channel"]](doc); }},
-        {"partial", [&](auto doc){ funcMap[doc["channel"]](doc); }},
-
-        // errors
-        {"error", [&](auto doc){
-            std::cout << "[ERROR] Code: "<< doc["code"] << " " << doc["msg"] << "\n";
-            ws.close();
-            exit(1);
-        }},
-
-        // info
-        {"subscribed", [](auto doc){
-            std::cout << "[SUBSCRIBED] Channel: " << doc["channel"] << "\n"; }},
-        {"unsubscribed", [](auto doc){
-            std::cout << "[UNSUBSCRIBED] Channel: " << doc["channel"] << "\n"; }},
-        {"info", [](auto doc){
-            std::cout << "[INFO] Message: " << doc["msg"] << "\nCode: " << doc["code"] << "\n";}},
-        {"pong", [](auto doc){ std::cout << "[INFO] Pong recieved\n"; }},
-
-        // channels
-        {"orderbook", [&](auto doc){
-            // handle orderbook message
-            for (auto &&i : doc["data"]["bids"]) {
-                update[i.at(0)] = i.at(1);
-            }
-            for (auto &&i : doc["data"]["asks"]) {
-                update[i.at(0)] = -(double)i.at(1);
-            }
-            Ayanami::LOB::update_orderbook(orderbook, update);
-        }},
-        {"orders", [&](auto doc){
-            // handle orders message
-            // orders[doc["data"]["price"]] = std::make_pair(doc["data"]["size"], doc["data"]["id"]);
-            std::cout << doc["data"]["status"] << "\n";
-        }},
-        {"fills", [&](auto doc){
-            // handle fills message
-            std::cout << doc << "\n";
-        }}
-    };
-
-
+    // TODO - MessageBus
 
     // Main path
     simdjson::dom::parser parser;
     auto handle_message = [&](web::websockets::client::websocket_incoming_message msg){
-        simdjson::dom::element doc = parser.parse(msg.extract_string().get());
-        funcMap[doc["type"]](doc);
+        simdjson::dom::object doc = parser.parse(msg.extract_string().get());
+        // 
     };
 
     // Connect to ws
@@ -109,20 +70,6 @@ int main(int argc, char const *argv[]) {
         .then([&](){ ws.send(ordersMessage); })
         .then([&](){ ws.send(fillsMessage); })
         .wait();
-
-
-    auto rate_limited_executor = [&in, &out](){
-        Ayanami::AV::res_price(in, out);
-        std::cout << "RP: " << out.res << "\t";
-        std::cout << "S: " << out.spread << "\n";
-    };
-
-    std::thread([&](){
-        for (;;) {
-            rate_limited_executor();
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        }
-    }).detach();
 
     for(;;) {
         std::this_thread::sleep_for(std::chrono::seconds(15));
