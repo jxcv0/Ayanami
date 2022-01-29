@@ -56,3 +56,21 @@ Ayanami::Messages::Channel Ayanami::Messages::get_channel(const std::string &str
         throw std::out_of_range("\"channel\" not found in json string");
     }
 }
+
+/**
+ * @brief Get the bids from the data field of an orderbook message
+ * 
+ * @param str the json string
+ * @return the map of prices and values 
+ */
+void Ayanami::Messages::get_bids(std::map<double, double> &bids, const std::string &str) {
+    int paren_depth = 1;
+    size_t start_pos, end_pos;
+    if ((start_pos = str.find("bids")) != std::string::npos) {
+        start_pos += 8;
+        end_pos = start_pos;
+        std::cout << str.substr(start_pos, 1);
+    } else {
+        throw std::out_of_range("\"bids\" not found in json string");
+    }
+}

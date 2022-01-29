@@ -220,6 +220,14 @@ namespace Ayanami::Messages {
      * @return the message channel enum
      */
     Channel get_channel(const std::string &str);
+
+    /**
+     * @brief Get the bids from the data field of an orderbook message
+     * 
+     * @param str the json string
+     * @return the map of prices and values 
+     */
+    void get_bids(std::map<double, double> &bids, const std::string &str);
 } // namespace Ayanami
 
 #endif
