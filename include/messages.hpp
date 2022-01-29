@@ -8,7 +8,7 @@
 #include <stdexcept>
 #include <map>
 
-namespace Ayanami {
+namespace Ayanami::Messages {
 
     /**
      * @brief Constexpr map for faster lookups
@@ -21,7 +21,7 @@ namespace Ayanami {
     struct LookupMap {
         std::array<std::pair<Key, Value>, Size> data;
 
-        [[nodiscard]] constexpr Value at(const Key &key) const {
+        [[nodiscard]] constexpr Value operator[](const Key &key) const {
 
             // linear search function is apparently faster for small maps than binary search
             const auto itr = std::find_if(data.begin(), data.end(), [&key](const auto &v) {
@@ -124,22 +124,35 @@ namespace Ayanami {
         }
     };
 
+    /**
+     * @brief Message type enumerators.
+     * These are named after the FTX type enums but they can be made applicable to other exchanges
+     * 
+     */
     enum class MessageType {
         ERROR,
-        INFO,
         SUBSCRIBED,
         UNSUBSCRIBED,
+        INFO,
         PARTIAL,
         UPDATE
     };
 
-    // These messages are quite generic and can be reused for other excanges after renaming.
+    static constexpr std::array<std::pair<std::string_view, MessageType>, 6> type_values {{
+        {"error", MessageType::ERROR},
+        {"subscribed", MessageType::SUBSCRIBED},
+        {"unsubscribed", MessageType::UNSUBSCRIBED},
+        {"info", MessageType::INFO},
+        {"partial", MessageType::PARTIAL},
+        {"update", MessageType::UPDATE}
+    }};
+    static constexpr auto type_lookup_map = LookupMap { type_values };
 
     /**
      * @brief Base message type for the FTX exchange websocket messages.
      * All messages have a Type;
      */
-    struct FtxMessage {
+    struct MessageBase {
         MessageType type;
     };
 
@@ -148,7 +161,7 @@ namespace Ayanami {
      * On code 20001, reconnection to the exchange should be attempted
      * 
      */
-    struct InfoMessage : FtxMessage {
+    struct InfoMessage : MessageBase {
         int code;
         std::string_view msg;
     };
@@ -157,7 +170,7 @@ namespace Ayanami {
      * @brief FTX Orderbook update message with bid and ask data
      * 
      */
-    struct OrderbookMessage : FtxMessage {
+    struct OrderbookMessage : MessageBase {
         std::string_view channel;
         std::string_view market;
         double time;

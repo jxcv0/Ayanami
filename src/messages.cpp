@@ -9,7 +9,7 @@
  * @param file the path to the file
  * @return the json as a string
  */
-std::string Ayanami::file_to_string(const char* file) {
+std::string Ayanami::Messages::file_to_string(const char* file) {
     std::ifstream jsonFile(file);
     std::stringstream buffer;
     buffer << jsonFile.rdbuf();
