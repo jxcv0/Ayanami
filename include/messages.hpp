@@ -137,7 +137,11 @@ namespace Ayanami::Messages {
         PARTIAL,
         UPDATE
     };
-
+    
+    /**
+     * @brief Compile time evaluated map for assigning type enum to new message
+     * 
+     */
     static constexpr std::array<std::pair<std::string_view, MessageType>, 6> type_values {{
         {"error", MessageType::ERROR},
         {"subscribed", MessageType::SUBSCRIBED},
@@ -179,10 +183,13 @@ namespace Ayanami::Messages {
         std::map<double, double> asks;
     };
 
-    template<typename Message>
-    Message parse(const std::string &str) {
-        
-    }
+    /**
+     * @brief Get the type from a websocket message string literal
+     * 
+     * @param str the string literal
+     * @return the message type enum
+     */
+    MessageType get_type(const std::string &str);
 } // namespace Ayanami
 
 #endif

@@ -69,3 +69,15 @@ TEST(MessagesTests, constexpr_find_type_map) {
     ASSERT_EQ(Ayanami::Messages::type_lookup_map[sv1], Ayanami::Messages::MessageType::INFO);
     ASSERT_EQ(Ayanami::Messages::type_lookup_map[sv2], Ayanami::Messages::MessageType::ERROR);
 }
+
+TEST(MessageTests, parse_json_message) {
+    std::string error_json = Ayanami::Messages::file_to_string("test/json_test_cases/ftx_error.json");
+    std::string update_json = Ayanami::Messages::file_to_string("test/json_test_cases/ftx_orderbook_update.json");
+    std::string snapshot_json = Ayanami::Messages::file_to_string("test/json_test_cases/ftx_orderbook_snapshot.json");
+    std::string subscribed_json = Ayanami::Messages::file_to_string("test/json_test_cases/ftx_subscribed.json");
+
+    ASSERT_EQ(Ayanami::Messages::get_type(error_json), Ayanami::Messages::MessageType::ERROR);
+    ASSERT_EQ(Ayanami::Messages::get_type(update_json), Ayanami::Messages::MessageType::UPDATE);
+    ASSERT_EQ(Ayanami::Messages::get_type(snapshot_json), Ayanami::Messages::MessageType::PARTIAL);
+    ASSERT_EQ(Ayanami::Messages::get_type(subscribed_json), Ayanami::Messages::MessageType::SUBSCRIBED);
+}
