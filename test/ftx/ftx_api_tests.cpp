@@ -89,3 +89,14 @@ TEST(FTXFixTests, create_header) {
         ASSERT_EQ(kv.second, actual.at(kv.first));
     });
 }
+
+TEST(FTXFixTests, get_fix_logon) {
+    std::string key("zyfvB4QPg0A3kkVgqUE9V1fOA-Y6jhdG3seqIIZx");
+    std::map<std::string_view, std::string_view> expected = {
+        {"8", "FIX.4.2"},
+        {"9", "162"},
+        {"35", "A"},
+        {"49", "zyfvB4QPg0A3kkVgqUE9V1fOA-Y6jhdG3seqIIZx"},
+        {"56", "FTX"}
+    };
+}

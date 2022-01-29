@@ -134,3 +134,15 @@ std::map<std::string_view, std::string_view> Ayanami::FTX::get_fix_default(const
     };
     return map;
 }
+
+/**
+ * @brief Generate a map with logon 
+ * 
+ * @param key 
+ * @return std::map<std::string_view, std::string_view> 
+ */
+std::map<std::string_view, std::string_view> Ayanami::FTX::get_fix_logon(
+    std::map<std::string_view, std::string_view> &base) {
+
+    return base;
+}

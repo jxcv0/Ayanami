@@ -94,6 +94,9 @@ namespace Ayanami {
          * @return map of mandatory default key values pair 
          */
         std::map<std::string_view, std::string_view> get_fix_default(const char *key);
+
+        std::map<std::string_view, std::string_view> get_fix_logon(
+            std::map<std::string_view, std::string_view> &base);
     } // namespace FTX
 } // namespace Ayanami
 
