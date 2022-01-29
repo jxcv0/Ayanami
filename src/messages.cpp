@@ -1,10 +1,7 @@
-#include "json.hpp"
+#include "messages.hpp"
 
 #include <fstream>
 #include <sstream>
-#include <algorithm>
-
-#include <iostream> // delete me
 
 /**
  * @brief Read .json file and return the contents as a string

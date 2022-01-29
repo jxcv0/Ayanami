@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 
-#include "message_bus.hpp"
+#include "messages.hpp"
 
-TEST(MessageBusTests, visitor_test) {
+TEST(MessagesTests, visitor_test) {
     struct IntMessage {
         std::string msg = "int";
     } int_msg;
@@ -48,11 +48,17 @@ TEST(MessageBusTests, visitor_test) {
     ASSERT_EQ(msg, "double");
 }
 
-TEST(MessageBusTests, push_messages_to_queue) {
+TEST(MessagesTests, push_messages_to_queue) {
     struct Message {};
     Ayanami::MessageBus<Message> bus;
     for (size_t i = 1; i <= 10; i++) {
         bus.push_back(Message {});
         ASSERT_EQ(bus.size(), i);
     }
+}
+
+TEST(MessagesTests, json_file_to_string) {
+    std::string expected("{\"channel\": \"trades\", \"market\": \"BTC-PERP\", \"type\": \"update\", \"data\": [{\"id\": 3084555351, \"price\": 43345.0, \"size\": 0.0023, \"side\": \"sell\", \"liquidation\": false, \"time\": \"2022-01-14T21:39:17.451561+00:00\"}]}");
+    std::string actual = Ayanami::file_to_string("test/json_test_cases/ftx_trades.json");
+    ASSERT_EQ(actual, expected);
 }

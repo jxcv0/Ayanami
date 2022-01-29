@@ -5,11 +5,10 @@ enable_testing()
 
 set(
     SOURCES
-    message_bus_tests.cpp
+    messages_tests.cpp
     limit_order_book_tests.cpp
     encryption_tests.cpp
     avellaneda_stoikov_tests.cpp
-    json_tests.cpp
     ftx/ftx_api_tests.cpp
 )
 

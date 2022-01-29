@@ -24,10 +24,9 @@ find_package(OpenSSL REQUIRED)
 
 set(
   SOURCES
-  src/message_bus.cpp
+  src/messages.cpp
   src/simdjson.cpp
   src/https.cpp
-  src/json.cpp
   src/limit_order_book.cpp
   src/encryption.cpp
   src/avellaneda_stoikov.cpp
@@ -36,11 +35,10 @@ set(
 
 set(
   HEADERS
-  include/message_bus.hpp
+  include/messages.hpp
   include/simdjson.h
   include/api_keys.hpp
   include/https.hpp
-  include/json.hpp
   include/limit_order_book.hpp
   include/encryption.hpp
   include/avellaneda_stoikov.hpp
