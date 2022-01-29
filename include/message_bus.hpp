@@ -19,6 +19,12 @@ namespace Ayanami {
         using Types::operator()...;
     };
 
+    /**
+     * @brief Concept for ensuring T is one of Ts... and therefor useable by the bus
+     * 
+     * @tparam T the individual param
+     * @tparam Ts the parameter pack
+     */
     template<typename T, typename... Ts>
     concept valid = std::disjunction_v<std::is_same<T, Ts>...>;
 
@@ -33,11 +39,10 @@ namespace Ayanami {
 
     public:
 
-
         /**
-         * @brief Distribute all messages in the queue to the visitors.
+         * @brief Distribute all messages in the queue to the visitors
          * 
-         * @param visitor the callback visitor
+         * @param visitor the visitors
          */
         void operator()(auto visitor) {
             while (!queue_.empty()) {
@@ -47,11 +52,11 @@ namespace Ayanami {
         }
 
         /**
-         * @brief Distribute a message to callback visitor
+         * @brief Distribute message and all other messages in the queue to visitors
          * 
-         * @tparam Message the message type. Must be the same as at least one of the templated
-         * types of the bus.
-         * @param visitor the callback visitor 
+         * @tparam Message the message type which must be the message must be one of the templated
+         * message bus types
+         * @param visitor the bus visitor
          * @param message the message
          */
         template<valid<Messages...> Message>
@@ -66,8 +71,7 @@ namespace Ayanami {
         /**
          * @brief Push a message to the back of the message queue
          * 
-         * @tparam Message the message type. Must be the same as at least one of the templated
-         * types of the bus.
+         * @tparam Message the message must be one of the templated message bus types
          * @param message the message
          */
         template<valid<Messages...> Message>
@@ -83,6 +87,48 @@ namespace Ayanami {
         size_t size(){
             return queue_.size();
         }
+    };
+
+    enum class MessageType {
+        INFO,
+        SUBSCRIBED,
+        UNSUBSCRIBED,
+        INFO,
+        PARTIAL,
+        UPDATE
+    };
+
+    // These messages are quite generic and can be reused for other excanges after renaming.
+
+    /**
+     * @brief Base message type for the FTX exchange websocket messages.
+     * All messages have a Type;
+     */
+    struct FtxMessage {
+        MessageType type;
+    };
+
+    /**
+     * @brief Info messages can carry a code and message.
+     * On code 20001, reconnection to the exchange should be attempted
+     * 
+     */
+    struct InfoMessage : FtxMessage {
+        int code;
+        std::string_view msg;
+    };
+
+    /**
+     * @brief FTX Orderbook update message with bid and ask data
+     * 
+     */
+    struct OrderbookMessage : FtxMessage {
+        std::string_view channel;
+        std::string_view market;
+        double time;
+        int checksum;
+        std::map<double, double> bids;
+        std::map<double, double> asks;
     };
 } // namespace Ayanami
 
