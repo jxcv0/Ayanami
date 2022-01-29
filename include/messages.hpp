@@ -126,7 +126,6 @@ namespace Ayanami::Messages {
 
     /**
      * @brief Message type enumerators.
-     * These are named after the FTX type enums but they can be made applicable to other exchanges
      * 
      */
     enum class MessageType {
@@ -135,22 +134,45 @@ namespace Ayanami::Messages {
         UNSUBSCRIBED,
         INFO,
         PARTIAL,
-        UPDATE
+        UPDATE,
+        PONG
+    };
+
+    /**
+     * @brief Message channel enumerators.
+     * 
+     */
+    enum class Channel {
+        ORDERBOOK,
+        ORDERS,
+        FILLS
     };
     
     /**
      * @brief Compile time evaluated map for assigning type enum to new message
      * 
      */
-    static constexpr std::array<std::pair<std::string_view, MessageType>, 6> type_values {{
+    static constexpr std::array<std::pair<std::string_view, MessageType>, 7> type_values {{
         {"error", MessageType::ERROR},
         {"subscribed", MessageType::SUBSCRIBED},
         {"unsubscribed", MessageType::UNSUBSCRIBED},
         {"info", MessageType::INFO},
         {"partial", MessageType::PARTIAL},
-        {"update", MessageType::UPDATE}
+        {"update", MessageType::UPDATE},
+        {"pong", MessageType::PONG}
     }};
     static constexpr auto type_lookup_map = LookupMap { type_values };
+
+    /**
+     * @brief Compile time evaluated map for assigning channel enum to new message
+     * 
+     */
+    static constexpr std::array<std::pair<std::string_view, Channel>, 3> channel_values {{
+        {"orderbook", Channel::ORDERBOOK},
+        {"orders", Channel::ORDERS},
+        {"fills", Channel::FILLS}
+    }};
+    static constexpr auto channel_lookup_map = LookupMap { channel_values };
 
     /**
      * @brief Base message type for the FTX exchange websocket messages.
@@ -184,12 +206,20 @@ namespace Ayanami::Messages {
     };
 
     /**
-     * @brief Get the type from a websocket message string literal
+     * @brief Get the type from a websocket json message
      * 
-     * @param str the string literal
+     * @param str the json string
      * @return the message type enum
      */
     MessageType get_type(const std::string &str);
+
+    /**
+     * @brief Get the channel from a websocket json message
+     * 
+     * @param str the json string
+     * @return the message channel enum
+     */
+    Channel get_channel(const std::string &str);
 } // namespace Ayanami
 
 #endif
