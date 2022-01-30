@@ -81,7 +81,7 @@ std::string Ayanami::Messages::get_bids_str(const std::string &str) {
             
             end_pos++;
         }
-        return str.substr(start_pos, end_pos - start_pos);
+        return str.substr((start_pos + 1), ((end_pos - start_pos) - 2));
     } else {
         throw std::out_of_range("\"bids\" not found in json string");
     }
