@@ -92,11 +92,7 @@ TEST(MessageTests, get_message_channel) {
     ASSERT_EQ(Ayanami::Messages::get_channel(orders_json), Ayanami::Messages::Channel::ORDERS);
 }
 
-TEST(MessageTests, get_bids) {
-    std::map<double, double> bids;
+TEST(MessageTests, get_bids_str) {
     std::string update_json = Ayanami::Messages::file_to_string("test/json_test_cases/ftx_orderbook_update.json");
-    Ayanami::Messages::get_bids(bids, update_json);
-
-    ASSERT_DOUBLE_EQ(bids[42729.0], 6.6028);
-    ASSERT_DOUBLE_EQ(bids[42698.0], 12.9434);
+    ASSERT_EQ(Ayanami::Messages::get_bids_str(update_json), "[[42729.0, 6.6028], [42698.0, 12.9434]]");
 }

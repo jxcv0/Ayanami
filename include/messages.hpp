@@ -227,7 +227,7 @@ namespace Ayanami::Messages {
      * @param str the json string
      * @return the map of prices and values 
      */
-    void get_bids(std::map<double, double> &bids, const std::string &str);
+    std::string get_bids_str(const std::string &str);
 } // namespace Ayanami
 
 #endif

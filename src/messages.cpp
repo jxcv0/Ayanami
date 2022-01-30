@@ -63,13 +63,25 @@ Ayanami::Messages::Channel Ayanami::Messages::get_channel(const std::string &str
  * @param str the json string
  * @return the map of prices and values 
  */
-void Ayanami::Messages::get_bids(std::map<double, double> &bids, const std::string &str) {
-    int paren_depth = 1;
+std::string Ayanami::Messages::get_bids_str(const std::string &str) {
+    size_t nested_depth = 0;
     size_t start_pos, end_pos;
     if ((start_pos = str.find("bids")) != std::string::npos) {
-        start_pos += 8;
+        start_pos += 7;
         end_pos = start_pos;
-        std::cout << str.substr(start_pos, 1);
+        while (true) {
+            if (str[end_pos] == '[') {
+                nested_depth++;
+            } else if (str[end_pos] == ']') {
+                nested_depth--;
+            }
+
+            if (nested_depth == 0 && str[end_pos] == ',')
+                break;
+            
+            end_pos++;
+        }
+        return str.substr(start_pos, end_pos - start_pos);
     } else {
         throw std::out_of_range("\"bids\" not found in json string");
     }
