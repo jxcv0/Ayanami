@@ -94,5 +94,5 @@ TEST(MessageTests, get_message_channel) {
 
 TEST(MessageTests, get_bids_str) {
     std::string update_json = Ayanami::Messages::file_to_string("test/json_test_cases/ftx_orderbook_update.json");
-    ASSERT_EQ(Ayanami::Messages::get_bids_str(update_json), "[42729.0, 6.6028], [42698.0, 12.9434]");
+    ASSERT_EQ(Ayanami::Messages::get_bids_str(update_json), "42729.0, 6.6028, 42698.0, 12.9434");
 }

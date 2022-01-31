@@ -221,12 +221,6 @@ namespace Ayanami::Messages {
      */
     Channel get_channel(const std::string &str);
 
-    /**
-     * @brief Get the bids from the data field of an orderbook message
-     * 
-     * @param str the json string
-     * @return the map of prices and values 
-     */
     std::string get_bids_str(const std::string &str);
 } // namespace Ayanami
 

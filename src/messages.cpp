@@ -64,8 +64,9 @@ Ayanami::Messages::Channel Ayanami::Messages::get_channel(const std::string &str
  * @return the map of prices and values 
  */
 std::string Ayanami::Messages::get_bids_str(const std::string &str) {
+    // isolate bids field
     size_t nested_depth = 0;
-    size_t start_pos, end_pos;
+    size_t start_pos, end_pos, pos, prev = 0;
     if ((start_pos = str.find("bids")) != std::string::npos) {
         start_pos += 7;
         end_pos = start_pos;
@@ -78,10 +79,14 @@ std::string Ayanami::Messages::get_bids_str(const std::string &str) {
 
             if (nested_depth == 0 && str[end_pos] == ',')
                 break;
-            
+
             end_pos++;
         }
-        return str.substr((start_pos + 1), ((end_pos - start_pos) - 2));
+
+        std::string isolated = str.substr(start_pos + 1, (end_pos - start_pos) - 2);
+        std::erase_if(isolated, [](char c){ return c == '[' || c == ']'; });
+        return isolated;
+
     } else {
         throw std::out_of_range("\"bids\" not found in json string");
     }
