@@ -64,7 +64,7 @@ Ayanami::Messages::Channel Ayanami::Messages::get_channel(const std::string &str
  * @param str the json string
  * @return the values of the message delimited with ','
  */
-void Ayanami::Messages::isolate_bids(std::string &str) {
+void Ayanami::Messages::isolate_bid_cluster(std::string &str) {
     size_t nested_depth = 0;
     size_t start_pos, end_pos, pos, prev = 0;
     if ((start_pos = str.find("bids")) != std::string::npos) {
@@ -95,7 +95,7 @@ void Ayanami::Messages::isolate_bids(std::string &str) {
  * @param str the json string
  * @return the values of the message delimited with ','
  */
-void Ayanami::Messages::isolate_asks(std::string &str) {
+void Ayanami::Messages::isolate_ask_cluster(std::string &str) {
     size_t nested_depth = 0;
     size_t start_pos, end_pos, pos, prev = 0;
     if ((start_pos = str.find("asks")) != std::string::npos) {
@@ -119,3 +119,4 @@ void Ayanami::Messages::isolate_asks(std::string &str) {
         throw std::out_of_range("\"asks\" not found in json string");
     }
 }
+

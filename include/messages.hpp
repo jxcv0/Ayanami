@@ -227,7 +227,7 @@ namespace Ayanami::Messages {
      * @param str the json string
      * @return the values of the message delimited with ','
      */
-    void isolate_bids(std::string &str);
+    void isolate_bid_cluster(std::string &str);
 
     /**
      * @brief Get the asks array from an orderbook update message
@@ -235,7 +235,9 @@ namespace Ayanami::Messages {
      * @param str the json string
      * @return the values of the message delimited with ','
      */
-    void isolate_asks(std::string &str);
+    void isolate_ask_cluster(std::string &str);
+
+    void map_json_cluster(std::map<double, double> map, std::string &str);
 } // namespace Ayanami
 
 #endif
