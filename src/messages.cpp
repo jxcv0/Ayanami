@@ -3,6 +3,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream> // delete
+#include <algorithm>
 
 /**
  * @brief Read .json file and return the contents as a string
@@ -58,13 +59,12 @@ Ayanami::Messages::Channel Ayanami::Messages::get_channel(const std::string &str
 }
 
 /**
- * @brief Get the bids from the data field of an orderbook message
+ * @brief Get the bids array from an orderbook update message
  * 
  * @param str the json string
- * @return the map of prices and values 
+ * @return the values of the message delimited with ','
  */
-std::string Ayanami::Messages::get_bids_str(const std::string &str) {
-    // isolate bids field
+void Ayanami::Messages::isolate_bids(std::string &str) {
     size_t nested_depth = 0;
     size_t start_pos, end_pos, pos, prev = 0;
     if ((start_pos = str.find("bids")) != std::string::npos) {
@@ -82,12 +82,40 @@ std::string Ayanami::Messages::get_bids_str(const std::string &str) {
 
             end_pos++;
         }
-
-        std::string isolated = str.substr(start_pos + 1, (end_pos - start_pos) - 2);
-        std::erase_if(isolated, [](char c){ return c == '[' || c == ']'; });
-        return isolated;
+        str = str.substr(start_pos + 1, (end_pos - start_pos) - 2);
 
     } else {
         throw std::out_of_range("\"bids\" not found in json string");
+    }
+}
+
+/**
+ * @brief Get the asks array from an orderbook update message
+ * 
+ * @param str the json string
+ * @return the values of the message delimited with ','
+ */
+void Ayanami::Messages::isolate_asks(std::string &str) {
+    size_t nested_depth = 0;
+    size_t start_pos, end_pos, pos, prev = 0;
+    if ((start_pos = str.find("asks")) != std::string::npos) {
+        start_pos += 7;
+        end_pos = start_pos;
+        while (true) {
+            if (str[end_pos] == '[') {
+                nested_depth++;
+            } else if (str[end_pos] == ']') {
+                nested_depth--;
+            }
+
+            if (nested_depth == 0 && str[end_pos] == ',')
+                break;
+
+            end_pos++;
+        }
+
+        str = str.substr(start_pos + 1, (end_pos - start_pos) - 2);
+    } else {
+        throw std::out_of_range("\"asks\" not found in json string");
     }
 }

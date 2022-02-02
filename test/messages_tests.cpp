@@ -94,5 +94,12 @@ TEST(MessageTests, get_message_channel) {
 
 TEST(MessageTests, get_bids_str) {
     std::string update_json = Ayanami::Messages::file_to_string("test/json_test_cases/ftx_orderbook_update.json");
-    ASSERT_EQ(Ayanami::Messages::get_bids_str(update_json), "42729.0, 6.6028, 42698.0, 12.9434");
+    Ayanami::Messages::isolate_bids(update_json);
+    ASSERT_EQ(update_json, "[42729.0, 6.6028], [42698.0, 12.9434]");
+}
+
+TEST(MessageTests, get_asks_str) {
+    std::string update_json = Ayanami::Messages::file_to_string("test/json_test_cases/ftx_orderbook_update.json");
+    Ayanami::Messages::isolate_asks(update_json);
+    ASSERT_EQ(update_json, "[42730.0, 1.8567], [42732.0, 0.109], [42737.0, 1.2402], [42741.0, 10.6792], [42742.0, 0.561], [42747.0, 1.0843], [42776.0, 11.1424], [42779.0, 2.8618], [42825.0, 12.4236]");
 }

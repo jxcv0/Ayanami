@@ -221,7 +221,21 @@ namespace Ayanami::Messages {
      */
     Channel get_channel(const std::string &str);
 
-    std::string get_bids_str(const std::string &str);
+    /**
+     * @brief Get the bids array from an orderbook update message
+     * 
+     * @param str the json string
+     * @return the values of the message delimited with ','
+     */
+    void isolate_bids(std::string &str);
+
+    /**
+     * @brief Get the asks array from an orderbook update message
+     * 
+     * @param str the json string
+     * @return the values of the message delimited with ','
+     */
+    void isolate_asks(std::string &str);
 } // namespace Ayanami
 
 #endif
