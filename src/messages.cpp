@@ -113,10 +113,38 @@ void Ayanami::Messages::isolate_ask_cluster(std::string &str) {
 
             end_pos++;
         }
-
         str = str.substr(start_pos + 1, (end_pos - start_pos) - 2);
     } else {
         throw std::out_of_range("\"asks\" not found in json string");
     }
 }
 
+/**
+ * @brief Convert isolated update clusters into map values
+ * 
+ * @param map the bid or ask map to fill with the values
+ * @param str the string produced by isolating clusters
+ */
+void Ayanami::Messages::map_json_cluster(std::map<double, double> &map, std::string &str) {
+    double temp;
+    size_t paren_start, paren_end = 0;
+    size_t prev, pos;
+    while ((paren_start = str.find("[", paren_end)) != std::string::npos &&
+        (paren_end = str.find("]", paren_start)) != std::string::npos) {
+
+        if (paren_end > paren_start) {
+            prev = pos = paren_start + 1;
+            while ((pos = str.find(",", prev)) < paren_end - 1) {
+                if (pos > prev) {
+                    temp = atof(str.substr(prev, pos - prev).c_str());
+                }
+                prev = pos + 1;
+            }
+
+            if (prev < paren_end - 1) {
+                map[temp] = atof(str.substr(prev + 1, paren_end - prev - 1).c_str());
+            }
+        }
+        paren_start = paren_end + 1;
+    }
+}

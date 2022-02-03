@@ -237,7 +237,13 @@ namespace Ayanami::Messages {
      */
     void isolate_ask_cluster(std::string &str);
 
-    void map_json_cluster(std::map<double, double> map, std::string &str);
+    /**
+     * @brief Convert isolated update clusters into map values
+     * 
+     * @param map the bid or ask map to fill with the values
+     * @param str the string produced by isolating clusters
+     */
+    void map_json_cluster(std::map<double, double> &map, std::string &str);
 } // namespace Ayanami
 
 #endif

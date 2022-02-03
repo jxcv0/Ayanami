@@ -103,3 +103,28 @@ TEST(MessageTests, get_asks_str) {
     Ayanami::Messages::isolate_ask_cluster(update_json);
     ASSERT_EQ(update_json, "[42730.0, 1.8567], [42732.0, 0.109], [42737.0, 1.2402], [42741.0, 10.6792], [42742.0, 0.561], [42747.0, 1.0843], [42776.0, 11.1424], [42779.0, 2.8618], [42825.0, 12.4236]");
 }
+
+TEST(MessageTests, bids_cluster_to_map) {
+    std::map<double, double> bids;
+    std::string update_json = Ayanami::Messages::file_to_string("test/json_test_cases/ftx_orderbook_update.json");
+    Ayanami::Messages::isolate_bid_cluster(update_json);
+    Ayanami::Messages::map_json_cluster(bids, update_json);
+    ASSERT_DOUBLE_EQ(bids.at(42729.0), 6.6028);
+    ASSERT_DOUBLE_EQ(bids.at(42698.0), 12.9434);
+}
+
+TEST(MessageTests, asks_cluster_to_map) {
+    std::map<double, double> asks;
+    std::string update_json = Ayanami::Messages::file_to_string("test/json_test_cases/ftx_orderbook_update.json");
+    Ayanami::Messages::isolate_ask_cluster(update_json);
+    Ayanami::Messages::map_json_cluster(asks, update_json);
+    ASSERT_DOUBLE_EQ(asks.at(42730.0), 1.8567);
+    ASSERT_DOUBLE_EQ(asks.at(42732.0), 0.109);
+    ASSERT_DOUBLE_EQ(asks.at(42737.0), 1.2402);
+    ASSERT_DOUBLE_EQ(asks.at(42741.0), 10.6792);
+    ASSERT_DOUBLE_EQ(asks.at(42742.0), 0.561);
+    ASSERT_DOUBLE_EQ(asks.at(42747.0), 1.0843);
+    ASSERT_DOUBLE_EQ(asks.at(42776.0), 11.1424);
+    ASSERT_DOUBLE_EQ(asks.at(42779.0), 2.8618);
+    ASSERT_DOUBLE_EQ(asks.at(42825.0), 12.4236);
+}
