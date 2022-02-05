@@ -3,6 +3,8 @@
 
 #include "https.hpp"
 
+#include <boost/date_time/gregorian/gregorian.hpp>
+
 #include <string>
 #include <map>
 
@@ -83,20 +85,36 @@ namespace Ayanami {
          * @param price the new price
          * @param size the new size
          */
-        void generate_modify_request(request& req, std::string time, const char* key,
+        void generate_modify_request(request &req, std::string time, const char* key,
             const char* secret, int id, double price, double size);
 
         /**
-         * @brief Generate the mandatory default header fields for FTX FIX api messsages as key
-         * value pairs
+         * @brief Get the iso date/time string 
          * 
-         * @param key the API key
-         * @return map of mandatory default key values pair 
+         * @return the date/time string
          */
-        std::map<std::string_view, std::string_view> get_fix_default(const char *key);
+        std::string get_timestamp();
 
-        std::map<std::string_view, std::string_view> get_fix_logon(
-            std::map<std::string_view, std::string_view> &base);
+        /**
+         * @brief Set the default values of an outgoing FIX message
+         * 
+         * @param map the base key value set
+         * @param key the API key
+         * @param seq the sequence number
+         * @param timestamp the iso date/time timestamp
+         */
+        void set_fix_default(std::map<std::string_view,std::string_view> &map,
+            const char *key, int seq, std::string timestamp);
+
+        /**
+         * @brief Add the logon keys and values to a FIX message
+         * 
+         * @param base the base message
+         * @param secret the API secret
+         */
+        void set_fix_logon(std::map<std::string_view, std::string_view> base,
+            const char *secret);
+
     } // namespace FTX
 } // namespace Ayanami
 

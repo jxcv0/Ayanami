@@ -124,25 +124,21 @@ void Ayanami::FTX::generate_modify_request(request& req, std::string time, const
  * @param key the API key
  * @return map of mandatory default key values pair 
  */
-std::map<std::string_view, std::string_view> Ayanami::FTX::get_fix_default(const char *key) {
-    std::map<std::string_view, std::string_view> map = {
-        {"8", "FIX.4.2"},
-        {"9", "162"},
-        {"35", "A"},
-        {"49", key},
-        {"56", "FTX"}
-    };
-    return map;
+void Ayanami::FTX::set_fix_default(std::map<std::string_view, std::string_view> &map,
+    const char *key, int seq, std::string timestamp) {
+
+    map.clear();
+    map["8"] = "FIX.4.2";
+    map["9"] = "162";
+    map["34"] = std::to_string(seq);
+    map["35"] = "A";
+    map["49"] = key;
+    map["49"] = timestamp;
+    map["56"] = "FTX";
 }
 
-/**
- * @brief Generate a map with logon 
- * 
- * @param key 
- * @return std::map<std::string_view, std::string_view> 
- */
-std::map<std::string_view, std::string_view> Ayanami::FTX::get_fix_logon(
-    std::map<std::string_view, std::string_view> &base) {
-
-    return base;
+void Ayanami::FTX::set_fix_logon(std::map<std::string_view,
+    std::string_view> base, const char *secret) {
+    
+    // do the things
 }

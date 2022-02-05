@@ -73,30 +73,51 @@ TEST(FTXRestTests, generate_modify_request) {
     ASSERT_EQ(req.at("FTX-SIGN").to_string(), "85354a555e4175fe14b4630e553c6168b0c263e0b3b8a3c5232da30290b48dbe");
 }
 
-TEST(FTXFixTests, create_header) {
-    std::string key("zyfvB4QPg0A3kkVgqUE9V1fOA-Y6jhdG3seqIIZx");
+TEST(FTXFixTest, get_timestamp_string) {
+    boost::gregorian::date d(2022, boost::date_time::Jan, 1);
+}
+
+TEST(FTXFixTests, set_default_fix_header) {
+    std::string key("LR0RQT6bKjrUNh38eCw9jYC89VDAbRkCogAc_XAm");
+    std::string secret("T4lPid48QtjNxjLUFOcUZghD7CUJ7sTVsfuvQZF2");
+    int seq = 13;
     std::map<std::string_view, std::string_view> expected = {
         {"8", "FIX.4.2"},
         {"9", "162"},
+        {"34", "13"},
         {"35", "A"},
-        {"49", "zyfvB4QPg0A3kkVgqUE9V1fOA-Y6jhdG3seqIIZx"},
+        {"49", "LR0RQT6bKjrUNh38eCw9jYC89VDAbRkCogAc_XAm"},
         {"56", "FTX"}
     };
 
-    std::map<std::string_view, std::string_view> actual = Ayanami::FTX::get_fix_default(key.c_str());
+    std::map<std::string_view, std::string_view> actual;
+    Ayanami::FTX::set_fix_default(actual, key.c_str(), seq, "");
 
     std::for_each(expected.begin(), expected.end(), [&](const auto &kv){
         ASSERT_EQ(kv.second, actual.at(kv.first));
     });
 }
 
-TEST(FTXFixTests, get_fix_logon) {
-    std::string key("zyfvB4QPg0A3kkVgqUE9V1fOA-Y6jhdG3seqIIZx");
+TEST(FTXFixTests, set_fix_logon_header) {
+    std::string key("LR0RQT6bKjrUNh38eCw9jYC89VDAbRkCogAc_XAm");
+    std::string secret("T4lPid48QtjNxjLUFOcUZghD7CUJ7sTVsfuvQZF2");
+    int seq = 13;
+
+    std::map<std::string_view, std::string_view> base;
+    Ayanami::FTX::set_fix_default(base, key.c_str(), seq, "");
+    Ayanami::FTX::set_fix_logon(base, secret.c_str());
+
     std::map<std::string_view, std::string_view> expected = {
         {"8", "FIX.4.2"},
         {"9", "162"},
         {"35", "A"},
         {"49", "zyfvB4QPg0A3kkVgqUE9V1fOA-Y6jhdG3seqIIZx"},
-        {"56", "FTX"}
+        {"56", "FTX"},
+        {"96", ""}, // sign
+        {"98", "0"},
+        {"108", "30"},
+        {"8013", "Y"}
     };
+
+    ASSERT_TRUE(false);
 }
