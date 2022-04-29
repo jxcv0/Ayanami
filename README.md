@@ -6,7 +6,7 @@ Implimentation of a market making strategy on the FTX cryptocurrency exchange as
 
 This implimentation is specifically designed for the ftx exchange using the FIX API and eventually tuned for a specific host machine. 
 
-The purpose of this project is to serve as a learning tool for C++ and low-level architechture.
+The purpose of this project is to serve as a learning tool for C++.
 
 ## Status
-This project is currently in the "make it work" stage. Once functional, it will transition to the "make it pretty" stage.
+non-functional
